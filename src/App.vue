@@ -8,6 +8,7 @@ import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { ref } from 'vue';
+import SummaryCard from 'src/features/summary/components/summary-card.vue';
 
 const createCardModalVisible = ref(false);
 const createTransactionModalVisible = ref(false);
@@ -29,22 +30,7 @@ function onCloseCreateTransactionModal() {
 <template>
   <div class="min-h-screen bg-gray-100 flex flex-col items-center py-16">
     <div class="space-y-4 max-w-3xl w-full">
-      <base-card title="Summary">
-        <div class="grid grid-cols-3 gap-4">
-          <div>
-            <p class="font-bold text-xl text-gray-900">1.945.000,00</p>
-            <p class="text-sm text-gray-600">Balance</p>
-          </div>
-          <div>
-            <p class="font-bold text-xl text-gray-900">2.500.000,00</p>
-            <p class="text-sm text-gray-600">Income</p>
-          </div>
-          <div>
-            <p class="font-bold text-xl text-gray-900">645.000,00</p>
-            <p class="text-sm text-gray-600">Expense</p>
-          </div>
-        </div>
-      </base-card>
+      <summary-card />
       <base-card title="Cards">
         <template #action>
           <base-button size="sm" @click="onOpenCreateCardModal"
