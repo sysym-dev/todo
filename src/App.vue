@@ -23,6 +23,14 @@ import BaseBadge from 'src/components/base/base-badge.vue';
         </div>
       </base-card>
       <base-card title="Cards">
+        <template #action>
+          <button
+            class="inline-flex bg-blue-600 text-white text-sm px-2.5 py-1 rounded-lg font-bold hover:bg-blue-700 focus:ring-4 ring-blue-200"
+          >
+            New Card
+          </button>
+        </template>
+
         <div class="grid grid-cols-4 gap-4">
           <div class="border border-gray-200 text-gray-900 p-4 rounded-lg">
             <p class="font-bold text-lg">BCA</p>
