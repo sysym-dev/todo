@@ -3,16 +3,26 @@ import BaseCard from 'src/components/base/base-card.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseModal from 'src/components/base/base-modal.vue';
+import BaseInput from 'src/components/base/base-input.vue';
+import BaseSelect from 'src/components/base/base-select.vue';
+import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { ref } from 'vue';
 
 const createCardModalVisible = ref(false);
+const createTransactionModalVisible = ref(false);
 
 function onOpenCreateCardModal() {
   createCardModalVisible.value = true;
 }
 function onCloseCreateCardModal() {
   createCardModalVisible.value = false;
+}
+function onOpenCreateTransactionModal() {
+  createTransactionModalVisible.value = true;
+}
+function onCloseCreateTransactionModal() {
+  createTransactionModalVisible.value = false;
 }
 </script>
 
@@ -58,6 +68,12 @@ function onCloseCreateCardModal() {
         </div>
       </base-card>
       <base-card title="Transactions">
+        <template #action>
+          <base-button size="sm" @click="onOpenCreateTransactionModal"
+            >New Transaction</base-button
+          >
+        </template>
+
         <table
           class="w-full border rounded-lg border-separate border-spacing-0"
         >
@@ -114,20 +130,49 @@ function onCloseCreateCardModal() {
           </base-button>
         </template>
 
-        <div class="space-y-2">
-          <label for="name" class="text-gray-900">Name</label>
-          <input
-            type="text"
-            name="name"
-            id="name"
-            class="block w-full border border-gray-200 rounded-lg h-10 placeholder-gray-300 hover:border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-0"
-            placeholder="Name"
-          />
-        </div>
+        <base-form-item label="Name">
+          <base-input id="name" placeholder="Name" />
+        </base-form-item>
 
         <div class="space-x-2">
           <base-button> Save </base-button>
           <base-button color="transparent" @click="onCloseCreateCardModal">
+            Cancel
+          </base-button>
+        </div>
+      </base-card>
+    </base-modal>
+
+    <base-modal v-model="createTransactionModalVisible">
+      <base-card title="New Transaction">
+        <template #action>
+          <base-button
+            size="square"
+            color="transparent"
+            @click="onCloseCreateTransactionModal"
+          >
+            <close-icon class="w-4 h-4" />
+          </base-button>
+        </template>
+
+        <base-form-item label="Type">
+          <base-select id="type" />
+        </base-form-item>
+
+        <base-form-item label="Card">
+          <base-select id="card" />
+        </base-form-item>
+
+        <base-form-item label="Amount">
+          <base-input type="number" id="amount" placeholder="Amount" />
+        </base-form-item>
+
+        <div class="space-x-2">
+          <base-button> Save </base-button>
+          <base-button
+            color="transparent"
+            @click="onCloseCreateTransactionModal"
+          >
             Cancel
           </base-button>
         </div>
