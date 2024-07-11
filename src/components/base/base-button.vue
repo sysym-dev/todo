@@ -11,6 +11,8 @@ const props = defineProps({
     default: 'blue',
   },
 });
+const emit = defineEmits(['click']);
+
 const size = computed(() => {
   return {
     md: 'text-base px-4 h-10 rounded-lg',
@@ -24,10 +26,17 @@ const color = computed(() => {
     transparent: 'text-gray-600 hover:bg-gray-100 active:bg-gray-50',
   }[props.color];
 });
+
+function onClick() {
+  emit('click');
+}
 </script>
 
 <template>
-  <button :class="['inline-flex items-center font-bold', size, color]">
+  <button
+    :class="['inline-flex items-center font-bold', size, color]"
+    @click="onClick"
+  >
     <slot />
   </button>
 </template>
