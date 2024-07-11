@@ -6,7 +6,14 @@ import BaseModal from 'src/components/base/base-modal.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { ref } from 'vue';
 
-const createCardModalVisible = ref(true);
+const createCardModalVisible = ref(false);
+
+function onOpenCreateCardModal() {
+  createCardModalVisible.value = true;
+}
+function onCloseCreateCardModal() {
+  createCardModalVisible.value = false;
+}
 </script>
 
 <template>
@@ -30,7 +37,9 @@ const createCardModalVisible = ref(true);
       </base-card>
       <base-card title="Cards">
         <template #action>
-          <base-button size="sm">New Card</base-button>
+          <base-button size="sm" @click="onOpenCreateCardModal"
+            >New Card</base-button
+          >
         </template>
 
         <div class="grid grid-cols-4 gap-4">
@@ -96,7 +105,11 @@ const createCardModalVisible = ref(true);
     <base-modal v-model="createCardModalVisible">
       <base-card title="New Card">
         <template #action>
-          <base-button size="square" color="transparent">
+          <base-button
+            size="square"
+            color="transparent"
+            @click="onCloseCreateCardModal"
+          >
             <close-icon class="w-4 h-4" />
           </base-button>
         </template>
@@ -114,7 +127,9 @@ const createCardModalVisible = ref(true);
 
         <div class="space-x-2">
           <base-button> Save </base-button>
-          <base-button color="transparent"> Cancel </base-button>
+          <base-button color="transparent" @click="onCloseCreateCardModal">
+            Cancel
+          </base-button>
         </div>
       </base-card>
     </base-modal>
