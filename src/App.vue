@@ -1,6 +1,19 @@
 <script setup>
 import BaseCard from 'src/components/base/base-card.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
+import BaseButton from 'src/components/base/base-button.vue';
+import BaseModal from 'src/components/base/base-modal.vue';
+import { X as CloseIcon } from '@vicons/tabler';
+import { ref } from 'vue';
+
+const createCardModalVisible = ref(false);
+
+function onOpenCreateCardModal() {
+  createCardModalVisible.value = true;
+}
+function onCloseCreateCardModal() {
+  createCardModalVisible.value = false;
+}
 </script>
 
 <template>
@@ -23,6 +36,12 @@ import BaseBadge from 'src/components/base/base-badge.vue';
         </div>
       </base-card>
       <base-card title="Cards">
+        <template #action>
+          <base-button size="sm" @click="onOpenCreateCardModal"
+            >New Card</base-button
+          >
+        </template>
+
         <div class="grid grid-cols-4 gap-4">
           <div class="border border-gray-200 text-gray-900 p-4 rounded-lg">
             <p class="font-bold text-lg">BCA</p>
@@ -82,5 +101,37 @@ import BaseBadge from 'src/components/base/base-badge.vue';
         </table>
       </base-card>
     </div>
+
+    <base-modal v-model="createCardModalVisible">
+      <base-card title="New Card">
+        <template #action>
+          <base-button
+            size="square"
+            color="transparent"
+            @click="onCloseCreateCardModal"
+          >
+            <close-icon class="w-4 h-4" />
+          </base-button>
+        </template>
+
+        <div class="space-y-2">
+          <label for="name" class="text-gray-900">Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="block w-full border border-gray-200 rounded-lg h-10 placeholder-gray-300 hover:border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-0"
+            placeholder="Name"
+          />
+        </div>
+
+        <div class="space-x-2">
+          <base-button> Save </base-button>
+          <base-button color="transparent" @click="onCloseCreateCardModal">
+            Cancel
+          </base-button>
+        </div>
+      </base-card>
+    </base-modal>
   </div>
 </template>
