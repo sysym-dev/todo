@@ -1,6 +1,12 @@
 <script setup>
 import BaseCard from 'src/components/base/base-card.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
+import BaseButton from 'src/components/base/base-button.vue';
+import BaseModal from 'src/components/base/base-modal.vue';
+import { X as CloseIcon } from '@vicons/tabler';
+import { ref } from 'vue';
+
+const createCardModalVisible = ref(true);
 </script>
 
 <template>
@@ -24,11 +30,7 @@ import BaseBadge from 'src/components/base/base-badge.vue';
       </base-card>
       <base-card title="Cards">
         <template #action>
-          <button
-            class="inline-flex bg-blue-600 text-white text-sm px-2.5 py-1 rounded-lg font-bold hover:bg-blue-700 focus:ring-4 ring-blue-200"
-          >
-            New Card
-          </button>
+          <base-button size="sm">New Card</base-button>
         </template>
 
         <div class="grid grid-cols-4 gap-4">
@@ -90,5 +92,31 @@ import BaseBadge from 'src/components/base/base-badge.vue';
         </table>
       </base-card>
     </div>
+
+    <base-modal v-model="createCardModalVisible">
+      <base-card title="New Card">
+        <template #action>
+          <base-button size="square" color="transparent">
+            <close-icon class="w-4 h-4" />
+          </base-button>
+        </template>
+
+        <div class="space-y-2">
+          <label for="name" class="text-gray-900">Name</label>
+          <input
+            type="text"
+            name="name"
+            id="name"
+            class="block w-full border border-gray-200 rounded-lg h-10 placeholder-gray-300 hover:border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-0"
+            placeholder="Name"
+          />
+        </div>
+
+        <div class="space-x-2">
+          <base-button> Save </base-button>
+          <base-button color="transparent"> Cancel </base-button>
+        </div>
+      </base-card>
+    </base-modal>
   </div>
 </template>
