@@ -1,7 +1,35 @@
+<script setup>
+import { computed } from 'vue';
+
+const props = defineProps({
+  size: {
+    type: String,
+    default: 'md',
+  },
+  color: {
+    type: String,
+    default: 'blue',
+  },
+});
+
+const size = computed(() => {
+  return {
+    md: 'w-4 h-4',
+    sm: 'w-3 h-3',
+  }[props.size];
+});
+const color = computed(() => {
+  return {
+    blue: 'text-gray-200 fill-blue-600',
+    'blue-light': 'text-gray-100 fill-blue-400',
+  }[props.color];
+});
+</script>
+
 <template>
   <svg
     aria-hidden="true"
-    :class="['inline animate-spin', 'w-4 h-4', 'text-gray-200 fill-blue-600']"
+    :class="['inline animate-spin', size, color]"
     viewBox="0 0 100 101"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
