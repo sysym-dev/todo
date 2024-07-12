@@ -1,11 +1,27 @@
 <script setup>
-defineProps({
+import { computed } from 'vue';
+
+const props = defineProps({
   type: {
     type: String,
     default: 'text',
   },
+  color: {
+    type: String,
+    default: 'default',
+  },
   id: String,
   placeholder: String,
+});
+
+const value = defineModel();
+
+const color = computed(() => {
+  return {
+    default:
+      'border-gray-200 placeholder-gray-300 hover:border-gray-300 text-gray-900 focus:border-blue-600',
+    red: 'border-red-400 bg-red-50 placeholder-red-400 hover:border-red-500 text-red-600 focus:border-red-600',
+  }[props.color];
 });
 </script>
 
@@ -14,7 +30,11 @@ defineProps({
     :type="type"
     :name="id"
     :id="id"
-    class="block w-full border border-gray-200 rounded-lg h-10 placeholder-gray-300 hover:border-gray-300 text-gray-900 focus:border-blue-600 focus:outline-0"
+    :class="[
+      'block w-full border rounded-lg h-10 focus:outline-0 focus:ring-0',
+      color,
+    ]"
     :placeholder="placeholder"
+    v-model="value"
   />
 </template>

@@ -1,10 +1,7 @@
 <script setup>
 import BaseCard from 'src/components/base/base-card.vue';
 import BaseButton from 'src/components/base/base-button.vue';
-import BaseModal from 'src/components/base/base-modal.vue';
-import BaseInput from 'src/components/base/base-input.vue';
-import BaseFormItem from 'src/components/base/base-form-item.vue';
-import { X as CloseIcon } from '@vicons/tabler';
+import CardNewModal from './card-new-modal.vue';
 import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
@@ -14,6 +11,7 @@ const {
   request,
   data: cards,
   error,
+  requested,
 } = useRequest('/api/cards', {
   initData: {
     balance: 0,
@@ -23,13 +21,13 @@ const {
   initLoading: true,
 });
 
-const createCardModalVisible = ref(false);
+const createModalVisible = ref(false);
 
 function onOpenCreateCardModal() {
-  createCardModalVisible.value = true;
+  createModalVisible.value = true;
 }
-function onCloseCreateCardModal() {
-  createCardModalVisible.value = false;
+function onSuccessCreate() {
+  request();
 }
 
 request();
@@ -40,11 +38,11 @@ request();
     <base-card
       title="Cards"
       :title-loading="loading"
-      :with-content="!loading"
+      :with-content="requested || !loading"
       :error="!!error"
       :error-message="error"
     >
-      <template v-if="!loading && !error" #action>
+      <template v-if="(requested || !loading) && !error" #action>
         <base-button size="sm" @click="onOpenCreateCardModal"
           >New Card</base-button
         >
@@ -62,29 +60,6 @@ request();
       </div>
     </base-card>
 
-    <base-modal v-model="createCardModalVisible">
-      <base-card title="New Card">
-        <template #action>
-          <base-button
-            size="square"
-            color="transparent"
-            @click="onCloseCreateCardModal"
-          >
-            <close-icon class="w-4 h-4" />
-          </base-button>
-        </template>
-
-        <base-form-item label="Name">
-          <base-input id="name" placeholder="Name" />
-        </base-form-item>
-
-        <div class="space-x-2">
-          <base-button> Save </base-button>
-          <base-button color="transparent" @click="onCloseCreateCardModal">
-            Cancel
-          </base-button>
-        </div>
-      </base-card>
-    </base-modal>
+    <card-new-modal v-model="createModalVisible" @success="onSuccessCreate" />
   </div>
 </template>

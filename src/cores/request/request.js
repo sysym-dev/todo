@@ -6,27 +6,38 @@ export function useRequest(url, options = {}) {
   const data = ref(options?.initData ?? null);
   const loading = ref(options?.initLoading ?? false);
   const error = ref(null);
+  const requested = ref(false);
 
   function parseError(err) {
     if (err instanceof AxiosError) {
-      return err.response.status === 404
-        ? 'Error accessing data from the server'
-        : err;
+      if (err.response.status === 404) {
+        return 'Error accessing data from the server';
+      }
+
+      if (err.response.status === 422) {
+        return 'Something error with your request';
+      }
+
+      return 'Something error';
     }
 
     return err;
   }
 
-  async function request() {
+  async function request(config) {
+    resetError();
+
     loading.value = true;
 
     try {
       const res = await axios({
-        baseURL: import.meta.env.VITE_API_BASE_URL,
+        baseURL: import.meta.env.VITE_API_URL,
         url,
+        ...config,
       });
 
       data.value = res.data;
+      requested.value = true;
 
       return createData(res.data);
     } catch (err) {
@@ -38,5 +49,9 @@ export function useRequest(url, options = {}) {
     }
   }
 
-  return { data, error, loading, request };
+  function resetError() {
+    error.value = null;
+  }
+
+  return { data, error, loading, requested, resetError, request };
 }
