@@ -10,6 +10,10 @@ const props = defineProps({
     type: String,
     default: 'blue',
   },
+  type: {
+    type: String,
+    default: 'button',
+  },
 });
 const emit = defineEmits(['click']);
 
@@ -34,6 +38,7 @@ function onClick() {
 
 <template>
   <button
+    :type="type"
     :class="['inline-flex items-center font-bold', size, color]"
     @click="onClick"
   >
