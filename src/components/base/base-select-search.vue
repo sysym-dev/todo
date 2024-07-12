@@ -13,6 +13,10 @@ defineProps({
   placeholder: String,
   options: Array,
   loading: Boolean,
+  color: {
+    type: String,
+    default: 'default',
+  },
 });
 const emit = defineEmits(['focused']);
 
@@ -46,24 +50,40 @@ function onClear() {
 watch(selected, () => {
   search.value = selected.value ? selected.value.name : null;
 });
+
+if (selected.value) {
+  search.value = selected.value.name;
+}
 </script>
 
 <template>
   <div class="relative" v-click-outside="onClose">
-    <base-input :placeholder="placeholder" @focus="onFocus" v-model="search">
+    <base-input
+      :color="color"
+      :placeholder="placeholder"
+      @focus="onFocus"
+      v-model="search"
+    >
       <template #append>
         <div class="absolute top-0 right-0 h-full flex items-center pr-2">
-          <base-spinner v-if="loading" />
+          <base-spinner
+            v-if="loading"
+            :color="color === 'red' ? 'red' : 'blue'"
+          />
           <template v-else>
             <base-button
               v-if="selected"
               size="square"
-              color="transparent"
+              :color="color === 'red' ? 'transparent-red' : 'transparent'"
               @click="onClear"
             >
               <clear-icon class="w-4 h-4" />
             </base-button>
-            <base-button size="square" color="transparent" @click="onToggle">
+            <base-button
+              size="square"
+              :color="color === 'red' ? 'transparent-red' : 'transparent'"
+              @click="onToggle"
+            >
               <component :is="visible ? HideIcon : ShowIcon" class="w-4 h-4" />
             </base-button>
           </template>
