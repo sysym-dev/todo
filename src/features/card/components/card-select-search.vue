@@ -2,13 +2,7 @@
 import BaseSelectSearch from 'src/components/base/base-select-search.vue';
 import { useRequest } from 'src/cores/request/request';
 
-const {
-  loading,
-  request,
-  data: cards,
-  error,
-  requested,
-} = useRequest('/api/cards');
+const { loading, request, data: cards } = useRequest('/api/cards');
 
 function onFocused() {
   request();
@@ -19,6 +13,7 @@ function onFocused() {
   <base-select-search
     placeholder="Select Card"
     :options="cards"
+    :loading="loading"
     @focused="onFocused"
   />
 </template>

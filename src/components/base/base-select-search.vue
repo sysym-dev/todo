@@ -1,6 +1,7 @@
 <script setup>
 import BaseInput from './base-input.vue';
 import BaseButton from './base-button.vue';
+import BaseSpinner from './base-spinner.vue';
 import {
   ChevronDown as ShowIcon,
   ChevronUp as HideIcon,
@@ -11,6 +12,7 @@ import { ref, watch } from 'vue';
 defineProps({
   placeholder: String,
   options: Array,
+  loading: Boolean,
 });
 const emit = defineEmits(['focused']);
 
@@ -51,17 +53,20 @@ watch(selected, () => {
     <base-input :placeholder="placeholder" @focus="onFocus" v-model="search">
       <template #append>
         <div class="absolute top-0 right-0 h-full flex items-center pr-2">
-          <base-button
-            v-if="selected"
-            size="square"
-            color="transparent"
-            @click="onClear"
-          >
-            <clear-icon class="w-4 h-4" />
-          </base-button>
-          <base-button size="square" color="transparent" @click="onToggle">
-            <component :is="visible ? HideIcon : ShowIcon" class="w-4 h-4" />
-          </base-button>
+          <base-spinner v-if="loading" />
+          <template v-else>
+            <base-button
+              v-if="selected"
+              size="square"
+              color="transparent"
+              @click="onClear"
+            >
+              <clear-icon class="w-4 h-4" />
+            </base-button>
+            <base-button size="square" color="transparent" @click="onToggle">
+              <component :is="visible ? HideIcon : ShowIcon" class="w-4 h-4" />
+            </base-button>
+          </template>
         </div>
       </template>
     </base-input>
