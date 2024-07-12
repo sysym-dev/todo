@@ -21,6 +21,7 @@ const size = computed(() => {
 const color = computed(() => {
   return {
     blue: 'text-gray-200 fill-blue-600',
+    red: 'text-gray-200 fill-red-600',
     'blue-light': 'text-gray-100 fill-blue-400',
   }[props.color];
 });
