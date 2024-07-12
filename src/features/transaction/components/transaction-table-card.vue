@@ -6,6 +6,7 @@ import BaseModal from 'src/components/base/base-modal.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
+import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
@@ -94,7 +95,7 @@ request();
         </base-form-item>
 
         <base-form-item label="Card">
-          <base-select id="card" />
+          <card-select-search />
         </base-form-item>
 
         <base-form-item label="Amount">
