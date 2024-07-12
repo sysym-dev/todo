@@ -1,7 +1,11 @@
 <script setup>
 import BaseInput from './base-input.vue';
 import BaseButton from './base-button.vue';
-import { ChevronDown as ShowIcon, ChevronUp as HideIcon } from '@vicons/tabler';
+import {
+  ChevronDown as ShowIcon,
+  ChevronUp as HideIcon,
+  X as ClearIcon,
+} from '@vicons/tabler';
 import { ref, watch } from 'vue';
 
 defineProps({
@@ -20,7 +24,7 @@ function onFocus() {
   emit('focused');
 }
 function onClose() {
-  search.value = selected.value.name;
+  search.value = selected.value ? selected.value.name : null;
 
   visible.value = false;
 }
@@ -32,9 +36,13 @@ function onSelect(value) {
 
   visible.value = false;
 }
+function onClear() {
+  selected.value = null;
+  visible.value = false;
+}
 
 watch(selected, () => {
-  search.value = selected.value.name;
+  search.value = selected.value ? selected.value.name : null;
 });
 </script>
 
@@ -43,6 +51,14 @@ watch(selected, () => {
     <base-input :placeholder="placeholder" @focus="onFocus" v-model="search">
       <template #append>
         <div class="absolute top-0 right-0 h-full flex items-center pr-2">
+          <base-button
+            v-if="selected"
+            size="square"
+            color="transparent"
+            @click="onClear"
+          >
+            <clear-icon class="w-4 h-4" />
+          </base-button>
           <base-button size="square" color="transparent" @click="onToggle">
             <component :is="visible ? HideIcon : ShowIcon" class="w-4 h-4" />
           </base-button>
