@@ -1,9 +1,18 @@
 <script setup>
+import { watch } from 'vue';
+
+const emit = defineEmits(['opened']);
 const visible = defineModel();
 
 function onClickOutside() {
   visible.value = false;
 }
+
+watch(visible, (value) => {
+  if (value) {
+    emit('opened');
+  }
+});
 </script>
 
 <template>
