@@ -11,6 +11,10 @@ defineProps({
   },
   error: Boolean,
   errorMessage: String,
+  errorBlock: {
+    type: Boolean,
+    default: true,
+  },
 });
 </script>
 
@@ -26,6 +30,6 @@ defineProps({
     <base-alert v-if="error">
       {{ errorMessage }}
     </base-alert>
-    <slot v-else-if="withContent" />
+    <slot v-if="withContent && (!error || !errorBlock)" />
   </div>
 </template>
