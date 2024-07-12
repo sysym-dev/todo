@@ -11,6 +11,7 @@ const {
   request,
   data: cards,
   error,
+  requested,
 } = useRequest('/api/cards', {
   initData: {
     balance: 0,
@@ -20,10 +21,13 @@ const {
   initLoading: true,
 });
 
-const createCardModalVisible = ref(false);
+const createModalVisible = ref(false);
 
 function onOpenCreateCardModal() {
-  createCardModalVisible.value = true;
+  createModalVisible.value = true;
+}
+function onSuccessCreate() {
+  request();
 }
 
 request();
@@ -34,11 +38,11 @@ request();
     <base-card
       title="Cards"
       :title-loading="loading"
-      :with-content="!loading"
+      :with-content="requested || !loading"
       :error="!!error"
       :error-message="error"
     >
-      <template v-if="!loading && !error" #action>
+      <template v-if="(requested || !loading) && !error" #action>
         <base-button size="sm" @click="onOpenCreateCardModal"
           >New Card</base-button
         >
@@ -56,6 +60,6 @@ request();
       </div>
     </base-card>
 
-    <card-new-modal v-model="createCardModalVisible" />
+    <card-new-modal v-model="createModalVisible" @success="onSuccessCreate" />
   </div>
 </template>
