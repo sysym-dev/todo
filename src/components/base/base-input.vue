@@ -13,6 +13,7 @@ const props = defineProps({
   id: String,
   placeholder: String,
 });
+const emit = defineEmits(['focus']);
 
 const value = defineModel();
 
@@ -23,18 +24,26 @@ const color = computed(() => {
     red: 'border-red-400 bg-red-50 placeholder-red-400 hover:border-red-500 text-red-600 focus:border-red-600',
   }[props.color];
 });
+
+function onFocus() {
+  emit('focus');
+}
 </script>
 
 <template>
-  <input
-    :type="type"
-    :name="id"
-    :id="id"
-    :class="[
-      'block w-full border rounded-lg h-10 focus:outline-0 focus:ring-0',
-      color,
-    ]"
-    :placeholder="placeholder"
-    v-model="value"
-  />
+  <div class="relative">
+    <input
+      :type="type"
+      :name="id"
+      :id="id"
+      :class="[
+        'block w-full border rounded-lg h-10 px-3 focus:outline-0 focus:ring-0',
+        color,
+      ]"
+      :placeholder="placeholder"
+      v-model="value"
+      @focus="onFocus"
+    />
+    <slot name="append" />
+  </div>
 </template>
