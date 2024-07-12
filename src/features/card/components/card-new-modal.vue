@@ -10,20 +10,20 @@ import { useValidation } from 'src/cores/validation/validation';
 import { reactive } from 'vue';
 import { z } from 'zod';
 
+const emit = defineEmits(['success']);
+
 const {
   loading,
   request,
-  data: cards,
-  error: errorRequest,
-} = useRequest('/api/cards', {
-  initData: {
-    balance: 0,
-    income: 0,
-    expense: 0,
-  },
-  initLoading: true,
-});
-const { validate, hasError, getError, resetError } = useValidation(
+  error,
+  resetError: resetRequestError,
+} = useRequest('/api/cards');
+const {
+  validate,
+  hasError,
+  getError,
+  resetError: resetValidationError,
+} = useValidation(
   z.object({
     name: z
       .string({
@@ -43,20 +43,39 @@ function onClose() {
   visible.value = false;
 }
 function onOpened() {
-  resetError();
+  resetValidationError();
+  resetRequestError();
 
   form.name = null;
 }
 async function onSubmit() {
-  await validate(form);
-}
+  resetValidationError();
 
-request();
+  const validation = await validate(form);
+
+  if (validation.success) {
+    const res = await request({
+      method: 'post',
+      data: validation.data,
+    });
+
+    if (res.success) {
+      visible.value = false;
+
+      emit('success');
+    }
+  }
+}
 </script>
 
 <template>
   <base-modal v-model="visible" @opened="onOpened">
-    <base-card title="New Card">
+    <base-card
+      title="New Card"
+      :error="!!error"
+      :error-message="error"
+      :error-block="false"
+    >
       <template #action>
         <base-button size="square" color="transparent" @click="onClose">
           <close-icon class="w-4 h-4" />
@@ -78,7 +97,7 @@ request();
         </base-form-item>
 
         <div class="space-x-2">
-          <base-button type="submit"> Save </base-button>
+          <base-button type="submit" :loading="loading"> Save </base-button>
           <base-button color="transparent" @click="onClose">
             Cancel
           </base-button>
