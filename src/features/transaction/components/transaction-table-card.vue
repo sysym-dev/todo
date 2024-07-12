@@ -8,7 +8,7 @@ import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
 import { X as CloseIcon } from '@vicons/tabler';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
@@ -27,6 +27,9 @@ const {
   initLoading: true,
 });
 
+const form = reactive({
+  card: null,
+});
 const createTransactionModalVisible = ref(false);
 
 function onOpenCreateTransactionModal() {
@@ -95,7 +98,7 @@ request();
         </base-form-item>
 
         <base-form-item label="Card">
-          <card-select-search />
+          <card-select-search v-model="form.card" />
         </base-form-item>
 
         <base-form-item label="Amount">

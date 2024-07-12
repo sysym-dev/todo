@@ -17,7 +17,7 @@ defineProps({
 const emit = defineEmits(['focused']);
 
 const visible = ref(false);
-const selected = ref(null);
+const selected = defineModel();
 const search = ref(null);
 
 function onFocus() {
