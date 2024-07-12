@@ -22,7 +22,7 @@ export function useRequest(url, options = {}) {
 
     try {
       const res = await axios({
-        baseURL: import.meta.env.VITE_API_BASE_URL,
+        baseURL: import.meta.env.VITE_API_URL,
         url,
       });
 
