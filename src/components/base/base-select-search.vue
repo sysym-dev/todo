@@ -18,20 +18,22 @@ defineProps({
     default: 'default',
   },
 });
-const emit = defineEmits(['focused']);
+const emit = defineEmits(['focused', 'search']);
 
 const visible = ref(false);
 const selected = defineModel();
 const search = ref(null);
 
+function setSearchValue() {
+  search.value = selected.value ? selected.value.name : null;
+}
+
 function onFocus() {
   visible.value = true;
 
-  emit('focused');
+  emit('focused', search.value);
 }
 function onClose() {
-  search.value = selected.value ? selected.value.name : null;
-
   visible.value = false;
 }
 function onToggle() {
@@ -46,14 +48,21 @@ function onClear() {
   selected.value = null;
   visible.value = false;
 }
+function onSearch() {
+  emit('search', search.value);
+}
 
 watch(selected, () => {
-  search.value = selected.value ? selected.value.name : null;
+  setSearchValue();
 });
 
-if (selected.value) {
-  search.value = selected.value.name;
-}
+watch(visible, (value) => {
+  if (!value) {
+    setSearchValue();
+  }
+});
+
+setSearchValue();
 </script>
 
 <template>
@@ -61,8 +70,9 @@ if (selected.value) {
     <base-input
       :color="color"
       :placeholder="placeholder"
-      @focus="onFocus"
       v-model="search"
+      @focus="onFocus"
+      @input-debounce="onSearch"
     >
       <template #append>
         <div class="absolute top-0 right-0 h-full flex items-center pr-2">
@@ -102,6 +112,9 @@ if (selected.value) {
         v-if="visible"
         class="z-10 absolute w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1"
       >
+        <p v-if="!options.length" class="text-gray-400 px-3 py-2 text-center">
+          Empty result
+        </p>
         <div
           v-for="option in options"
           :key="option.id"
