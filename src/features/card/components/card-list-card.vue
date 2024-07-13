@@ -21,14 +21,22 @@ const {
 
 const createModalVisible = ref(false);
 
+function loadCards() {
+  request({
+    params: {
+      limit: 4,
+    },
+  });
+}
+
 function onOpenCreateModal() {
   createModalVisible.value = true;
 }
 function onSuccessCreate() {
-  request();
+  loadCards();
 }
 
-request();
+loadCards();
 </script>
 
 <template>
