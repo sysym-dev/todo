@@ -61,8 +61,11 @@ request();
             <td class="border-b text-gray-900 py-2 px-3">
               {{ formatDate(transaction.createdAt, 'YYYY/MM/DD') }}
             </td>
-            <td class="border-b text-gray-900 py-2 px-3">
-              <base-badge color="red">{{ transaction.type }}</base-badge>
+            <td class="border-b text-gray-900 py-2 px-3 capitalize">
+              <base-badge
+                :color="transaction.type === 'income' ? 'green' : 'red'"
+                >{{ transaction.type }}</base-badge
+              >
             </td>
             <td class="border-b text-gray-900 py-2 px-3">
               {{ formatCurrency(transaction.amount) }}

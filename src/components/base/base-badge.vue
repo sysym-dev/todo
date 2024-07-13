@@ -11,6 +11,7 @@ const props = defineProps({
 const color = computed(() => {
   return {
     red: 'bg-red-100 text-red-600',
+    green: 'bg-green-100 text-green-600',
   }[props.color];
 });
 </script>
