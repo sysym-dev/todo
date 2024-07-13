@@ -19,7 +19,7 @@ const {
 
 const createModalVisible = ref(false);
 
-function onOpenCreateCardModal() {
+function onOpenCreateModal() {
   createModalVisible.value = true;
 }
 function onSuccessCreate() {
@@ -39,9 +39,7 @@ request();
       :error-message="error"
     >
       <template v-if="(requested || !loading) && !error" #action>
-        <base-button size="sm" @click="onOpenCreateCardModal"
-          >New Card</base-button
-        >
+        <base-button size="sm" @click="onOpenCreateModal">New Card</base-button>
       </template>
 
       <div class="grid grid-cols-4 gap-4">
