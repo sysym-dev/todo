@@ -30,6 +30,7 @@ const color = computed(() => {
   return {
     blue: 'bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-400 disabled:bg-blue-400',
     transparent: 'text-gray-600 hover:bg-gray-100 active:bg-gray-50',
+    'transparent-red': 'text-red-600 hover:bg-red-100 active:bg-red-50',
   }[props.color];
 });
 

@@ -6,11 +6,13 @@ import BaseModal from 'src/components/base/base-modal.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
+import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
 import { X as CloseIcon } from '@vicons/tabler';
-import { ref } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
+import { useValidation } from 'src/cores/validation/validation';
 
 const {
   loading,
@@ -25,7 +27,13 @@ const {
   },
   initLoading: true,
 });
+const { validate } = useValidation();
 
+const form = reactive({
+  type: 'income',
+  card: null,
+  amount: null,
+});
 const createTransactionModalVisible = ref(false);
 
 function onOpenCreateTransactionModal() {
@@ -33,6 +41,11 @@ function onOpenCreateTransactionModal() {
 }
 function onCloseCreateTransactionModal() {
   createTransactionModalVisible.value = false;
+}
+function onOpened() {
+  form.type = 'income';
+  form.card = null;
+  form.amount = null;
 }
 
 request();
@@ -77,7 +90,7 @@ request();
       </table>
     </base-card>
 
-    <base-modal v-model="createTransactionModalVisible">
+    <base-modal v-model="createTransactionModalVisible" @opened="onOpened">
       <base-card title="New Transaction">
         <template #action>
           <base-button
@@ -90,15 +103,27 @@ request();
         </template>
 
         <base-form-item label="Type">
-          <base-select id="type" />
+          <base-select
+            id="type"
+            :options="[
+              { id: 'income', name: 'Income' },
+              { id: 'expense', name: 'Expense' },
+            ]"
+            v-model="form.type"
+          />
         </base-form-item>
 
         <base-form-item label="Card">
-          <base-select id="card" />
+          <card-select-search v-model="form.card" />
         </base-form-item>
 
         <base-form-item label="Amount">
-          <base-input type="number" id="amount" placeholder="Amount" />
+          <base-input
+            type="number"
+            id="amount"
+            placeholder="Amount"
+            v-model="form.amount"
+          />
         </base-form-item>
 
         <div class="space-x-2">
