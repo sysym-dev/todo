@@ -49,8 +49,6 @@ function onOpened() {
   form.name = null;
 }
 async function onSubmit() {
-  resetValidationError();
-
   const validation = await validate(form);
 
   if (validation.success) {

@@ -13,6 +13,7 @@ import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
 import { useValidation } from 'src/cores/validation/validation';
+import { z } from 'zod';
 
 const {
   loading,
@@ -27,7 +28,26 @@ const {
   },
   initLoading: true,
 });
-const { validate } = useValidation();
+const { validate, hasError, getError, resetError } = useValidation(
+  z.object({
+    type: z.enum(['income', 'expense'], {
+      invalid_type_error: 'invalid type',
+      required_error: 'type is required',
+    }),
+    card_id: z
+      .number({
+        invalid_type_error: 'card is required',
+        required_error: 'card is required',
+      })
+      .positive({ message: 'card is required' }),
+    amount: z
+      .number({
+        invalid_type_error: 'amount must be a number',
+        required_error: 'amount is required',
+      })
+      .positive({ message: 'amount must be positive' }),
+  }),
+);
 
 const form = reactive({
   type: 'income',
@@ -43,9 +63,20 @@ function onCloseCreateTransactionModal() {
   createTransactionModalVisible.value = false;
 }
 function onOpened() {
+  resetError();
+
   form.type = 'income';
   form.card = null;
   form.amount = null;
+}
+async function onSubmit() {
+  const validation = await validate({
+    type: form.type,
+    card_id: form.card ? form.card.id : null,
+    amount: form.amount,
+  });
+
+  console.log(validation);
 }
 
 request();
@@ -102,39 +133,58 @@ request();
           </base-button>
         </template>
 
-        <base-form-item label="Type">
-          <base-select
-            id="type"
-            :options="[
-              { id: 'income', name: 'Income' },
-              { id: 'expense', name: 'Expense' },
-            ]"
-            v-model="form.type"
-          />
-        </base-form-item>
-
-        <base-form-item label="Card">
-          <card-select-search v-model="form.card" />
-        </base-form-item>
-
-        <base-form-item label="Amount">
-          <base-input
-            type="number"
-            id="amount"
-            placeholder="Amount"
-            v-model="form.amount"
-          />
-        </base-form-item>
-
-        <div class="space-x-2">
-          <base-button> Save </base-button>
-          <base-button
-            color="transparent"
-            @click="onCloseCreateTransactionModal"
+        <form class="space-y-4" @submit.prevent="onSubmit">
+          <base-form-item
+            label="Type"
+            :color="hasError('type') ? 'red' : 'default'"
+            :message="getError('type')"
           >
-            Cancel
-          </base-button>
-        </div>
+            <base-select
+              id="type"
+              :options="[
+                { id: 'income', name: 'Income' },
+                { id: 'expense', name: 'Expense' },
+              ]"
+              :color="hasError('type') ? 'red' : 'default'"
+              v-model="form.type"
+            />
+          </base-form-item>
+
+          <base-form-item
+            label="Card"
+            :color="hasError('card_id') ? 'red' : 'default'"
+            :message="getError('card_id')"
+          >
+            <card-select-search
+              :color="hasError('card_id') ? 'red' : 'default'"
+              v-model="form.card"
+            />
+          </base-form-item>
+
+          <base-form-item
+            label="Amount"
+            :color="hasError('amount') ? 'red' : 'default'"
+            :message="getError('amount')"
+          >
+            <base-input
+              type="number"
+              id="amount"
+              placeholder="Amount"
+              :color="hasError('amount') ? 'red' : 'default'"
+              v-model="form.amount"
+            />
+          </base-form-item>
+
+          <div class="space-x-2">
+            <base-button type="submit"> Save </base-button>
+            <base-button
+              color="transparent"
+              @click="onCloseCreateTransactionModal"
+            >
+              Cancel
+            </base-button>
+          </div>
+        </form>
       </base-card>
     </base-modal>
   </div>
