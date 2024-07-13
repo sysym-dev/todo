@@ -64,7 +64,14 @@ loadTransactions();
             <th class="text-left border-b text-gray-900 py-2 px-3">Amount</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="!transactions.meta.total">
+          <tr>
+            <td colspan="3" class="text-gray-600 py-2 px-3">
+              No Transactions Exists
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
           <tr
             v-for="(transaction, index) in transactions.data"
             :key="transaction.id"
