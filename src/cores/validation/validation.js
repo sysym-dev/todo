@@ -5,6 +5,8 @@ export function useValidation(schema) {
   const error = ref([]);
 
   async function validate(data) {
+    resetError();
+
     const res = await schema.safeParseAsync(data);
 
     if (res.success) {
