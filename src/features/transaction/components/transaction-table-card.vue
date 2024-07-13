@@ -16,9 +16,7 @@ const {
   requested,
 } = useRequest('/api/transactions', {
   initData: {
-    balance: 0,
-    income: 0,
-    expense: 0,
+    data: [],
   },
   initLoading: true,
 });
@@ -59,7 +57,7 @@ request();
           </tr>
         </thead>
         <tbody>
-          <tr v-for="transaction in transactions" :key="transaction.id">
+          <tr v-for="transaction in transactions.data" :key="transaction.id">
             <td class="border-b text-gray-900 py-2 px-3">
               {{ formatDate(transaction.createdAt, 'YYYY/MM/DD') }}
             </td>

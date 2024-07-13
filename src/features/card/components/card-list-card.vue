@@ -14,7 +14,9 @@ const {
   requested,
 } = useRequest('/api/cards', {
   initLoading: true,
-  initData: [],
+  initData: {
+    data: [],
+  },
 });
 
 const createModalVisible = ref(false);
@@ -44,7 +46,7 @@ request();
 
       <div class="grid grid-cols-4 gap-4">
         <div
-          v-for="card in cards"
+          v-for="card in cards.data"
           :key="card.id"
           class="border border-gray-200 text-gray-900 p-4 rounded-lg"
         >
