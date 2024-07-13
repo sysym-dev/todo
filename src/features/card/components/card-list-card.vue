@@ -52,7 +52,9 @@ loadCards();
         <base-button size="sm" @click="onOpenCreateModal">New Card</base-button>
       </template>
 
-      <div class="grid grid-cols-4 gap-4">
+      <p v-if="!cards.meta.total" class="text-gray-600">No Card Exists</p>
+
+      <div v-else class="grid grid-cols-4 gap-4">
         <div
           v-for="card in cards.data"
           :key="card.id"
