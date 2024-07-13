@@ -5,7 +5,9 @@ import CardNewModal from './card-new-modal.vue';
 import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
+import { inject } from 'vue';
 
+const emitter = inject('emitter');
 const {
   loading,
   request,
@@ -14,19 +16,33 @@ const {
   requested,
 } = useRequest('/api/cards', {
   initLoading: true,
-  initData: [],
+  initData: {
+    data: [],
+  },
 });
 
 const createModalVisible = ref(false);
+
+function loadCards() {
+  request({
+    params: {
+      limit: 4,
+    },
+  });
+}
 
 function onOpenCreateModal() {
   createModalVisible.value = true;
 }
 function onSuccessCreate() {
-  request();
+  loadCards();
 }
 
-request();
+emitter.on('transaction-created', () => {
+  loadCards();
+});
+
+loadCards();
 </script>
 
 <template>
@@ -42,9 +58,11 @@ request();
         <base-button size="sm" @click="onOpenCreateModal">New Card</base-button>
       </template>
 
-      <div class="grid grid-cols-4 gap-4">
+      <p v-if="!cards.meta.total" class="text-gray-600">No Cards Exists</p>
+
+      <div v-else class="grid grid-cols-4 gap-4">
         <div
-          v-for="card in cards"
+          v-for="card in cards.data"
           :key="card.id"
           class="border border-gray-200 text-gray-900 p-4 rounded-lg"
         >

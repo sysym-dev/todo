@@ -16,23 +16,29 @@ const {
   requested,
 } = useRequest('/api/transactions', {
   initData: {
-    balance: 0,
-    income: 0,
-    expense: 0,
+    data: [],
   },
   initLoading: true,
 });
 
 const createModalVisible = ref(false);
 
+function loadTransactions() {
+  request({
+    params: {
+      sort: '-id',
+    },
+  });
+}
+
 function onOpenCreateModal() {
   createModalVisible.value = true;
 }
 function onSuccessCreate() {
-  request();
+  loadTransactions();
 }
 
-request();
+loadTransactions();
 </script>
 
 <template>
@@ -58,15 +64,43 @@ request();
             <th class="text-left border-b text-gray-900 py-2 px-3">Amount</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="transaction in transactions" :key="transaction.id">
-            <td class="border-b text-gray-900 py-2 px-3">
+        <tbody v-if="!transactions.meta.total">
+          <tr>
+            <td colspan="3" class="text-gray-600 py-2 px-3">
+              No Transactions Exists
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr
+            v-for="(transaction, index) in transactions.data"
+            :key="transaction.id"
+          >
+            <td
+              :class="[
+                'text-gray-900 py-2 px-3',
+                index !== transactions.data.length - 1 ? 'border-b' : '',
+              ]"
+            >
               {{ formatDate(transaction.createdAt, 'YYYY/MM/DD') }}
             </td>
-            <td class="border-b text-gray-900 py-2 px-3">
-              <base-badge color="red">{{ transaction.type }}</base-badge>
+            <td
+              :class="[
+                'text-gray-900 py-2 px-3 capitalize',
+                index !== transactions.data.length - 1 ? 'border-b' : '',
+              ]"
+            >
+              <base-badge
+                :color="transaction.type === 'income' ? 'green' : 'red'"
+                >{{ transaction.type }}</base-badge
+              >
             </td>
-            <td class="border-b text-gray-900 py-2 px-3">
+            <td
+              :class="[
+                'text-gray-900 py-2 px-3',
+                index !== transactions.data.length - 1 ? 'border-b' : '',
+              ]"
+            >
               {{ formatCurrency(transaction.amount) }}
             </td>
           </tr>

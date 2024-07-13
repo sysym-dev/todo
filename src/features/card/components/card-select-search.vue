@@ -8,7 +8,9 @@ const {
   request,
   data: cards,
 } = useRequest('/api/cards', {
-  initData: [],
+  initData: {
+    data: [],
+  },
 });
 
 const selected = defineModel();
@@ -34,16 +36,18 @@ function onSearch() {
   loadCards();
 }
 function onLoadMore() {
-  params.limit += 5;
+  if (params.limit < cards.value.meta.total) {
+    params.limit += 5;
 
-  loadCards();
+    loadCards();
+  }
 }
 </script>
 
 <template>
   <base-select-search
     placeholder="Select Card"
-    :options="cards"
+    :options="cards.data"
     :loading="loading"
     v-model="selected"
     v-model:search="params.search"

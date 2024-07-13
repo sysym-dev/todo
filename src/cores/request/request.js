@@ -10,6 +10,10 @@ export function useRequest(url, options = {}) {
 
   function parseError(err) {
     if (err instanceof AxiosError) {
+      if (err.response.data.message) {
+        return err.response.data.message;
+      }
+
       if (err.response.status === 404) {
         return 'Error accessing data from the server';
       }
