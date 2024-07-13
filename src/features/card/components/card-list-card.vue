@@ -14,6 +14,7 @@ const {
   requested,
 } = useRequest('/api/cards', {
   initLoading: true,
+  initData: [],
 });
 
 const createModalVisible = ref(false);
