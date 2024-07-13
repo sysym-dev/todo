@@ -36,9 +36,11 @@ function onSearch() {
   loadCards();
 }
 function onLoadMore() {
-  params.limit += 5;
+  if (params.limit < cards.value.meta.total) {
+    params.limit += 5;
 
-  loadCards();
+    loadCards();
+  }
 }
 </script>
 
