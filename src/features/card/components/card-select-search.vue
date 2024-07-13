@@ -13,7 +13,7 @@ const {
 
 const selected = defineModel();
 const params = reactive({
-  limit: 5,
+  limit: 10,
   search: null,
 });
 
@@ -24,12 +24,12 @@ function loadCards() {
 }
 
 function onFocused() {
-  params.limit = 5;
+  params.limit = 10;
 
   loadCards();
 }
-function onSearch(q) {
-  params.limit = 5;
+function onSearch() {
+  params.limit = 10;
 
   loadCards();
 }
