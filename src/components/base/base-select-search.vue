@@ -18,11 +18,11 @@ defineProps({
     default: 'default',
   },
 });
-const emit = defineEmits(['focused', 'search']);
+const emit = defineEmits(['focused', 'search', 'end-scroll']);
 
 const visible = ref(false);
 const selected = defineModel();
-const search = ref(null);
+const search = defineModel('search');
 
 function setSearchValue() {
   search.value = selected.value ? selected.value.name : null;
@@ -50,6 +50,11 @@ function onClear() {
 }
 function onSearch() {
   emit('search', search.value);
+}
+function onScroll(e) {
+  if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
+    emit('end-scroll');
+  }
 }
 
 watch(selected, () => {
@@ -110,9 +115,10 @@ setSearchValue();
     >
       <div
         v-if="visible"
-        class="z-10 absolute w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1"
+        class="z-10 absolute w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1 max-h-[100px] overflow-y-auto"
+        @scroll="onScroll"
       >
-        <p v-if="!options.length" class="text-gray-400 px-3 py-2 text-center">
+        <p v-if="!options?.length" class="text-gray-400 px-3 py-2 text-center">
           Empty result
         </p>
         <div
