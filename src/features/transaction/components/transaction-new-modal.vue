@@ -11,9 +11,11 @@ import { reactive } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
+import { inject } from 'vue';
 
 const emit = defineEmits(['success']);
 
+const emitter = inject('emitter');
 const {
   loading,
   error,
@@ -80,6 +82,7 @@ async function onSubmit() {
     if (res.success) {
       visible.value = false;
 
+      emitter.emit('transaction-created');
       emit('success');
     }
   }
