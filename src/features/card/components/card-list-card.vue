@@ -5,7 +5,7 @@ import CardNewModal from './card-new-modal.vue';
 import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
-import { inject } from 'vue';
+import { inject, onUnmounted } from 'vue';
 
 const emitter = inject('emitter');
 const {
@@ -38,8 +38,14 @@ function onSuccessCreate() {
   loadCards();
 }
 
-emitter.on('transaction-created', () => {
+function onTransactionCreated() {
   loadCards();
+}
+
+emitter.on('transaction-created', onTransactionCreated);
+
+onUnmounted(() => {
+  emitter.off('transaction-created', onTransactionCreated);
 });
 
 loadCards();
