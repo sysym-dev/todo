@@ -32,7 +32,10 @@ const params = reactive({
 });
 const dateFilter = computed(() => {
   if (!params.date) {
-    return {};
+    return {
+      from_date: parseDate().startOf('month').toISOString(),
+      to_date: parseDate().endOf('month').toISOString(),
+    };
   }
 
   const date = parseDate(params.date);
