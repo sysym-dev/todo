@@ -3,6 +3,10 @@ import { computed } from 'vue';
 import BaseSpinner from './base-spinner.vue';
 
 const props = defineProps({
+  tag: {
+    type: String,
+    default: 'button',
+  },
   size: {
     type: String,
     default: 'md',
@@ -16,6 +20,7 @@ const props = defineProps({
     default: 'button',
   },
   loading: Boolean,
+  to: null,
 });
 const emit = defineEmits(['click']);
 
@@ -40,7 +45,9 @@ function onClick() {
 </script>
 
 <template>
-  <button
+  <component
+    :to="to"
+    :is="tag"
     :type="type"
     :class="['inline-flex items-center font-bold gap-x-2', size, color]"
     :disabled="loading"
@@ -48,5 +55,5 @@ function onClick() {
   >
     <base-spinner color="blue-light" v-if="loading" />
     <slot />
-  </button>
+  </component>
 </template>
