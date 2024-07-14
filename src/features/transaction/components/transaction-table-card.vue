@@ -3,11 +3,12 @@ import BaseCard from 'src/components/base/base-card.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseTable from 'src/components/base/base-table.vue';
+import BaseInput from 'src/components/base/base-input.vue';
 import TransactionNewModal from './transaction-new-modal.vue';
-import { ref, h, reactive } from 'vue';
+import { ref, h, reactive, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
-import { formatDate } from 'src/utils/date';
+import { formatDate, parseDate } from 'src/utils/date';
 
 const {
   loading,
@@ -26,8 +27,22 @@ const createModalVisible = ref(false);
 const params = reactive({
   page: 1,
   sort: '-id',
-  limit: 2,
+  limit: 10,
+  date: null,
 });
+const dateFilter = computed(() => {
+  if (!params.date) {
+    return {};
+  }
+
+  const date = parseDate(params.date);
+
+  return {
+    from_date: date.startOf('day').toISOString(),
+    to_date: date.endOf('day').toISOString(),
+  };
+});
+
 const columns = [
   {
     key: 'createdAt',
@@ -56,7 +71,12 @@ const columns = [
 
 function loadTransactions() {
   request({
-    params,
+    params: {
+      page: params.page,
+      limit: params.limit,
+      sort: params.sort,
+      ...dateFilter.value,
+    },
   });
 }
 
@@ -64,9 +84,17 @@ function onOpenCreateModal() {
   createModalVisible.value = true;
 }
 function onSuccessCreate() {
+  params.page = 1;
+  params.date = null;
+
   loadTransactions();
 }
 function onChangePage() {
+  loadTransactions();
+}
+function onFilter() {
+  params.page = 1;
+
   loadTransactions();
 }
 
@@ -83,9 +111,17 @@ loadTransactions();
       :error-message="error"
     >
       <template v-if="(requested || !loading) && !error" #action>
-        <base-button size="sm" @click="onOpenCreateModal"
-          >New Transaction</base-button
-        >
+        <div class="gap-x-2 flex items-center">
+          <base-input
+            size="sm"
+            type="date"
+            v-model="params.date"
+            @change="onFilter"
+          />
+          <base-button size="sm" @click="onOpenCreateModal"
+            >New Transaction</base-button
+          >
+        </div>
       </template>
 
       <base-table
