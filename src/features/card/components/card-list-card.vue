@@ -56,7 +56,13 @@ loadCards();
     >
       <template v-if="(requested || !loading) && !error" #action>
         <div class="space-x-2">
-          <base-button size="sm" color="transparent">View All Card</base-button>
+          <base-button
+            size="sm"
+            color="transparent"
+            tag="router-link"
+            :to="{ name: 'card.index' }"
+            >View All Card</base-button
+          >
           <base-button size="sm" @click="onOpenCreateModal"
             >New Card</base-button
           >
