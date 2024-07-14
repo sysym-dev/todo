@@ -57,6 +57,7 @@ loadCards();
       <template v-if="(requested || !loading) && !error" #action>
         <div class="space-x-2">
           <base-button
+            v-if="cards.meta.total > 4"
             size="sm"
             color="transparent"
             tag="router-link"
