@@ -1,7 +1,58 @@
+<script setup>
+import { Apps as DashboardIcon, CreditCard as CardIcon } from '@vicons/tabler';
+import { useRoute } from 'vue-router';
+
+const route = useRoute();
+
+const menus = [
+  {
+    id: 'dashboard',
+    name: 'Dashboard',
+    activeKey: 'home',
+    icon: DashboardIcon,
+    to: {
+      name: 'home',
+    },
+  },
+  {
+    id: 'card',
+    name: 'Cards',
+    activeKey: 'card.index',
+    icon: CardIcon,
+    to: {
+      name: 'card.index',
+    },
+  },
+];
+</script>
+
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col items-center py-16">
-    <div class="space-y-4 max-w-3xl w-full">
-      <slot />
+  <div class="min-h-screen bg-gray-100">
+    <aside class="w-[250px] bg-white h-screen fixed top-0 left-0 p-4 space-y-4">
+      <div class="px-3">
+        <h2 class="font-bold text-lg">Ixpense</h2>
+      </div>
+      <ul class="space-y-1">
+        <li v-for="menu in menus" :key="menu.id">
+          <router-link
+            :to="menu.to"
+            :class="[
+              'flex items-center gap-x-2 rounded-lg px-3 py-2',
+              menu.activeKey === route.name
+                ? 'bg-blue-600 text-white font-bold'
+                : 'hover:bg-blue-50 hover:text-blue-600 hover:font-semibold',
+            ]"
+          >
+            <component :is="menu.icon" class="w-4 h-4" />
+            {{ menu.name }}
+          </router-link>
+        </li>
+      </ul>
+    </aside>
+    <div class="p-8 ml-[250px]">
+      <div class="max-w-5xl mx-auto w-full space-y-4">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
