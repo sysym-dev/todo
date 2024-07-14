@@ -55,7 +55,12 @@ loadCards();
       :error-message="error"
     >
       <template v-if="(requested || !loading) && !error" #action>
-        <base-button size="sm" @click="onOpenCreateModal">New Card</base-button>
+        <div class="space-x-2">
+          <base-button size="sm" color="transparent">View All Card</base-button>
+          <base-button size="sm" @click="onOpenCreateModal"
+            >New Card</base-button
+          >
+        </div>
       </template>
 
       <p v-if="!cards.meta.total" class="text-gray-600">No Cards Exists</p>
