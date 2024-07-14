@@ -3,6 +3,8 @@ import BaseCard from 'src/components/base/base-card.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseTable from 'src/components/base/base-table.vue';
+import BaseDropdown from 'src/components/base/base-dropdown.vue';
+import BaseFormItem from 'src/components/base/base-form-item.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import TransactionNewModal from './transaction-new-modal.vue';
 import { ref, h, reactive, computed } from 'vue';
@@ -30,6 +32,8 @@ const params = reactive({
   limit: 10,
   date: null,
 });
+
+const filterAppliedCount = computed(() => (params.date ? 1 : 0));
 const dateFilter = computed(() => {
   if (!params.date) {
     return {
@@ -100,6 +104,12 @@ function onFilter() {
 
   loadTransactions();
 }
+function onResetFilter() {
+  params.page = 1;
+  params.date = null;
+
+  loadTransactions();
+}
 
 loadTransactions();
 </script>
@@ -115,12 +125,38 @@ loadTransactions();
     >
       <template v-if="(requested || !loading) && !error" #action>
         <div class="gap-x-2 flex items-center">
-          <base-input
-            size="sm"
-            type="date"
-            v-model="params.date"
-            @change="onFilter"
-          />
+          <base-dropdown padless>
+            <template #toggle="{ toggle }">
+              <base-button
+                size="sm"
+                color="transparent-bordered"
+                @click="toggle"
+              >
+                <p>Filter</p>
+                <base-badge v-if="filterAppliedCount" color="blue" size="sm"
+                  >+{{ filterAppliedCount }}</base-badge
+                >
+              </base-button>
+            </template>
+
+            <div class="space-y-2 p-2">
+              <div>
+                <base-form-item label="Date" size="sm">
+                  <base-input
+                    type="date"
+                    size="sm"
+                    v-model="params.date"
+                    @change="onFilter"
+                  />
+                </base-form-item>
+              </div>
+              <div v-if="params.date">
+                <base-button size="sm" fullwidth @click="onResetFilter"
+                  >Reset</base-button
+                >
+              </div>
+            </div>
+          </base-dropdown>
           <base-button size="sm" @click="onOpenCreateModal"
             >New Transaction</base-button
           >

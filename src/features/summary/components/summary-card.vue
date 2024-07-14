@@ -2,7 +2,7 @@
 import BaseCard from 'src/components/base/base-card.vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
-import { inject } from 'vue';
+import { inject, onUnmounted } from 'vue';
 
 const emitter = inject('emitter');
 const { loading, request, data, error } = useRequest('/api/me', {
@@ -14,8 +14,14 @@ const { loading, request, data, error } = useRequest('/api/me', {
   initLoading: true,
 });
 
-emitter.on('transaction-created', () => {
+function onTransactionCreated() {
   request();
+}
+
+emitter.on('transaction-created', onTransactionCreated);
+
+onUnmounted(() => {
+  emitter.off('transaction-created', onTransactionCreated);
 });
 
 request();

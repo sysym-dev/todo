@@ -8,6 +8,10 @@ const props = defineProps({
     type: String,
     default: 'default',
   },
+  size: {
+    type: String,
+    default: 'md',
+  },
   message: String,
 });
 
@@ -17,10 +21,16 @@ const color = computed(() => {
     red: 'text-red-600',
   }[props.color];
 });
+const size = computed(() => {
+  return {
+    md: 'text-base',
+    sm: 'text-sm',
+  }[props.size];
+});
 </script>
 <template>
-  <div class="space-y-2">
-    <label :for="id" :class="[color]">{{ label }}</label>
+  <div :class="[props.size === 'sm' ? 'space-y-1' : 'space-y-2']">
+    <label :for="id" :class="[color, size]">{{ label }}</label>
     <slot />
     <p v-if="message" class="text-red-600">{{ message }}</p>
   </div>
