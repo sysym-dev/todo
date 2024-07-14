@@ -7,6 +7,10 @@ const props = defineProps({
     type: String,
     default: 'text',
   },
+  size: {
+    type: String,
+    default: 'md',
+  },
   color: {
     type: String,
     default: 'default',
@@ -18,6 +22,12 @@ const emit = defineEmits(['focus', 'input-debounce']);
 
 const value = defineModel();
 
+const size = computed(() => {
+  return {
+    md: 'text-base px-3 h-10 rounded-lg',
+    sm: 'text-sm px-2 h-7 rounded-md',
+  }[props.size];
+});
 const color = computed(() => {
   return {
     default:
@@ -42,10 +52,7 @@ function onInput() {
       :type="type"
       :name="id"
       :id="id"
-      :class="[
-        'block w-full border rounded-lg h-10 px-3 focus:outline-0 focus:ring-0',
-        color,
-      ]"
+      :class="['block w-full border focus:outline-0 focus:ring-0', size, color]"
       :placeholder="placeholder"
       v-model="value"
       @focus="onFocus"
