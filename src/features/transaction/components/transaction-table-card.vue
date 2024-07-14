@@ -2,8 +2,9 @@
 import BaseCard from 'src/components/base/base-card.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
 import BaseButton from 'src/components/base/base-button.vue';
+import BaseTable from 'src/components/base/base-table.vue';
 import TransactionNewModal from './transaction-new-modal.vue';
-import { ref } from 'vue';
+import { ref, h, reactive } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
@@ -22,12 +23,40 @@ const {
 });
 
 const createModalVisible = ref(false);
+const params = reactive({
+  page: 1,
+  sort: '-id',
+  limit: 2,
+});
+const columns = [
+  {
+    key: 'createdAt',
+    name: 'Date',
+    value: (item) => formatDate(item.createdAt, 'YYYY/MM/DD'),
+  },
+  {
+    key: 'type',
+    name: 'Type',
+    itemClass: 'capitalize',
+    render: ({ item }) =>
+      h(
+        BaseBadge,
+        { color: item.type === 'income' ? 'green' : 'red' },
+        {
+          default: () => item.type,
+        },
+      ),
+  },
+  {
+    key: 'amount',
+    name: 'Amount',
+    value: (item) => formatCurrency(item.amount),
+  },
+];
 
 function loadTransactions() {
   request({
-    params: {
-      sort: '-id',
-    },
+    params,
   });
 }
 
@@ -35,6 +64,9 @@ function onOpenCreateModal() {
   createModalVisible.value = true;
 }
 function onSuccessCreate() {
+  loadTransactions();
+}
+function onChangePage() {
   loadTransactions();
 }
 
@@ -56,56 +88,13 @@ loadTransactions();
         >
       </template>
 
-      <table class="w-full border rounded-lg border-separate border-spacing-0">
-        <thead>
-          <tr>
-            <th class="text-left border-b text-gray-900 py-2 px-3">Date</th>
-            <th class="text-left border-b text-gray-900 py-2 px-3">Type</th>
-            <th class="text-left border-b text-gray-900 py-2 px-3">Amount</th>
-          </tr>
-        </thead>
-        <tbody v-if="!transactions.meta.total">
-          <tr>
-            <td colspan="3" class="text-gray-600 py-2 px-3">
-              No Transactions Exists
-            </td>
-          </tr>
-        </tbody>
-        <tbody v-else>
-          <tr
-            v-for="(transaction, index) in transactions.data"
-            :key="transaction.id"
-          >
-            <td
-              :class="[
-                'text-gray-900 py-2 px-3',
-                index !== transactions.data.length - 1 ? 'border-b' : '',
-              ]"
-            >
-              {{ formatDate(transaction.createdAt, 'YYYY/MM/DD') }}
-            </td>
-            <td
-              :class="[
-                'text-gray-900 py-2 px-3 capitalize',
-                index !== transactions.data.length - 1 ? 'border-b' : '',
-              ]"
-            >
-              <base-badge
-                :color="transaction.type === 'income' ? 'green' : 'red'"
-                >{{ transaction.type }}</base-badge
-              >
-            </td>
-            <td
-              :class="[
-                'text-gray-900 py-2 px-3',
-                index !== transactions.data.length - 1 ? 'border-b' : '',
-              ]"
-            >
-              {{ formatCurrency(transaction.amount) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <base-table
+        :columns="columns"
+        :meta="transactions.meta"
+        :data="transactions.data"
+        v-model:page="params.page"
+        @change-page="onChangePage"
+      />
     </base-card>
 
     <transaction-new-modal
