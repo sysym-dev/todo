@@ -12,6 +12,10 @@ import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate, parseDate } from 'src/utils/date';
 
+const props = defineProps({
+  defaultDateRange: Object,
+});
+
 const {
   loading,
   request,
@@ -36,10 +40,7 @@ const params = reactive({
 const filterAppliedCount = computed(() => (params.date ? 1 : 0));
 const dateFilter = computed(() => {
   if (!params.date) {
-    return {
-      from_date: parseDate().startOf('month').toISOString(),
-      to_date: parseDate().endOf('month').toISOString(),
-    };
+    return props.defaultDateRange;
   }
 
   const date = parseDate(params.date);

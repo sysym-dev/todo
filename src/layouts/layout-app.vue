@@ -1,5 +1,9 @@
 <script setup>
-import { Apps as DashboardIcon, CreditCard as CardIcon } from '@vicons/tabler';
+import {
+  Apps as DashboardIcon,
+  CreditCard as CardIcon,
+  Calculator as TransactionIcon,
+} from '@vicons/tabler';
 import { useRoute } from 'vue-router';
 
 const route = useRoute();
@@ -21,6 +25,15 @@ const menus = [
     icon: CardIcon,
     to: {
       name: 'card.index',
+    },
+  },
+  {
+    id: 'transaction',
+    name: 'Transactions',
+    activeKey: 'transaction.index',
+    icon: TransactionIcon,
+    to: {
+      name: 'transaction.index',
     },
   },
 ];
