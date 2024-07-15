@@ -17,6 +17,7 @@ const props = defineProps({
   },
   id: String,
   placeholder: String,
+  textarea: Boolean,
 });
 const emit = defineEmits(['focus', 'input-debounce']);
 
@@ -24,7 +25,7 @@ const value = defineModel();
 
 const size = computed(() => {
   return {
-    md: 'text-base px-3 h-10 rounded-lg',
+    md: ['text-base px-3 rounded-lg', props.textarea ? 'min-h-10' : 'h-10'],
     sm: 'text-sm px-2 h-7 rounded-md',
   }[props.size];
 });
@@ -48,7 +49,19 @@ function onInput() {
 
 <template>
   <div class="relative">
+    <textarea
+      v-if="textarea"
+      rows="3"
+      :name="id"
+      :id="id"
+      :class="['block w-full border focus:outline-0 focus:ring-0', size, color]"
+      :placeholder="placeholder"
+      v-model="value"
+      @focus="onFocus"
+      @input="onInput"
+    ></textarea>
     <input
+      v-else
       :type="type"
       :name="id"
       :id="id"
