@@ -6,6 +6,7 @@ import BaseInput from 'src/components/base/base-input.vue';
 import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
+import TransactionCategorySelectSearch from 'src/features/transaction-category/components/transaction-category-select-search.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { reactive } from 'vue';
 import { useRequest } from 'src/cores/request/request';
@@ -152,6 +153,14 @@ async function onSubmit() {
             :color="hasError('amount') ? 'red' : 'default'"
             v-model="form.amount"
           />
+        </base-form-item>
+
+        <base-form-item
+          label="Category"
+          :color="hasError('category') ? 'red' : 'default'"
+          :message="getError('category')"
+        >
+          <transaction-category-select-search />
         </base-form-item>
 
         <base-form-item
