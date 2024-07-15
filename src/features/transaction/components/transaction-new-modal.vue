@@ -45,6 +45,12 @@ const {
         required_error: 'amount is required',
       })
       .positive({ message: 'amount must be positive' }),
+    description: z
+      .string({
+        invalid_type_error: 'description must be a string',
+      })
+      .nullable()
+      .optional(),
   }),
 );
 
@@ -52,6 +58,7 @@ const form = reactive({
   type: 'income',
   card: null,
   amount: null,
+  description: null,
 });
 const visible = defineModel();
 
@@ -65,12 +72,14 @@ function onOpened() {
   form.type = 'income';
   form.card = null;
   form.amount = null;
+  form.description = null;
 }
 async function onSubmit() {
   const validation = await validate({
     type: form.type,
     card_id: form.card ? form.card.id : null,
     amount: form.amount,
+    description: form.description,
   });
 
   if (validation.success) {
@@ -146,6 +155,20 @@ async function onSubmit() {
             placeholder="Amount"
             :color="hasError('amount') ? 'red' : 'default'"
             v-model="form.amount"
+          />
+        </base-form-item>
+
+        <base-form-item
+          label="Description"
+          :color="hasError('description') ? 'red' : 'default'"
+          :message="getError('description')"
+        >
+          <base-input
+            textarea
+            id="description"
+            placeholder="Description"
+            :color="hasError('description') ? 'red' : 'default'"
+            v-model="form.description"
           />
         </base-form-item>
 
