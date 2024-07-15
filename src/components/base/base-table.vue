@@ -11,13 +11,17 @@ defineProps({
     }),
   },
   data: Array,
+  clickable: Boolean,
 });
-const emit = defineEmits(['change-page']);
+const emit = defineEmits(['change-page', 'click-row']);
 
 const page = defineModel('page');
 
 function onChangePage() {
   emit('change-page');
+}
+function onClickRow(item) {
+  emit('click-row', item);
 }
 </script>
 
@@ -43,7 +47,12 @@ function onChangePage() {
         </tr>
       </tbody>
       <tbody v-else>
-        <tr v-for="(item, index) in data" :key="item.id">
+        <tr
+          v-for="(item, index) in data"
+          :key="item.id"
+          :class="[clickable ? 'cursor-pointer hover:bg-gray-50' : '']"
+          @click="onClickRow(item)"
+        >
           <td
             v-for="column in columns"
             :key="column.key"

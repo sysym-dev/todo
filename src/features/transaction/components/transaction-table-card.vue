@@ -30,6 +30,10 @@ const {
 });
 
 const createModalVisible = ref(false);
+const detailModal = reactive({
+  transactionId: null,
+  visible: false,
+});
 const params = reactive({
   page: 1,
   sort: '-id',
@@ -111,6 +115,10 @@ function onResetFilter() {
 
   loadTransactions();
 }
+function onOpenDetailModal(transaction) {
+  detailModal.transactionId = transaction.id;
+  detailModal.visible = true;
+}
 
 loadTransactions();
 </script>
@@ -168,8 +176,10 @@ loadTransactions();
         :columns="columns"
         :meta="transactions.meta"
         :data="transactions.data"
+        clickable
         v-model:page="params.page"
         @change-page="onChangePage"
+        @click-row="onOpenDetailModal"
       />
     </base-card>
 
