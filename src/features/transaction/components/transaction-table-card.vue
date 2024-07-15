@@ -7,6 +7,8 @@ import BaseDropdown from 'src/components/base/base-dropdown.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import TransactionNewModal from './transaction-new-modal.vue';
+import TransactionDetailModal from './transaction-detail-modal.vue';
+import TransactionTypeBadge from './transaction-type-badge.vue';
 import { ref, h, reactive, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
@@ -64,15 +66,7 @@ const columns = [
   {
     key: 'type',
     name: 'Type',
-    itemClass: 'capitalize',
-    render: ({ item }) =>
-      h(
-        BaseBadge,
-        { color: item.type === 'income' ? 'green' : 'red' },
-        {
-          default: () => item.type,
-        },
-      ),
+    render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
   },
   {
     key: 'amount',
@@ -186,6 +180,10 @@ loadTransactions();
     <transaction-new-modal
       v-model="createModalVisible"
       @success="onSuccessCreate"
+    />
+    <transaction-detail-modal
+      :transaction-id="detailModal.transactionId"
+      v-model="detailModal.visible"
     />
   </div>
 </template>
