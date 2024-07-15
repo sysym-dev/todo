@@ -62,7 +62,7 @@ const form = reactive({
 });
 const visible = defineModel();
 
-function onCloseCreateTransactionModal() {
+function onClose() {
   visible.value = false;
 }
 function onOpened() {
@@ -107,11 +107,7 @@ async function onSubmit() {
       :error-block="false"
     >
       <template #action>
-        <base-button
-          size="square"
-          color="transparent"
-          @click="onCloseCreateTransactionModal"
-        >
+        <base-button size="square" color="transparent" @click="onClose">
           <close-icon class="w-4 h-4" />
         </base-button>
       </template>
@@ -174,10 +170,7 @@ async function onSubmit() {
 
         <div class="space-x-2">
           <base-button type="submit" :loading="loading"> Save </base-button>
-          <base-button
-            color="transparent"
-            @click="onCloseCreateTransactionModal"
-          >
+          <base-button color="transparent" @click="onClose">
             Cancel
           </base-button>
         </div>
