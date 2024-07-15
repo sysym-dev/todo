@@ -7,10 +7,16 @@ import BaseDropdown from 'src/components/base/base-dropdown.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import TransactionNewModal from './transaction-new-modal.vue';
+import TransactionDetailModal from './transaction-detail-modal.vue';
+import TransactionTypeBadge from './transaction-type-badge.vue';
 import { ref, h, reactive, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate, parseDate } from 'src/utils/date';
+
+const props = defineProps({
+  defaultDateRange: Object,
+});
 
 const {
   loading,
@@ -26,6 +32,10 @@ const {
 });
 
 const createModalVisible = ref(false);
+const detailModal = reactive({
+  transactionId: null,
+  visible: false,
+});
 const params = reactive({
   page: 1,
   sort: '-id',
@@ -36,10 +46,7 @@ const params = reactive({
 const filterAppliedCount = computed(() => (params.date ? 1 : 0));
 const dateFilter = computed(() => {
   if (!params.date) {
-    return {
-      from_date: parseDate().startOf('month').toISOString(),
-      to_date: parseDate().endOf('month').toISOString(),
-    };
+    return props.defaultDateRange;
   }
 
   const date = parseDate(params.date);
@@ -59,15 +66,7 @@ const columns = [
   {
     key: 'type',
     name: 'Type',
-    itemClass: 'capitalize',
-    render: ({ item }) =>
-      h(
-        BaseBadge,
-        { color: item.type === 'income' ? 'green' : 'red' },
-        {
-          default: () => item.type,
-        },
-      ),
+    render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
   },
   {
     key: 'amount',
@@ -109,6 +108,10 @@ function onResetFilter() {
   params.date = null;
 
   loadTransactions();
+}
+function onOpenDetailModal(transaction) {
+  detailModal.transactionId = transaction.id;
+  detailModal.visible = true;
 }
 
 loadTransactions();
@@ -167,14 +170,20 @@ loadTransactions();
         :columns="columns"
         :meta="transactions.meta"
         :data="transactions.data"
+        clickable
         v-model:page="params.page"
         @change-page="onChangePage"
+        @click-row="onOpenDetailModal"
       />
     </base-card>
 
     <transaction-new-modal
       v-model="createModalVisible"
       @success="onSuccessCreate"
+    />
+    <transaction-detail-modal
+      :transaction-id="detailModal.transactionId"
+      v-model="detailModal.visible"
     />
   </div>
 </template>

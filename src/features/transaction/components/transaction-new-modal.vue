@@ -45,6 +45,12 @@ const {
         required_error: 'amount is required',
       })
       .positive({ message: 'amount must be positive' }),
+    description: z
+      .string({
+        invalid_type_error: 'description must be a string',
+      })
+      .nullable()
+      .optional(),
   }),
 );
 
@@ -52,10 +58,11 @@ const form = reactive({
   type: 'income',
   card: null,
   amount: null,
+  description: null,
 });
 const visible = defineModel();
 
-function onCloseCreateTransactionModal() {
+function onClose() {
   visible.value = false;
 }
 function onOpened() {
@@ -65,12 +72,14 @@ function onOpened() {
   form.type = 'income';
   form.card = null;
   form.amount = null;
+  form.description = null;
 }
 async function onSubmit() {
   const validation = await validate({
     type: form.type,
     card_id: form.card ? form.card.id : null,
     amount: form.amount,
+    description: form.description,
   });
 
   if (validation.success) {
@@ -98,11 +107,7 @@ async function onSubmit() {
       :error-block="false"
     >
       <template #action>
-        <base-button
-          size="square"
-          color="transparent"
-          @click="onCloseCreateTransactionModal"
-        >
+        <base-button size="square" color="transparent" @click="onClose">
           <close-icon class="w-4 h-4" />
         </base-button>
       </template>
@@ -149,12 +154,23 @@ async function onSubmit() {
           />
         </base-form-item>
 
+        <base-form-item
+          label="Description"
+          :color="hasError('description') ? 'red' : 'default'"
+          :message="getError('description')"
+        >
+          <base-input
+            textarea
+            id="description"
+            placeholder="Description"
+            :color="hasError('description') ? 'red' : 'default'"
+            v-model="form.description"
+          />
+        </base-form-item>
+
         <div class="space-x-2">
           <base-button type="submit" :loading="loading"> Save </base-button>
-          <base-button
-            color="transparent"
-            @click="onCloseCreateTransactionModal"
-          >
+          <base-button color="transparent" @click="onClose">
             Cancel
           </base-button>
         </div>
