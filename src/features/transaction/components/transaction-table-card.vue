@@ -64,6 +64,17 @@ const columns = [
     value: (item) => formatDate(item.createdAt, 'YYYY/MM/DD'),
   },
   {
+    key: 'card',
+    name: 'Card',
+    value: (item) => item.card.name,
+  },
+  {
+    key: 'category',
+    name: 'Category',
+    value: (item) =>
+      item.transactionCategory ? item.transactionCategory.name : '-',
+  },
+  {
     key: 'type',
     name: 'Type',
     render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
@@ -81,6 +92,7 @@ function loadTransactions() {
       page: params.page,
       limit: params.limit,
       sort: params.sort,
+      include: ['card', 'transaction_category'],
       ...dateFilter.value,
     },
   });
