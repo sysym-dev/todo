@@ -40,6 +40,14 @@ const {
         required_error: 'card is required',
       })
       .positive({ message: 'card is required' }),
+    trasnaction_category_id: z
+      .number({
+        invalid_type_error: 'card is required',
+        required_error: 'card is required',
+      })
+      .positive({ message: 'card is required' })
+      .optional()
+      .nullable(),
     amount: z
       .number({
         invalid_type_error: 'amount must be a number',
@@ -60,6 +68,7 @@ const form = reactive({
   card: null,
   amount: null,
   description: null,
+  category: null,
 });
 const visible = defineModel();
 
@@ -74,11 +83,13 @@ function onOpened() {
   form.card = null;
   form.amount = null;
   form.description = null;
+  form.category = null;
 }
 async function onSubmit() {
   const validation = await validate({
     type: form.type,
     card_id: form.card ? form.card.id : null,
+    trasnaction_category_id: form.category ? form.category.id : null,
     amount: form.amount,
     description: form.description,
   });
@@ -157,10 +168,13 @@ async function onSubmit() {
 
         <base-form-item
           label="Category"
-          :color="hasError('category') ? 'red' : 'default'"
-          :message="getError('category')"
+          :color="hasError('transaction_category_id') ? 'red' : 'default'"
+          :message="getError('transaction_category_id')"
         >
-          <transaction-category-select-search />
+          <transaction-category-select-search
+            :color="hasError('transaction_category_id') ? 'red' : 'default'"
+            v-model="form.category"
+          />
         </base-form-item>
 
         <base-form-item
