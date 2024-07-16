@@ -40,7 +40,7 @@ const {
         required_error: 'card is required',
       })
       .positive({ message: 'card is required' }),
-    trasnaction_category_id: z
+    transaction_category_id: z
       .number({
         invalid_type_error: 'card is required',
         required_error: 'card is required',
@@ -89,7 +89,7 @@ async function onSubmit() {
   const validation = await validate({
     type: form.type,
     card_id: form.card ? form.card.id : null,
-    trasnaction_category_id: form.category ? form.category.id : null,
+    transaction_category_id: form.category ? form.category.id : null,
     amount: form.amount,
     description: form.description,
   });

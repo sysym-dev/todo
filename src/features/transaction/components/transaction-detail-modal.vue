@@ -42,6 +42,12 @@ const columns = [
     name: 'Amount',
     value: (item) => formatCurrency(item.amount),
   },
+  {
+    id: 'description',
+    name: 'Description',
+    class: 'col-span-2',
+    value: (item) => item.description ?? '-',
+  },
 ];
 
 function onClose() {
