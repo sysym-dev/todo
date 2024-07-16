@@ -125,7 +125,10 @@ setSearchValue();
       >
         <p v-if="!options?.length" class="text-gray-400 px-3 py-2 text-center">
           Empty result
-          <base-link v-if="withCreate" href="#" @click="onCreate"
+          <base-link
+            v-if="withCreate && search !== ''"
+            href="#"
+            @click="onCreate"
             >Create "{{ search }}"</base-link
           >
         </p>
