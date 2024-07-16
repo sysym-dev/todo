@@ -42,6 +42,23 @@ const columns = [
     name: 'Amount',
     value: (item) => formatCurrency(item.amount),
   },
+  {
+    key: 'card',
+    name: 'Card',
+    value: (item) => item.card.name,
+  },
+  {
+    key: 'category',
+    name: 'Category',
+    value: (item) =>
+      item.transactionCategory ? item.transactionCategory.name : '-',
+  },
+  {
+    id: 'description',
+    name: 'Description',
+    class: 'col-span-2',
+    value: (item) => item.description ?? '-',
+  },
 ];
 
 function onClose() {
@@ -50,6 +67,9 @@ function onClose() {
 function onOpened() {
   request({
     url: `/api/transactions/${props.transactionId}`,
+    params: {
+      include: ['card', 'transaction_category'],
+    },
   });
 }
 </script>
