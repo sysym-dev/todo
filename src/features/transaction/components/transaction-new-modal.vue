@@ -6,6 +6,7 @@ import BaseInput from 'src/components/base/base-input.vue';
 import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
+import TransactionCategorySelectSearch from 'src/features/transaction-category/components/transaction-category-select-search.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { reactive } from 'vue';
 import { useRequest } from 'src/cores/request/request';
@@ -39,6 +40,14 @@ const {
         required_error: 'card is required',
       })
       .positive({ message: 'card is required' }),
+    trasnaction_category_id: z
+      .number({
+        invalid_type_error: 'card is required',
+        required_error: 'card is required',
+      })
+      .positive({ message: 'card is required' })
+      .optional()
+      .nullable(),
     amount: z
       .number({
         invalid_type_error: 'amount must be a number',
@@ -59,6 +68,7 @@ const form = reactive({
   card: null,
   amount: null,
   description: null,
+  category: null,
 });
 const visible = defineModel();
 
@@ -73,11 +83,13 @@ function onOpened() {
   form.card = null;
   form.amount = null;
   form.description = null;
+  form.category = null;
 }
 async function onSubmit() {
   const validation = await validate({
     type: form.type,
     card_id: form.card ? form.card.id : null,
+    trasnaction_category_id: form.category ? form.category.id : null,
     amount: form.amount,
     description: form.description,
   });
@@ -151,6 +163,17 @@ async function onSubmit() {
             placeholder="Amount"
             :color="hasError('amount') ? 'red' : 'default'"
             v-model="form.amount"
+          />
+        </base-form-item>
+
+        <base-form-item
+          label="Category"
+          :color="hasError('transaction_category_id') ? 'red' : 'default'"
+          :message="getError('transaction_category_id')"
+        >
+          <transaction-category-select-search
+            :color="hasError('transaction_category_id') ? 'red' : 'default'"
+            v-model="form.category"
           />
         </base-form-item>
 

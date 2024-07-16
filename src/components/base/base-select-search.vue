@@ -2,6 +2,7 @@
 import BaseInput from './base-input.vue';
 import BaseButton from './base-button.vue';
 import BaseSpinner from './base-spinner.vue';
+import BaseLink from './base-link.vue';
 import {
   ChevronDown as ShowIcon,
   ChevronUp as HideIcon,
@@ -17,10 +18,11 @@ defineProps({
     type: String,
     default: 'default',
   },
+  withCreate: Boolean,
 });
-const emit = defineEmits(['focused', 'search', 'end-scroll']);
+const emit = defineEmits(['focused', 'search', 'end-scroll', 'create']);
 
-const visible = ref(false);
+const visible = defineModel('visible');
 const selected = defineModel();
 const search = defineModel('search');
 
@@ -55,6 +57,9 @@ function onScroll(e) {
   if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
     emit('end-scroll');
   }
+}
+function onCreate() {
+  emit('create', search.value);
 }
 
 watch(selected, () => {
@@ -115,11 +120,14 @@ setSearchValue();
     >
       <div
         v-if="visible"
-        class="z-10 absolute w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1 max-h-[200px] overflow-y-auto"
+        class="z-10 absolute w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1 max-h-[150px] overflow-y-auto"
         @scroll="onScroll"
       >
         <p v-if="!options?.length" class="text-gray-400 px-3 py-2 text-center">
           Empty result
+          <base-link v-if="withCreate" href="#" @click="onCreate"
+            >Create "{{ search }}"</base-link
+          >
         </p>
         <div
           v-for="option in options"
