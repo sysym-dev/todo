@@ -30,7 +30,10 @@ const size = computed(() => {
 </script>
 <template>
   <div :class="[props.size === 'sm' ? 'space-y-1' : 'space-y-2']">
-    <label :for="id" :class="[color, size]">{{ label }}</label>
+    <div class="flex items-center justify-between">
+      <label :for="id" :class="[color, size]">{{ label }}</label>
+      <slot name="label-append" />
+    </div>
     <slot />
     <p v-if="message" class="text-red-600">{{ message }}</p>
   </div>
