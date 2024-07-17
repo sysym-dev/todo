@@ -18,6 +18,7 @@ const props = defineProps({
   id: String,
   placeholder: String,
   textarea: Boolean,
+  disabled: Boolean,
 });
 const emit = defineEmits(['focus', 'input-debounce']);
 
@@ -54,7 +55,12 @@ function onInput() {
       rows="3"
       :name="id"
       :id="id"
-      :class="['block w-full border focus:outline-0 focus:ring-0', size, color]"
+      :disabled="disabled"
+      :class="[
+        'disabled:bg-gray-50 block w-full border focus:outline-0 focus:ring-0',
+        size,
+        color,
+      ]"
       :placeholder="placeholder"
       v-model="value"
       @focus="onFocus"
@@ -65,7 +71,12 @@ function onInput() {
       :type="type"
       :name="id"
       :id="id"
-      :class="['block w-full border focus:outline-0 focus:ring-0', size, color]"
+      :disabled="disabled"
+      :class="[
+        'disabled:bg-gray-50 block w-full border focus:outline-0 focus:ring-0',
+        size,
+        color,
+      ]"
       :placeholder="placeholder"
       v-model="value"
       @focus="onFocus"
