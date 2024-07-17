@@ -14,6 +14,7 @@ import { reactive, ref, inject, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
+import { formatCurrency } from 'src/utils/number';
 
 const emit = defineEmits(['success']);
 
@@ -76,9 +77,15 @@ const form = reactive({
 const itemsFormModalVisible = ref(false);
 
 const visible = defineModel();
-const totalAmount = computed(
-  () =>
-    form.items.reduce((total, item) => total + item.amount, 0) + form.amount,
+const itemAmount = computed(() =>
+  form.items.reduce((total, item) => total + item.amount, 0),
+);
+const totalAmount = computed(() =>
+  formatCurrency(itemAmount.value + form.amount),
+);
+
+const itemsDescription = computed(
+  () => `${form.items.length} items (${formatCurrency(itemAmount.value)})`,
 );
 
 function onClose() {
@@ -187,6 +194,19 @@ function onItemsSaved(value) {
         </base-form-item>
 
         <base-form-item
+          label="Description"
+          :color="hasError('description') ? 'red' : 'default'"
+          :message="getError('description')"
+        >
+          <base-input
+            id="description"
+            placeholder="Description"
+            :color="hasError('description') ? 'red' : 'default'"
+            v-model="form.description"
+          />
+        </base-form-item>
+
+        <base-form-item
           label="Amount"
           :color="hasError('amount') ? 'red' : 'default'"
           :message="getError('amount')"
@@ -200,31 +220,32 @@ function onItemsSaved(value) {
           />
         </base-form-item>
 
-        <base-form-item
-          label="Description"
-          :color="hasError('description') ? 'red' : 'default'"
-          :message="getError('description')"
-        >
-          <base-input
-            textarea
-            id="description"
-            placeholder="Description"
-            :color="hasError('description') ? 'red' : 'default'"
-            v-model="form.description"
-          />
-        </base-form-item>
+        <template v-if="form.items.length">
+          <base-form-item label="Items">
+            <template #label-append>
+              <base-link href="#" @click="onOpenItemsFormModal">
+                Add Items
+              </base-link>
+            </template>
+            <base-input
+              id="items"
+              placeholder="Items"
+              disabled
+              v-model="itemsDescription"
+            />
+          </base-form-item>
 
-        <base-form-item label="Total Amount">
-          <base-input
-            type="number"
-            id="total_amount"
-            placeholder="Total Amount"
-            disabled
-            v-model="totalAmount"
-          />
-        </base-form-item>
+          <base-form-item label="Total Amount">
+            <base-input
+              id="total_amount"
+              placeholder="Total Amount"
+              disabled
+              v-model="totalAmount"
+            />
+          </base-form-item>
+        </template>
 
-        <div>
+        <div v-if="!form.items.length">
           <base-link href="#" @click="onOpenItemsFormModal">
             + Add Items
           </base-link>
