@@ -3,12 +3,14 @@ import BaseCard from 'src/components/base/base-card.vue';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseModal from 'src/components/base/base-modal.vue';
 import BaseInput from 'src/components/base/base-input.vue';
+import BaseLink from 'src/components/base/base-link.vue';
 import BaseSelect from 'src/components/base/base-select.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
 import TransactionCategorySelectSearch from 'src/features/transaction-category/components/transaction-category-select-search.vue';
+import TransactionItemsFormModal from './transaction-items-form-modal.vue';
 import { X as CloseIcon } from '@vicons/tabler';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
@@ -60,6 +62,7 @@ const {
       })
       .nullable()
       .optional(),
+    items: z.any().array().nullable().optional(),
   }),
 );
 
@@ -69,7 +72,9 @@ const form = reactive({
   amount: null,
   description: null,
   category: null,
+  items: null,
 });
+const itemsFormModalVisible = ref(false);
 const visible = defineModel();
 
 function onClose() {
@@ -84,6 +89,7 @@ function onOpened() {
   form.amount = null;
   form.description = null;
   form.category = null;
+  form.items = null;
 }
 async function onSubmit() {
   const validation = await validate({
@@ -92,6 +98,13 @@ async function onSubmit() {
     transaction_category_id: form.category ? form.category.id : null,
     amount: form.amount,
     description: form.description,
+    items: form.items
+      ? form.items.map((item) => ({
+          transaction_category_id: item.category ? item.category.id : null,
+          amount: item.amount,
+          description: item.description,
+        }))
+      : null,
   });
 
   if (validation.success) {
@@ -107,6 +120,12 @@ async function onSubmit() {
       emit('success');
     }
   }
+}
+function onOpenItemsFormModal() {
+  itemsFormModalVisible.value = true;
+}
+function onItemsSaved(value) {
+  form.items = value;
 }
 </script>
 
@@ -153,6 +172,17 @@ async function onSubmit() {
         </base-form-item>
 
         <base-form-item
+          label="Category"
+          :color="hasError('transaction_category_id') ? 'red' : 'default'"
+          :message="getError('transaction_category_id')"
+        >
+          <transaction-category-select-search
+            :color="hasError('transaction_category_id') ? 'red' : 'default'"
+            v-model="form.category"
+          />
+        </base-form-item>
+
+        <base-form-item
           label="Amount"
           :color="hasError('amount') ? 'red' : 'default'"
           :message="getError('amount')"
@@ -163,17 +193,6 @@ async function onSubmit() {
             placeholder="Amount"
             :color="hasError('amount') ? 'red' : 'default'"
             v-model="form.amount"
-          />
-        </base-form-item>
-
-        <base-form-item
-          label="Category"
-          :color="hasError('transaction_category_id') ? 'red' : 'default'"
-          :message="getError('transaction_category_id')"
-        >
-          <transaction-category-select-search
-            :color="hasError('transaction_category_id') ? 'red' : 'default'"
-            v-model="form.category"
           />
         </base-form-item>
 
@@ -191,6 +210,12 @@ async function onSubmit() {
           />
         </base-form-item>
 
+        <div>
+          <base-link href="#" @click="onOpenItemsFormModal">
+            + Add Items
+          </base-link>
+        </div>
+
         <div class="space-x-2">
           <base-button type="submit" :loading="loading"> Save </base-button>
           <base-button color="transparent" @click="onClose">
@@ -199,5 +224,11 @@ async function onSubmit() {
         </div>
       </form>
     </base-card>
+
+    <transaction-items-form-modal
+      :items="form.items"
+      v-model="itemsFormModalVisible"
+      @saved="onItemsSaved"
+    />
   </base-modal>
 </template>
