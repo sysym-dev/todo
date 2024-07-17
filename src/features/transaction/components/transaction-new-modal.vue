@@ -10,11 +10,10 @@ import CardSelectSearch from 'src/features/card/components/card-select-search.vu
 import TransactionCategorySelectSearch from 'src/features/transaction-category/components/transaction-category-select-search.vue';
 import TransactionItemsFormModal from './transaction-items-form-modal.vue';
 import { X as CloseIcon } from '@vicons/tabler';
-import { reactive, ref } from 'vue';
+import { reactive, ref, inject, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
-import { inject } from 'vue';
 
 const emit = defineEmits(['success']);
 
@@ -72,10 +71,15 @@ const form = reactive({
   amount: null,
   description: null,
   category: null,
-  items: null,
+  items: [],
 });
 const itemsFormModalVisible = ref(false);
+
 const visible = defineModel();
+const totalAmount = computed(
+  () =>
+    form.items.reduce((total, item) => total + item.amount, 0) + form.amount,
+);
 
 function onClose() {
   visible.value = false;
@@ -89,7 +93,7 @@ function onOpened() {
   form.amount = null;
   form.description = null;
   form.category = null;
-  form.items = null;
+  form.items = [];
 }
 async function onSubmit() {
   const validation = await validate({
@@ -207,6 +211,16 @@ function onItemsSaved(value) {
             placeholder="Description"
             :color="hasError('description') ? 'red' : 'default'"
             v-model="form.description"
+          />
+        </base-form-item>
+
+        <base-form-item label="Total Amount">
+          <base-input
+            type="number"
+            id="total_amount"
+            placeholder="Total Amount"
+            disabled
+            v-model="totalAmount"
           />
         </base-form-item>
 
