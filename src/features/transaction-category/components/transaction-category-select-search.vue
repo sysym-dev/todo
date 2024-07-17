@@ -21,7 +21,7 @@ const visible = ref(false);
 const loading = computed(() => loadingFetch.value || loadingCreate.value);
 const params = reactive({
   limit: 10,
-  search: null,
+  search: selected.value ? selected.value.name : null,
 });
 
 function loadTransactionCategories() {
