@@ -1,8 +1,24 @@
 <script setup>
-import { watch } from 'vue';
+import { watch, computed } from 'vue';
+
+const props = defineProps({
+  width: {
+    type: String,
+    default: 'md',
+  },
+});
 
 const emit = defineEmits(['opened']);
+
 const visible = defineModel();
+
+const width = computed(() => {
+  return {
+    md: 'max-w-md',
+    '3xl': 'max-w-3xl',
+    '4xl': 'max-w-4xl',
+  }[props.width];
+});
 
 function onClickOutside() {
   visible.value = false;
@@ -21,7 +37,7 @@ watch(visible, (value) => {
 <template>
   <div
     v-if="visible"
-    class="fixed z-10 top-0 left-0 w-full h-screen overflow-y-scroll bg-gray-400 bg-opacity-50 flex justify-center items-start py-16"
+    class="fixed z-10 top-0 left-0 w-full h-screen overflow-y-auto bg-gray-400 bg-opacity-50 flex justify-center items-start py-16"
   >
     <transition
       enter-active-class="duration-300 ease-out"
@@ -32,7 +48,7 @@ watch(visible, (value) => {
       leave-to-class="opacity-0 scale-95"
       appear
     >
-      <div class="max-w-md w-full" v-click-outside="onClickOutside">
+      <div :class="['w-full', width]" v-click-outside="onClickOutside">
         <slot />
       </div>
     </transition>
