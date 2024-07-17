@@ -10,5 +10,10 @@ function onClick() {
 </script>
 
 <template>
-  <a :href="href" class="text-blue-600" @click="onClick"><slot /></a>
+  <a
+    :href="href"
+    class="text-blue-600 inline-flex items-center gap-x-1"
+    @click="onClick"
+    ><slot
+  /></a>
 </template>
