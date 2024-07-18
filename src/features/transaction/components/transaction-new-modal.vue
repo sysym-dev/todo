@@ -147,6 +147,10 @@ function onItemsSaved(value) {
 function onAddInput(key) {
   inputs[key] = true;
 }
+function onRemoveInput(key) {
+  inputs[key] = false;
+  form[key] = null;
+}
 </script>
 
 <template>
@@ -197,6 +201,15 @@ function onAddInput(key) {
           :color="hasError('transaction_category_id') ? 'red' : 'default'"
           :message="getError('transaction_category_id')"
         >
+          <template #label-append>
+            <base-button
+              size="square"
+              color="transparent"
+              @click="onRemoveInput('category')"
+            >
+              <close-icon class="w-4 h-4" />
+            </base-button>
+          </template>
           <transaction-category-select-search
             :color="hasError('transaction_category_id') ? 'red' : 'default'"
             v-model="form.category"
@@ -209,6 +222,15 @@ function onAddInput(key) {
           :color="hasError('description') ? 'red' : 'default'"
           :message="getError('description')"
         >
+          <template #label-append>
+            <base-button
+              size="square"
+              color="transparent"
+              @click="onRemoveInput('description')"
+            >
+              <close-icon class="w-4 h-4" />
+            </base-button>
+          </template>
           <base-input
             id="description"
             placeholder="Description"
