@@ -8,9 +8,9 @@ import {
   ChevronUp as HideIcon,
   X as ClearIcon,
 } from '@vicons/tabler';
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 
-defineProps({
+const props = defineProps({
   placeholder: String,
   options: Array,
   loading: Boolean,
@@ -19,6 +19,7 @@ defineProps({
     default: 'default',
   },
   withCreate: Boolean,
+  optionNameResolve: Function,
 });
 const emit = defineEmits(['focused', 'search', 'end-scroll', 'create']);
 
@@ -27,7 +28,11 @@ const selected = defineModel();
 const search = defineModel('search');
 
 function setSearchValue() {
-  search.value = selected.value ? selected.value.name : null;
+  search.value = selected.value
+    ? props.optionNameResolve
+      ? props.optionNameResolve(selected.value)
+      : selected.value.name
+    : null;
 }
 
 function onFocus() {
@@ -145,7 +150,7 @@ setSearchValue();
           ]"
           @click="onSelect(option)"
         >
-          {{ option.name }}
+          {{ optionNameResolve ? optionNameResolve(option) : option.name }}
         </div>
       </div>
     </transition>
