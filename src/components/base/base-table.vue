@@ -12,10 +12,16 @@ defineProps({
   },
   data: Array,
   clickable: Boolean,
+  withPagination: {
+    type: Boolean,
+    default: true,
+  },
 });
 const emit = defineEmits(['change-page', 'click-row']);
 
 const page = defineModel('page');
+
+const tdClasses = 'text-gray-900 py-2 px-3';
 
 function onChangePage() {
   emit('change-page');
@@ -33,7 +39,10 @@ function onClickRow(item) {
           <th
             v-for="column in columns"
             :key="column.key"
-            class="text-left border-b text-gray-900 py-2 px-3"
+            :class="[
+              'text-left border-b text-gray-900 py-2 px-3',
+              column.thClasses,
+            ]"
           >
             {{ column.name }}
           </th>
@@ -47,32 +56,38 @@ function onClickRow(item) {
         </tr>
       </tbody>
       <tbody v-else>
-        <tr
-          v-for="(item, index) in data"
-          :key="item.id"
-          :class="[clickable ? 'cursor-pointer hover:bg-gray-50' : '']"
-          @click="onClickRow(item)"
-        >
-          <td
-            v-for="column in columns"
-            :key="column.key"
-            :class="[
-              'text-gray-900 py-2 px-3',
-              index !== data.length - 1 ? 'border-b' : '',
-              column.itemClass,
-            ]"
+        <slot name="body" :tdClasses="[tdClasses]">
+          <tr
+            v-for="(item, index) in data"
+            :key="item.id"
+            :class="[clickable ? 'cursor-pointer hover:bg-gray-50' : '']"
+            @click="onClickRow(item)"
           >
-            <component v-if="column.render" :is="column.render" :item="item" />
-            <template v-else>
-              {{ column.value ? column.value(item) : item[column.key] }}
-            </template>
-          </td>
-        </tr>
+            <td
+              v-for="column in columns"
+              :key="column.key"
+              :class="[
+                tdClasses,
+                index !== data.length - 1 ? 'border-b' : '',
+                column.itemClass,
+              ]"
+            >
+              <component
+                v-if="column.render"
+                :is="column.render"
+                :item="item"
+              />
+              <template v-else>
+                {{ column.value ? column.value(item) : item[column.key] }}
+              </template>
+            </td>
+          </tr>
+        </slot>
       </tbody>
     </table>
 
     <base-pagination
-      v-if="meta.lastPage !== 1"
+      v-if="withPagination && meta.lastPage !== 1"
       :meta="meta"
       v-model="page"
       @change="onChangePage"
