@@ -9,7 +9,7 @@ import BaseFormItem from 'src/components/base/base-form-item.vue';
 import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
 import TransactionCategorySelectSearch from 'src/features/transaction-category/components/transaction-category-select-search.vue';
 import TransactionItemsFormModal from './transaction-items-form-modal.vue';
-import { X as CloseIcon } from '@vicons/tabler';
+import { X as CloseIcon, Plus as AddIcon } from '@vicons/tabler';
 import { reactive, ref, inject, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
@@ -74,6 +74,10 @@ const form = reactive({
   category: null,
   items: [],
 });
+const inputs = reactive({
+  category: false,
+  description: false,
+});
 const itemsFormModalVisible = ref(false);
 
 const visible = defineModel();
@@ -83,7 +87,6 @@ const itemAmount = computed(() =>
 const totalAmount = computed(() =>
   formatCurrency(itemAmount.value + form.amount),
 );
-
 const itemsDescription = computed(
   () => `${form.items.length} items (${formatCurrency(itemAmount.value)})`,
 );
@@ -101,6 +104,9 @@ function onOpened() {
   form.description = null;
   form.category = null;
   form.items = [];
+
+  inputs.category = false;
+  inputs.description = false;
 }
 async function onSubmit() {
   const validation = await validate({
@@ -137,6 +143,9 @@ function onOpenItemsFormModal() {
 }
 function onItemsSaved(value) {
   form.items = value;
+}
+function onAddInput(key) {
+  inputs[key] = true;
 }
 </script>
 
@@ -183,6 +192,7 @@ function onItemsSaved(value) {
         </base-form-item>
 
         <base-form-item
+          v-if="inputs.category"
           label="Category"
           :color="hasError('transaction_category_id') ? 'red' : 'default'"
           :message="getError('transaction_category_id')"
@@ -194,6 +204,7 @@ function onItemsSaved(value) {
         </base-form-item>
 
         <base-form-item
+          v-if="inputs.description"
           label="Description"
           :color="hasError('description') ? 'red' : 'default'"
           :message="getError('description')"
@@ -245,10 +256,34 @@ function onItemsSaved(value) {
           </base-form-item>
         </template>
 
-        <div v-if="!form.items.length">
-          <base-link href="#" @click="onOpenItemsFormModal">
-            + Add Items
-          </base-link>
+        <div class="space-x-2">
+          <base-button
+            v-if="!inputs.category"
+            color="transparent-bordered"
+            size="sm"
+            @click="onAddInput('category')"
+          >
+            <add-icon class="w-4 h-4" />
+            Category
+          </base-button>
+          <base-button
+            v-if="!form.items.length"
+            color="transparent-bordered"
+            size="sm"
+            @click="onOpenItemsFormModal"
+          >
+            <add-icon class="w-4 h-4" />
+            Items
+          </base-button>
+          <base-button
+            v-if="!inputs.description"
+            color="transparent-bordered"
+            size="sm"
+            @click="onAddInput('description')"
+          >
+            <add-icon class="w-4 h-4" />
+            Description
+          </base-button>
         </div>
 
         <div class="space-x-2">
