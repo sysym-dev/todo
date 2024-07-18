@@ -18,7 +18,12 @@ const color = computed(() => {
 </script>
 
 <template>
-  <div :class="['flex items-center h-10 px-3 rounded-lg border', color]">
+  <div
+    :class="[
+      'flex items-center min-h-10 px-3 rounded-lg border break-all py-1.5',
+      color,
+    ]"
+  >
     <slot />
   </div>
 </template>
