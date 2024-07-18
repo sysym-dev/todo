@@ -4,11 +4,12 @@ import BaseModal from 'src/components/base/base-modal.vue';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseDescriptionList from 'src/components/base/base-description-list.vue';
 import TransactionTypeBadge from './transaction-type-badge.vue';
+import TransactionItemTable from './transaction-items-table.vue';
 import { X as CloseIcon } from '@vicons/tabler';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
-import { h } from 'vue';
+import { h, computed } from 'vue';
 
 const props = defineProps({
   transactionId: Number,
@@ -26,45 +27,55 @@ const {
 
 const visible = defineModel();
 
-const columns = [
-  {
-    id: 'date',
-    name: 'Date',
-    value: (item) => formatDate(item.createdAt, 'YYYY/MM/DD'),
-  },
-  {
-    id: 'type',
-    name: 'Type',
-    render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
-  },
-  {
-    key: 'card',
-    name: 'Card',
-    value: (item) => item.card.name,
-  },
-  {
-    key: 'category',
-    name: 'Category',
-    value: (item) =>
-      item.transactionCategory ? item.transactionCategory.name : '-',
-  },
-  {
-    id: 'amount',
-    name: 'Amount',
-    value: (item) => formatCurrency(item.amount),
-  },
-  {
-    id: 'totalAmount',
-    name: 'Total Amount',
-    value: (item) => formatCurrency(item.totalAmount),
-  },
-  {
-    id: 'description',
-    name: 'Description',
-    class: 'col-span-2',
-    value: (item) => item.description ?? '-',
-  },
-];
+const withItems = computed(
+  () => transaction.value.items && transaction.value.items.length,
+);
+const columns = computed(() => {
+  return [
+    {
+      id: 'date',
+      name: 'Date',
+      value: (item) => formatDate(item.createdAt, 'YYYY/MM/DD'),
+    },
+    {
+      id: 'type',
+      name: 'Type',
+      render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
+    },
+    {
+      key: 'card',
+      name: 'Card',
+      value: (item) => item.card.name,
+    },
+    {
+      key: 'category',
+      name: 'Category',
+      value: (item) =>
+        item.transactionCategory ? item.transactionCategory.name : '-',
+    },
+    !withItems.value
+      ? {
+          id: 'totalAmount',
+          name: 'Amount',
+          value: (item) => formatCurrency(item.totalAmount),
+        }
+      : null,
+    {
+      id: 'description',
+      name: 'Description',
+      value: (item) => item.description ?? '-',
+      class: 'col-span-2',
+    },
+    withItems.value
+      ? {
+          id: 'items',
+          name: 'Item',
+          class: 'col-span-2 space-y-1',
+          render: ({ item }) => h(TransactionItemTable, { items: item.items }),
+        }
+      : null,
+  ].filter((item) => !!item);
+});
 
 function onClose() {
   visible.value = false;
@@ -73,7 +84,7 @@ function onOpened() {
   request({
     url: `/api/transactions/${props.transactionId}`,
     params: {
-      include: ['card', 'transaction_category'],
+      include: ['card', 'transaction_category', 'items'],
     },
   });
 }
@@ -95,6 +106,20 @@ function onOpened() {
       </template>
 
       <base-description-list :columns="columns" :data="transaction" />
+      <div v-if="withItems" class="grid grid-cols-2 gap-x-4">
+        <p>Total Items Amount</p>
+        <p class="text-right font-bold">
+          {{ formatCurrency(transaction.totalAmount - transaction.amount) }}
+        </p>
+        <p>Amount</p>
+        <p class="text-right font-bold">
+          {{ formatCurrency(transaction.amount) }}
+        </p>
+        <p>Total Amount</p>
+        <p class="text-right font-bold">
+          {{ formatCurrency(transaction.totalAmount) }}
+        </p>
+      </div>
     </base-card>
   </base-modal>
 </template>
