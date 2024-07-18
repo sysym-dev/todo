@@ -2,6 +2,7 @@
 import BaseSelectSearch from 'src/components/base/base-select-search.vue';
 import { useRequest } from 'src/cores/request/request';
 import { reactive } from 'vue';
+import { formatCurrency } from 'src/utils/number';
 
 const {
   loading,
@@ -49,6 +50,9 @@ function onLoadMore() {
     placeholder="Select Card"
     :options="cards.data"
     :loading="loading"
+    :option-name-resolve="
+      (option) => `${option.name} (${formatCurrency(option.balance)})`
+    "
     v-model="selected"
     v-model:search="params.search"
     @focused="onFocused"
