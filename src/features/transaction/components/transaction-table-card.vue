@@ -80,9 +80,9 @@ const columns = [
     render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
   },
   {
-    key: 'amount',
+    key: 'totalAmount',
     name: 'Amount',
-    value: (item) => formatCurrency(item.amount),
+    value: (item) => formatCurrency(item.totalAmount),
   },
 ];
 
