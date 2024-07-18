@@ -38,11 +38,6 @@ const columns = [
     render: ({ item }) => h(TransactionTypeBadge, { transaction: item }),
   },
   {
-    id: 'totalAmount',
-    name: 'Amount',
-    value: (item) => formatCurrency(item.totalAmount),
-  },
-  {
     key: 'card',
     name: 'Card',
     value: (item) => item.card.name,
@@ -52,6 +47,16 @@ const columns = [
     name: 'Category',
     value: (item) =>
       item.transactionCategory ? item.transactionCategory.name : '-',
+  },
+  {
+    id: 'amount',
+    name: 'Amount',
+    value: (item) => formatCurrency(item.amount),
+  },
+  {
+    id: 'totalAmount',
+    name: 'Total Amount',
+    value: (item) => formatCurrency(item.totalAmount),
   },
   {
     id: 'description',
