@@ -3,6 +3,7 @@ import {
   Apps as DashboardIcon,
   CreditCard as CardIcon,
   Calculator as TransactionIcon,
+  ReportAnalytics as ReportIcon,
 } from '@vicons/tabler';
 import { useRoute } from 'vue-router';
 
@@ -34,6 +35,15 @@ const menus = [
     icon: TransactionIcon,
     to: {
       name: 'transaction.index',
+    },
+  },
+  {
+    id: 'report',
+    name: 'Reports',
+    activeKey: 'report.index',
+    icon: ReportIcon,
+    to: {
+      name: 'report.index',
     },
   },
 ];

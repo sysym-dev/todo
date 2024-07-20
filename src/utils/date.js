@@ -10,3 +10,9 @@ export function formatDate(date, format) {
 export function parseDate(date) {
   return dayjs(date);
 }
+
+export function getDatesInAWeek() {
+  const startDate = dayjs().startOf('week');
+
+  return Array.from({ length: 7 }).map((_, i) => startDate.add(i, 'day'));
+}
