@@ -16,6 +16,11 @@ import { formatDate, parseDate } from 'src/utils/date';
 
 const props = defineProps({
   defaultDateRange: Object,
+  title: String,
+  withFilter: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const {
@@ -38,7 +43,7 @@ const detailModal = reactive({
 });
 const params = reactive({
   page: 1,
-  sort: '-id',
+  sort: '-date',
   limit: 10,
   date: null,
 });
@@ -132,7 +137,7 @@ loadTransactions();
 <template>
   <div>
     <base-card
-      title="Transactions"
+      :title="title ?? 'Transactions'"
       :title-loading="loading"
       :with-content="requested || !loading"
       :error="!!error"
@@ -140,7 +145,7 @@ loadTransactions();
     >
       <template v-if="(requested || !loading) && !error" #action>
         <div class="gap-x-2 flex items-center">
-          <base-dropdown padless>
+          <base-dropdown v-if="withFilter" padless>
             <template #toggle="{ toggle }">
               <base-button
                 size="sm"
