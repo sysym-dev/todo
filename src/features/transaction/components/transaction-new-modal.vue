@@ -63,6 +63,7 @@ const {
       .nullable()
       .optional(),
     items: z.any().array().nullable().optional(),
+    date: z.coerce.date().max(new Date()).nullable().optional(),
   }),
 );
 
@@ -73,10 +74,12 @@ const form = reactive({
   description: null,
   category: null,
   items: [],
+  date: null,
 });
 const inputs = reactive({
   category: false,
   description: false,
+  date: false,
 });
 const itemsFormModalVisible = ref(false);
 
@@ -104,9 +107,11 @@ function onOpened() {
   form.description = null;
   form.category = null;
   form.items = [];
+  form.date = null;
 
   inputs.category = false;
   inputs.description = false;
+  inputs.date = false;
 }
 async function onSubmit() {
   const validation = await validate({
@@ -122,6 +127,7 @@ async function onSubmit() {
           description: item.description,
         }))
       : null,
+    date: form.date,
   });
 
   if (validation.success) {
@@ -217,6 +223,30 @@ function onRemoveInput(key) {
         </base-form-item>
 
         <base-form-item
+          v-if="inputs.date"
+          label="Date"
+          :color="hasError('date') ? 'red' : 'default'"
+          :message="getError('date')"
+        >
+          <template #label-append>
+            <base-button
+              size="square"
+              color="transparent"
+              @click="onRemoveInput('date')"
+            >
+              <close-icon class="w-4 h-4" />
+            </base-button>
+          </template>
+          <base-input
+            id="date"
+            type="date"
+            placeholder="Date"
+            :color="hasError('date') ? 'red' : 'default'"
+            v-model="form.date"
+          />
+        </base-form-item>
+
+        <base-form-item
           v-if="inputs.description"
           label="Description"
           :color="hasError('description') ? 'red' : 'default'"
@@ -305,6 +335,15 @@ function onRemoveInput(key) {
           >
             <add-icon class="w-4 h-4" />
             Description
+          </base-button>
+          <base-button
+            v-if="!inputs.date"
+            color="transparent-bordered"
+            size="sm"
+            @click="onAddInput('date')"
+          >
+            <add-icon class="w-4 h-4" />
+            Date
           </base-button>
         </div>
 

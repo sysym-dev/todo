@@ -59,9 +59,9 @@ const dateFilter = computed(() => {
 
 const columns = [
   {
-    key: 'createdAt',
+    key: 'date',
     name: 'Date',
-    value: (item) => formatDate(item.createdAt, 'YYYY/MM/DD'),
+    value: (item) => formatDate(item.date, 'YYYY/MM/DD'),
   },
   {
     key: 'card',
