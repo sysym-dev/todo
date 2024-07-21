@@ -38,7 +38,7 @@ const detailModal = reactive({
 });
 const params = reactive({
   page: 1,
-  sort: '-id',
+  sort: '-date',
   limit: 10,
   date: null,
 });
