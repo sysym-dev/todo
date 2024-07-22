@@ -22,6 +22,7 @@ const props = defineProps({
   loading: Boolean,
   to: null,
   fullwidth: Boolean,
+  title: String,
 });
 const emit = defineEmits(['click']);
 
@@ -60,6 +61,7 @@ function onClick() {
       fullwidth ? 'w-full' : '',
     ]"
     :disabled="loading"
+    :title="title"
     @click="onClick"
   >
     <base-spinner color="blue-light" v-if="loading" />
