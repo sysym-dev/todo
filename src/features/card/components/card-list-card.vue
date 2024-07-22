@@ -1,6 +1,7 @@
 <script setup>
 import BaseCard from 'src/components/base/base-card.vue';
 import BaseButton from 'src/components/base/base-button.vue';
+import BaseBadge from 'src/components/base/base-badge.vue';
 import CardNewModal from './card-new-modal.vue';
 import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
@@ -84,7 +85,10 @@ loadCards();
           :key="card.id"
           class="border border-gray-200 text-gray-900 p-4 rounded-lg"
         >
-          <p class="font-bold text-lg">{{ card.name }}</p>
+          <div class="flex items-center justify-between">
+            <p class="font-bold text-lg">{{ card.name }}</p>
+            <base-badge v-if="card.default" color="blue">Default</base-badge>
+          </div>
           <p>{{ formatCurrency(card.balance) }}</p>
         </div>
       </div>
