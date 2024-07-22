@@ -4,6 +4,7 @@ import BaseTable from 'src/components/base/base-table.vue';
 import CardNewModal from 'src/features/card/components/card-new-modal.vue';
 import CardEditModal from 'src/features/card/components/card-edit-modal.vue';
 import BaseButton from 'src/components/base/base-button.vue';
+import BaseBadge from 'src/components/base/base-badge.vue';
 import { ref, reactive, h } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
@@ -42,6 +43,13 @@ const columns = [
   {
     key: 'name',
     name: 'Name',
+    render: ({ item }) =>
+      h('div', { class: 'flex items-center space-x-2' }, [
+        h('p', item.name),
+        item.default
+          ? h(BaseBadge, { color: 'blue' }, { default: () => 'Default' })
+          : null,
+      ]),
   },
   {
     key: 'balance',
