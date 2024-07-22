@@ -10,7 +10,9 @@ import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
 import { Edit as EditIcon, Check as SetAsDefaultIcon } from '@vicons/tabler';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
+const authStore = useAuthStore();
 const {
   loading: loadingRead,
   request: requestRead,
@@ -46,7 +48,7 @@ const columns = [
     render: ({ item }) =>
       h('div', { class: 'flex items-center space-x-2' }, [
         h('p', item.name),
-        item.default
+        item.id === authStore.me.defaultCardId
           ? h(BaseBadge, { color: 'blue' }, { default: () => 'Default' })
           : null,
       ]),

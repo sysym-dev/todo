@@ -7,8 +7,10 @@ import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { inject, onUnmounted } from 'vue';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const emitter = inject('emitter');
+const authStore = useAuthStore();
 const {
   loading,
   request,
@@ -87,7 +89,11 @@ loadCards();
         >
           <div class="flex items-center justify-between">
             <p class="font-bold text-lg">{{ card.name }}</p>
-            <base-badge v-if="card.default" color="blue">Default</base-badge>
+            <base-badge
+              v-if="card.id === authStore.me.defaultCardId"
+              color="blue"
+              >Default</base-badge
+            >
           </div>
           <p>{{ formatCurrency(card.balance) }}</p>
         </div>
