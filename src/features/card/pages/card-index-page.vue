@@ -115,14 +115,18 @@ function onEdit(card) {
   editModal.card = { ...card };
   editModal.visible = true;
 }
-function onSetAsDefault(card) {
-  requestUpdate({
+async function onSetAsDefault(card) {
+  const res = await requestUpdate({
     url: `/api/me/default-card`,
     method: 'patch',
     data: {
       card_id: card.id,
     },
   });
+
+  if (res.success) {
+    authStore.loadMe();
+  }
 }
 
 loadCards();
