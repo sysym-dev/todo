@@ -8,6 +8,7 @@ import {
 } from '@vicons/tabler';
 import { googleTokenLogin } from 'vue3-google-login';
 import { useRequest } from 'src/cores/request/request';
+import { generateGithubLoginUrl } from 'src/features/auth/auth.helpers';
 
 const { loading, error, request, resetError } = useRequest();
 
@@ -21,6 +22,9 @@ async function onLoginGoogle() {
       token: res.access_token,
     },
   });
+}
+function onLoginGithub() {
+  window.location.href = generateGithubLoginUrl();
 }
 function onCloseError() {
   resetError();
@@ -44,7 +48,11 @@ function onCloseError() {
         <google-icon class="w-4 h-4" />
         Login With Google
       </base-button>
-      <base-button color="transparent-bordered" fullwidth>
+      <base-button
+        @click="onLoginGithub"
+        color="transparent-bordered"
+        fullwidth
+      >
         <github-icon class="w-4 h-4" />
         Login With Github
       </base-button>
