@@ -18,7 +18,7 @@ async function login() {
 
   if (!res.success) {
     emitter.emit('create-toast', {
-      data: res.error,
+      message: res.error,
     });
     router.push({ name: 'auth.login' });
   }
