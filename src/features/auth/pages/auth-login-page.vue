@@ -7,11 +7,23 @@ import {
   BrandGithub as GithubIcon,
 } from '@vicons/tabler';
 import { googleTokenLogin } from 'vue3-google-login';
+import { useRequest } from 'src/cores/request/request';
+
+const { loading, error, request, resetError } = useRequest();
 
 async function onLoginGoogle() {
   const res = await googleTokenLogin();
 
-  // res.access_token
+  await request({
+    url: '/api/login/google',
+    method: 'post',
+    data: {
+      token: res.access_token,
+    },
+  });
+}
+function onCloseError() {
+  resetError();
 }
 </script>
 
@@ -19,11 +31,11 @@ async function onLoginGoogle() {
   <div class="max-w-sm mx-auto w-full">
     <base-card title="Login">
       <p class="text-gray-600">Login with your social account</p>
-      <base-alert v-if="false">
-        {{ 'errorMessage' }}
+      <base-alert v-if="error" with-close @close="onCloseError">
+        {{ error }}
       </base-alert>
       <base-button
-        :loading="false"
+        :loading="loading"
         loading-block
         color="transparent-bordered"
         fullwidth
