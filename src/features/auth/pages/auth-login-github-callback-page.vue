@@ -21,6 +21,8 @@ async function login() {
       message: res.error,
     });
     router.push({ name: 'auth.login' });
+  } else {
+    router.push({ name: 'home' });
   }
 }
 

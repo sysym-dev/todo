@@ -9,19 +9,25 @@ import {
 import { googleTokenLogin } from 'vue3-google-login';
 import { useRequest } from 'src/cores/request/request';
 import { generateGithubLoginUrl } from 'src/features/auth/auth.helpers';
+import { useRouter } from 'vue-router';
 
+const router = useRouter();
 const { loading, error, request, resetError } = useRequest();
 
 async function onLoginGoogle() {
-  const res = await googleTokenLogin();
+  const googleToken = await googleTokenLogin();
 
-  await request({
+  const res = await request({
     url: '/api/login/google',
     method: 'post',
     data: {
-      token: res.access_token,
+      token: googleToken.access_token,
     },
   });
+
+  if (res.success) {
+    router.push({ name: 'home' });
+  }
 }
 function onLoginGithub() {
   window.location.href = generateGithubLoginUrl();
