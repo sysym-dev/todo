@@ -15,10 +15,12 @@
     "click-outside-vue3": "^4.0.1",
     "dayjs": "^1.11.11",
     "mitt": "^3.0.1",
-    "pinia": "^2.1.7",
+    "pinia": "^2.2.0",
+    "pinia-plugin-persistedstate": "^3.2.1",
     "vue": "^3.4.29",
     "vue-chart-3": "^3.1.8",
     "vue-router": "^4.4.0",
+    "vue3-google-login": "^2.0.27",
     "zod": "^3.23.8"
   },
   "devDependencies": {

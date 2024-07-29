@@ -7,6 +7,7 @@ import { useRouter } from './plugins/router';
 import { routes } from './routes';
 import { useLayout } from './plugins/layout';
 import { useStore } from './plugins/store';
+import { useGoogleLogin } from './plugins/google-login';
 
 const app = createApp(App);
 
@@ -15,5 +16,6 @@ useEmitter(app);
 useRouter(app, routes);
 useStore(app);
 useLayout(app);
+useGoogleLogin(app);
 
 app.mount('#app');

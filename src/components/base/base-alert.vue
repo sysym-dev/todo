@@ -1,12 +1,16 @@
 <script setup>
 import { computed } from 'vue';
+import { X as CloseIcon } from '@vicons/tabler';
+import BaseButton from './base-button.vue';
 
 const props = defineProps({
   color: {
     type: String,
     default: 'red',
   },
+  withClose: Boolean,
 });
+const emit = defineEmits(['close']);
 
 const color = computed(() => {
   return {
@@ -15,15 +19,27 @@ const color = computed(() => {
     yellow: 'bg-yellow-100 text-yellow-700 border-yellow-400',
   }[props.color];
 });
+
+function onClose() {
+  emit('close');
+}
 </script>
 
 <template>
   <div
     :class="[
-      'flex items-center min-h-10 px-3 rounded-lg border break-all py-1.5',
+      'flex items-center justify-between min-h-10 px-3 rounded-lg border break-all py-1.5',
       color,
     ]"
   >
     <slot />
+    <base-button
+      v-if="withClose"
+      size="square"
+      color="transparent-red"
+      @click="onClose"
+    >
+      <close-icon class="w-4 h-4" />
+    </base-button>
   </div>
 </template>

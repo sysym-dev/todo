@@ -23,6 +23,7 @@ const props = defineProps({
   to: null,
   fullwidth: Boolean,
   title: String,
+  loadingBlock: Boolean,
 });
 const emit = defineEmits(['click']);
 
@@ -64,7 +65,10 @@ function onClick() {
     :title="title"
     @click="onClick"
   >
-    <base-spinner color="blue-light" v-if="loading" />
-    <slot />
+    <base-spinner
+      :color="props.color === 'blue' ? 'blue-light' : 'blue'"
+      v-if="loading"
+    />
+    <slot v-if="!loading || !loadingBlock" />
   </component>
 </template>

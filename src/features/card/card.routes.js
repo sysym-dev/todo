@@ -4,6 +4,7 @@ export const cardRoutes = [
     name: 'card.index',
     meta: {
       layout: 'LayoutApp',
+      requireAuth: true,
     },
     component: () => import('./pages/card-index-page.vue'),
   },
