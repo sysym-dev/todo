@@ -10,8 +10,10 @@ import { googleTokenLogin } from 'vue3-google-login';
 import { useRequest } from 'src/cores/request/request';
 import { generateGithubLoginUrl } from 'src/features/auth/auth.helpers';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const router = useRouter();
+const authStore = useAuthStore();
 const { loading, error, request, resetError } = useRequest();
 
 async function onLoginGoogle() {
@@ -26,6 +28,7 @@ async function onLoginGoogle() {
   });
 
   if (res.success) {
+    authStore.login(res.data);
     router.push({ name: 'home' });
   }
 }

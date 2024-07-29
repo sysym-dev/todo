@@ -2,11 +2,13 @@
 import { useRequest } from 'src/cores/request/request';
 import { useRoute, useRouter } from 'vue-router';
 import { inject } from 'vue';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const emitter = inject('emitter');
 const route = useRoute();
 const router = useRouter();
 const { request } = useRequest('/api/login/github');
+const authStore = useAuthStore();
 
 async function login() {
   const res = await request({
@@ -22,6 +24,7 @@ async function login() {
     });
     router.push({ name: 'auth.login' });
   } else {
+    authStore.login(res.data);
     router.push({ name: 'home' });
   }
 }
