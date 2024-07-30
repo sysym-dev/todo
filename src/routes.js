@@ -1,6 +1,7 @@
 import { authRoutes } from './features/auth/auth.routes';
 import { cardRoutes } from './features/card/card.routes';
 import { homeRoutes } from './features/home/home.routes';
+import { profileRoutes } from './features/profile/profile.routes';
 import { reportRoutes } from './features/report/report.routes';
 import { transactionRoutes } from './features/transaction/transaction.routes';
 
@@ -10,4 +11,5 @@ export const routes = [
   ...transactionRoutes,
   ...reportRoutes,
   ...authRoutes,
+  ...profileRoutes,
 ];
