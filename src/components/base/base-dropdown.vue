@@ -3,6 +3,9 @@ import { ref } from 'vue';
 
 defineProps({
   padless: Boolean,
+  position: String,
+  fullwidth: Boolean,
+  top: String,
 });
 
 const visible = ref(false);
@@ -17,7 +20,7 @@ function onClose() {
 
 <template>
   <div class="relative" v-click-outside="onClose">
-    <slot name="toggle" :toggle="onToggle" />
+    <slot name="toggle" :toggle="onToggle" :visible="visible" />
     <transition
       enter-active-class="duration-300 ease-out"
       enter-from-class="opacity-0 scale-95"
@@ -29,8 +32,11 @@ function onClose() {
       <div
         v-if="visible"
         :class="[
-          'absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg',
+          'absolute right-0 bg-white border border-gray-200 rounded-lg',
           padless ? '' : 'py-1',
+          position === 'top' ? 'bottom-full mb-2' : 'mt-2',
+          top,
+          fullwidth ? 'w-full' : '',
         ]"
       >
         <slot />

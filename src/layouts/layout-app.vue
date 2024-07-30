@@ -4,10 +4,12 @@ import {
   CreditCard as CardIcon,
   Calculator as TransactionIcon,
   ReportAnalytics as ReportIcon,
-  ChevronUp as MenuIcon,
+  ChevronUp as ShowIcon,
+  ChevronDown as HideIcon,
 } from '@vicons/tabler';
 import { useRoute } from 'vue-router';
 import BaseButton from 'src/components/base/base-button.vue';
+import BaseDropdown from 'src/components/base/base-dropdown.vue';
 import { useAuthStore } from 'src/features/auth/auth.store';
 
 const route = useRoute();
@@ -79,12 +81,25 @@ const menus = [
           </li>
         </ul>
       </div>
-      <a href="#" class="flex items-center justify-between">
-        <span class="text-gray-900">{{ authStore.me.fullName }}</span>
-        <base-button size="square" color="transparent">
-          <menu-icon class="w-4 h-4" />
-        </base-button>
-      </a>
+      <base-dropdown fullwidth position="top">
+        <template #toggle="{ toggle, visible }">
+          <a href="#" class="flex items-center justify-between" @click="toggle">
+            <span class="text-gray-900">{{ authStore.me.fullName }}</span>
+            <base-button size="square" color="transparent">
+              <component :is="visible ? HideIcon : ShowIcon" class="w-4 h-4" />
+            </base-button>
+          </a>
+        </template>
+
+        <div class="flex flex-col">
+          <a href="" class="py-2 px-3 hover:bg-gray-50 text-gray-900"
+            >Profile</a
+          >
+          <a href="" class="py-2 px-3 hover:bg-gray-50 text-gray-900"
+            >Sign Out</a
+          >
+        </div>
+      </base-dropdown>
     </aside>
     <div class="p-8 ml-[250px]">
       <div class="max-w-5xl mx-auto w-full space-y-4">
