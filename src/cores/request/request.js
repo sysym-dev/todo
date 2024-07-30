@@ -2,9 +2,11 @@ import axios, { AxiosError } from 'axios';
 import { createData, createError } from 'src/utils/response';
 import { ref } from 'vue';
 import { useAuthStore } from 'src/features/auth/auth.store';
+import { useRouter } from 'vue-router';
 
 export function useRequest(url, options = {}) {
   const authStore = useAuthStore();
+  const router = useRouter();
 
   const data = ref(options?.initData ?? null);
   const loading = ref(options?.initLoading ?? false);
@@ -57,6 +59,11 @@ export function useRequest(url, options = {}) {
 
       return createData(res.data);
     } catch (err) {
+      if (err instanceof AxiosError && err.response.status === 401) {
+        authStore.logout();
+        router.push({ name: 'auth.login' });
+      }
+
       error.value = parseError(err);
 
       return createError(error.value);

@@ -6,7 +6,6 @@ import { useRouter } from 'vue-router';
 export const useAuthStore = defineStore(
   'auth',
   () => {
-    const router = useRouter();
     const {
       loading,
       error,
@@ -23,9 +22,6 @@ export const useAuthStore = defineStore(
 
       if (res.success) {
         me.value = res.data;
-      } else {
-        logout();
-        router.push({ name: 'auth.login' });
       }
     }
 
@@ -43,7 +39,7 @@ export const useAuthStore = defineStore(
       me.value = null;
     }
 
-    return { loading, error, me, accessToken, loggedIn, loadMe, login };
+    return { loading, error, me, accessToken, loggedIn, loadMe, login, logout };
   },
   { persist: true },
 );
