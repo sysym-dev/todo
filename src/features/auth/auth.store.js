@@ -1,11 +1,17 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { useRequest } from 'src/cores/request/request';
+import { useRouter } from 'vue-router';
 
 export const useAuthStore = defineStore(
   'auth',
   () => {
-    const { loading, error, request: fetchMe } = useRequest('/api/me');
+    const {
+      loading,
+      error,
+      request: fetchMe,
+      resetError,
+    } = useRequest('/api/me');
 
     const loggedIn = ref(false);
     const accessToken = ref(null);
@@ -20,12 +26,20 @@ export const useAuthStore = defineStore(
     }
 
     async function login(data) {
+      resetError();
+
       accessToken.value = data.accessToken;
       me.value = data.me;
       loggedIn.value = true;
     }
 
-    return { loading, error, me, accessToken, loggedIn, loadMe, login };
+    function logout() {
+      loggedIn.value = false;
+      accessToken.value = null;
+      me.value = null;
+    }
+
+    return { loading, error, me, accessToken, loggedIn, loadMe, login, logout };
   },
   { persist: true },
 );
