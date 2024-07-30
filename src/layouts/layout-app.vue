@@ -4,10 +4,14 @@ import {
   CreditCard as CardIcon,
   Calculator as TransactionIcon,
   ReportAnalytics as ReportIcon,
+  ChevronUp as MenuIcon,
 } from '@vicons/tabler';
 import { useRoute } from 'vue-router';
+import BaseButton from 'src/components/base/base-button.vue';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const route = useRoute();
+const authStore = useAuthStore();
 
 const menus = [
   {
@@ -51,26 +55,36 @@ const menus = [
 
 <template>
   <div class="min-h-screen bg-gray-100">
-    <aside class="w-[250px] bg-white h-screen fixed top-0 left-0 p-4 space-y-4">
-      <div class="px-3">
-        <h2 class="font-bold text-lg">Ixpense</h2>
+    <aside
+      class="w-[250px] bg-white h-screen fixed top-0 left-0 p-4 flex flex-col justify-between"
+    >
+      <div class="space-y-4">
+        <div class="px-3">
+          <h2 class="font-bold text-lg">Ixpense</h2>
+        </div>
+        <ul class="space-y-1">
+          <li v-for="menu in menus" :key="menu.id">
+            <router-link
+              :to="menu.to"
+              :class="[
+                'flex items-center gap-x-2 rounded-lg px-3 py-2',
+                menu.activeKey === route.name
+                  ? 'bg-blue-600 text-white font-bold'
+                  : 'hover:bg-blue-50 hover:text-blue-600 hover:font-semibold',
+              ]"
+            >
+              <component :is="menu.icon" class="w-4 h-4" />
+              {{ menu.name }}
+            </router-link>
+          </li>
+        </ul>
       </div>
-      <ul class="space-y-1">
-        <li v-for="menu in menus" :key="menu.id">
-          <router-link
-            :to="menu.to"
-            :class="[
-              'flex items-center gap-x-2 rounded-lg px-3 py-2',
-              menu.activeKey === route.name
-                ? 'bg-blue-600 text-white font-bold'
-                : 'hover:bg-blue-50 hover:text-blue-600 hover:font-semibold',
-            ]"
-          >
-            <component :is="menu.icon" class="w-4 h-4" />
-            {{ menu.name }}
-          </router-link>
-        </li>
-      </ul>
+      <a href="#" class="flex items-center justify-between">
+        <span class="text-gray-900">{{ authStore.me.fullName }}</span>
+        <base-button size="square" color="transparent">
+          <menu-icon class="w-4 h-4" />
+        </base-button>
+      </a>
     </aside>
     <div class="p-8 ml-[250px]">
       <div class="max-w-5xl mx-auto w-full space-y-4">
