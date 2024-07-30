@@ -32,16 +32,21 @@ const size = computed(() => {
     md: 'text-base px-4 h-10 rounded-lg gap-x-2',
     sm: 'text-sm px-2.5 h-7 rounded-md gap-x-1',
     'sm-square': 'text-sm w-7 h-7 rounded-md flex',
+    'md-square': 'text-sm w-8 h-8 rounded-lg flex',
     square: 'px-1 py-1 rounded-lg',
+    'sm-circle': 'w-5 h-5 rounded-full',
   }[props.size];
 });
 const color = computed(() => {
   return {
     blue: 'bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-400 disabled:bg-blue-400',
+    green:
+      'bg-green-600 text-white hover:bg-green-500 active:bg-green-400 disabled:bg-green-400',
     transparent: 'text-gray-600 hover:bg-gray-100 active:bg-gray-50',
     'transparent-bordered':
       'text-gray-600 hover:bg-gray-100 active:bg-gray-50 border border-gray-200',
     'transparent-red': 'text-red-600 hover:bg-red-100 active:bg-red-50',
+    'transparent-blue': 'text-blue-600 hover:bg-blue-100 active:bg-blue-50',
   }[props.color];
 });
 
@@ -56,7 +61,7 @@ function onClick() {
     :is="tag"
     :type="type"
     :class="[
-      'inline-flex items-center justify-center font-bold',
+      'inline-flex items-center justify-center font-bold relative',
       size,
       color,
       fullwidth ? 'w-full' : '',
@@ -70,5 +75,8 @@ function onClick() {
       v-if="loading"
     />
     <slot v-if="!loading || !loadingBlock" />
+    <div class="absolute -top-2 -right-2">
+      <slot name="badge-top" />
+    </div>
   </component>
 </template>
