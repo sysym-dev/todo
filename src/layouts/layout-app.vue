@@ -92,8 +92,10 @@ const menus = [
         </template>
 
         <div class="flex flex-col">
-          <a href="" class="py-2 px-3 hover:bg-gray-50 text-gray-900"
-            >Profile</a
+          <router-link
+            :to="{ name: 'profile' }"
+            class="py-2 px-3 hover:bg-gray-50 text-gray-900"
+            >Profile</router-link
           >
           <a href="" class="py-2 px-3 hover:bg-gray-50 text-gray-900"
             >Sign Out</a
