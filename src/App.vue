@@ -7,7 +7,9 @@ const authStore = useAuthStore();
 
 const route = useRoute();
 
-authStore.loadMe();
+if (authStore.loggedIn) {
+  authStore.loadMe();
+}
 </script>
 
 <template>
