@@ -35,7 +35,7 @@ async function onLoginGoogle() {
 function onLoginGithub() {
   window.location.href = generateGithubLoginUrl();
 }
-function onCloseError() {
+function onDismissError() {
   resetError();
 }
 </script>
@@ -44,7 +44,7 @@ function onCloseError() {
   <div class="max-w-sm mx-auto w-full">
     <base-card title="Login">
       <p class="text-gray-600">Login with your social account</p>
-      <base-alert v-if="error" with-close @close="onCloseError">
+      <base-alert v-if="error" with-dismiss @dismiss="onDismissError">
         {{ error }}
       </base-alert>
       <base-button

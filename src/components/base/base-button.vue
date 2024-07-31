@@ -31,10 +31,7 @@ const size = computed(() => {
   return {
     md: 'text-base px-4 h-10 rounded-lg gap-x-2',
     sm: 'text-sm px-2.5 h-7 rounded-md gap-x-1',
-    'sm-square': 'text-sm w-7 h-7 rounded-md flex',
-    'md-square': 'text-sm w-8 h-8 rounded-lg flex',
     square: 'px-1 py-1 rounded-lg',
-    'sm-circle': 'w-5 h-5 rounded-full',
   }[props.size];
 });
 const color = computed(() => {

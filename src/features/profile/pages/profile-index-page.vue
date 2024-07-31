@@ -34,7 +34,7 @@ const authStore = useAuthStore();
             {{ !authStore.me.googleId ? 'Connect' : '' }} Google
 
             <template #badge-top v-if="authStore.me.googleId">
-              <base-badge size="sm-circle" color="green">
+              <base-badge size="circle-sm" color="green">
                 <check-icon class="w-4 h-4" />
               </base-badge>
             </template>
@@ -47,7 +47,7 @@ const authStore = useAuthStore();
             {{ !authStore.me.githubId ? 'Connect' : '' }} Github
 
             <template #badge-top v-if="authStore.me.githubId">
-              <base-badge size="sm-circle" color="green">
+              <base-badge size="circle-sm" color="green">
                 <check-icon class="w-4 h-4" />
               </base-badge>
             </template>

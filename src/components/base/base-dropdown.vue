@@ -5,7 +5,6 @@ defineProps({
   padless: Boolean,
   position: String,
   fullwidth: Boolean,
-  top: String,
 });
 
 const visible = ref(false);
@@ -35,7 +34,6 @@ function onClose() {
           'absolute right-0 bg-white border border-gray-200 rounded-lg',
           padless ? '' : 'py-1',
           position === 'top' ? 'bottom-full mb-2' : 'mt-2',
-          top,
           fullwidth ? 'w-full' : '',
         ]"
       >
