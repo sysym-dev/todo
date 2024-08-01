@@ -15,7 +15,7 @@ export const useAuthStore = defineStore(
 
     const loggedIn = ref(false);
     const accessToken = ref(null);
-    const me = ref(null);
+    const me = ref({});
 
     async function loadMe() {
       const res = await fetchMe();
@@ -36,7 +36,7 @@ export const useAuthStore = defineStore(
     function logout() {
       loggedIn.value = false;
       accessToken.value = null;
-      me.value = null;
+      me.value = {};
     }
 
     return { loading, error, me, accessToken, loggedIn, loadMe, login, logout };
