@@ -7,7 +7,12 @@ defineProps({
 </script>
 
 <template>
-  <base-badge :color="transaction.type === 'income' ? 'green' : 'red'">{{
-    transaction.type === 'income' ? 'Income' : 'Expense'
-  }}</base-badge>
+  <div class="space-x-1">
+    <base-badge :color="transaction.type === 'income' ? 'green' : 'red'">{{
+      transaction.type === 'income' ? 'Income' : 'Expense'
+    }}</base-badge>
+    <base-badge v-if="transaction.transferCardId" color="blue"
+      >Transfer</base-badge
+    >
+  </div>
 </template>
