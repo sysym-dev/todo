@@ -20,7 +20,7 @@ const {
   error,
   request,
   resetError: resetErrorRequest,
-} = useRequest('/api/transactions');
+} = useRequest('/api/transactions/transfer');
 const {
   validate,
   hasError,
@@ -28,18 +28,18 @@ const {
   resetError: resetErrorValidation,
 } = useValidation(
   z.object({
-    origin_card_id: z
+    source_card_id: z
       .number({
-        invalid_type_error: 'origin card is required',
-        required_error: 'origin card is required',
+        invalid_type_error: 'source card is required',
+        required_error: 'source card is required',
       })
-      .positive({ message: 'origin card is required' }),
-    destination_card_id: z
+      .positive({ message: 'source card is required' }),
+    target_card_id: z
       .number({
-        invalid_type_error: 'destination card is required',
-        required_error: 'destination card is required',
+        invalid_type_error: 'target card is required',
+        required_error: 'target card is required',
       })
-      .positive({ message: 'destination card is required' }),
+      .positive({ message: 'target card is required' }),
     transaction_category_id: z
       .number({
         invalid_type_error: 'category is required',
@@ -65,8 +65,8 @@ const {
 );
 
 const form = reactive({
-  originCard: null,
-  destinationCard: null,
+  sourceCard: null,
+  targetCard: null,
   amount: null,
   description: null,
   category: null,
@@ -87,8 +87,8 @@ function onOpened() {
   resetErrorValidation();
   resetErrorRequest();
 
-  form.originCard = null;
-  form.destinationCard = null;
+  form.sourceCard = null;
+  form.targetCard = null;
   form.amount = null;
   form.description = null;
   form.category = null;
@@ -100,8 +100,8 @@ function onOpened() {
 }
 async function onSubmit() {
   const validation = await validate({
-    origin_card_id: form.originCard ? form.originCard.id : null,
-    destination_card_id: form.destinationCard ? form.destinationCard.id : null,
+    source_card_id: form.sourceCard ? form.sourceCard.id : null,
+    target_card_id: form.targetCard ? form.targetCard.id : null,
     transaction_category_id: form.category ? form.category.id : null,
     amount: form.amount,
     description: form.description,
@@ -147,24 +147,24 @@ function onRemoveInput(key) {
 
       <form class="space-y-4" @submit.prevent="onSubmit">
         <base-form-item
-          label="Origin Card"
-          :color="hasError('origin_card_id') ? 'red' : 'default'"
-          :message="getError('origin_card_id')"
+          label="Source Card"
+          :color="hasError('source_card_id') ? 'red' : 'default'"
+          :message="getError('source_card_id')"
         >
           <card-select-search
-            :color="hasError('origin_card_id') ? 'red' : 'default'"
-            v-model="form.originCard"
+            :color="hasError('source_card_id') ? 'red' : 'default'"
+            v-model="form.sourceCard"
           />
         </base-form-item>
 
         <base-form-item
-          label="Destination Card"
-          :color="hasError('destination_card_id') ? 'red' : 'default'"
-          :message="getError('destination_card_id')"
+          label="Target Card"
+          :color="hasError('target_card_id') ? 'red' : 'default'"
+          :message="getError('target_card_id')"
         >
           <card-select-search
-            :color="hasError('destination_card_id') ? 'red' : 'default'"
-            v-model="form.destinationCard"
+            :color="hasError('target_card_id') ? 'red' : 'default'"
+            v-model="form.targetCard"
           />
         </base-form-item>
 
