@@ -11,9 +11,13 @@ import { useRoute } from 'vue-router';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseDropdown from 'src/components/base/base-dropdown.vue';
 import { useAuthStore } from 'src/features/auth/auth.store';
+import AppLogoutConfirm from 'src/components/app/app-logout-confirm.vue';
+import { ref } from 'vue';
 
 const route = useRoute();
 const authStore = useAuthStore();
+
+const logoutConfirmVisible = ref(false);
 
 const menus = [
   {
@@ -53,6 +57,10 @@ const menus = [
     },
   },
 ];
+
+function onSignOut() {
+  logoutConfirmVisible.value = true;
+}
 </script>
 
 <template>
@@ -97,7 +105,10 @@ const menus = [
             class="py-2 px-3 hover:bg-gray-50 text-gray-900"
             >Profile</router-link
           >
-          <a href="" class="py-2 px-3 hover:bg-gray-50 text-gray-900"
+          <a
+            href="#"
+            class="py-2 px-3 hover:bg-gray-50 text-gray-900"
+            @click="onSignOut"
             >Sign Out</a
           >
         </div>
@@ -109,4 +120,5 @@ const menus = [
       </div>
     </div>
   </div>
+  <app-logout-confirm v-model="logoutConfirmVisible" />
 </template>
