@@ -11,8 +11,25 @@ import {
 } from '@vicons/tabler';
 import { useAuthStore } from 'src/features/auth/auth.store';
 import { computed, reactive } from 'vue';
+import { useValidation } from 'src/cores/validation/validation';
+import { z } from 'zod';
 
 const authStore = useAuthStore();
+const {
+  validate,
+  hasError,
+  getError,
+  resetError: resetErrorValidation,
+} = useValidation(
+  z.object({
+    fullName: z
+      .string({
+        invalid_type_error: 'name must be a string',
+        required_error: 'name is required',
+      })
+      .min(1, 'name cannot be empty'),
+  }),
+);
 
 const form = reactive({
   fullName: '',
@@ -26,7 +43,13 @@ function setForm() {
 }
 
 function onResetForm() {
+  resetErrorValidation();
   setForm();
+}
+async function onSave() {
+  const validation = await validate(form);
+
+  console.log(validation);
 }
 
 setForm();
@@ -39,11 +62,19 @@ setForm();
         <base-button size="sm" color="transparent-bordered" @click="onResetForm"
           >Reset</base-button
         >
-        <base-button size="sm">Save</base-button>
+        <base-button size="sm" @click="onSave">Save</base-button>
       </div>
     </template>
-    <base-form-item label="Full Name">
-      <base-input placeholder="Full Name" v-model="form.fullName" />
+    <base-form-item
+      label="Full Name"
+      :color="hasError('fullName') ? 'red' : 'default'"
+      :message="getError('fullName')"
+    >
+      <base-input
+        placeholder="Full Name"
+        :color="hasError('fullName') ? 'red' : 'default'"
+        v-model="form.fullName"
+      />
     </base-form-item>
     <base-form-item label="Email">
       <base-input placeholder="Email" v-model="authStore.me.email" disabled />
