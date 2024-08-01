@@ -213,6 +213,9 @@ loadTransactions();
       :transaction-id="detailModal.transactionId"
       v-model="detailModal.visible"
     />
-    <transaction-transfer-balance-modal v-model="transferBalanceModalVisible" />
+    <transaction-transfer-balance-modal
+      v-model="transferBalanceModalVisible"
+      @success="onSuccessCreate"
+    />
   </div>
 </template>
