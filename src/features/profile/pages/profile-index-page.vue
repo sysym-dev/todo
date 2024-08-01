@@ -13,8 +13,15 @@ import { useAuthStore } from 'src/features/auth/auth.store';
 import { computed, reactive } from 'vue';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
+import { useRequest } from 'src/cores/request/request';
 
 const authStore = useAuthStore();
+const {
+  loading,
+  error,
+  request,
+  resetError: resetErrorRequest,
+} = useRequest('/api/me');
 const {
   validate,
   hasError,
@@ -49,20 +56,38 @@ function onResetForm() {
 async function onSave() {
   const validation = await validate(form);
 
-  console.log(validation);
+  if (validation.success) {
+    const res = await request({
+      method: 'get',
+      data: validation.data,
+    });
+
+    if (res.success) {
+      authStore.loadMe();
+
+      setForm();
+    }
+  }
 }
 
 setForm();
 </script>
 
 <template>
-  <base-card title="Profile">
+  <base-card
+    title="Profile"
+    :error="!!error"
+    :error-message="error"
+    :error-block="false"
+  >
     <template #action v-if="formDirty">
       <div class="space-x-2">
         <base-button size="sm" color="transparent-bordered" @click="onResetForm"
           >Reset</base-button
         >
-        <base-button size="sm" @click="onSave">Save</base-button>
+        <base-button :loading="loading" size="sm" @click="onSave"
+          >Save</base-button
+        >
       </div>
     </template>
     <base-form-item
