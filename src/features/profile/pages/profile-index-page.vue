@@ -10,11 +10,12 @@ import {
   Check as CheckIcon,
 } from '@vicons/tabler';
 import { useAuthStore } from 'src/features/auth/auth.store';
-import { computed, reactive } from 'vue';
+import { computed, reactive, inject } from 'vue';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
 import { useRequest } from 'src/cores/request/request';
 
+const emitter = inject('emitter');
 const authStore = useAuthStore();
 const {
   loading,
@@ -58,7 +59,7 @@ async function onSave() {
 
   if (validation.success) {
     const res = await request({
-      method: 'get',
+      method: 'patch',
       data: validation.data,
     });
 
@@ -66,6 +67,11 @@ async function onSave() {
       authStore.loadMe();
 
       setForm();
+
+      emitter.emit('create-toast', {
+        message: 'Profile Updated',
+        color: 'green',
+      });
     }
   }
 }
