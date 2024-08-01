@@ -10,15 +10,40 @@ import {
   Check as CheckIcon,
 } from '@vicons/tabler';
 import { useAuthStore } from 'src/features/auth/auth.store';
-import { reactive } from 'vue';
+import { computed, reactive } from 'vue';
 
 const authStore = useAuthStore();
+
+const form = reactive({
+  fullName: '',
+});
+const formDirty = computed(() => {
+  return form.fullName !== authStore.me.fullName;
+});
+
+function setForm() {
+  form.fullName = authStore.me.fullName;
+}
+
+function onResetForm() {
+  setForm();
+}
+
+setForm();
 </script>
 
 <template>
   <base-card title="Profile">
+    <template #action v-if="formDirty">
+      <div class="space-x-2">
+        <base-button size="sm" color="transparent-bordered" @click="onResetForm"
+          >Reset</base-button
+        >
+        <base-button size="sm">Save</base-button>
+      </div>
+    </template>
     <base-form-item label="Full Name">
-      <base-input placeholder="Full Name" v-model="authStore.me.fullName" />
+      <base-input placeholder="Full Name" v-model="form.fullName" />
     </base-form-item>
     <base-form-item label="Email">
       <base-input placeholder="Email" v-model="authStore.me.email" disabled />
