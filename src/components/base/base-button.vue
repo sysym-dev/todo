@@ -37,6 +37,7 @@ const size = computed(() => {
 const color = computed(() => {
   return {
     blue: 'bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-400 disabled:bg-blue-400',
+    red: 'bg-red-600 text-white hover:bg-red-500 active:bg-red-400 disabled:bg-red-400',
     green:
       'bg-green-600 text-white hover:bg-green-500 active:bg-green-400 disabled:bg-green-400',
     transparent: 'text-gray-600 hover:bg-gray-100 active:bg-gray-50',
