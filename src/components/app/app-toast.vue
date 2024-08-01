@@ -11,6 +11,7 @@ emitter.on('create-toast', (payload) => {
   toasts.value.push({
     id,
     message: payload.message,
+    color: payload.color ?? 'red',
   });
 
   setTimeout(() => {
@@ -23,7 +24,7 @@ emitter.on('create-toast', (payload) => {
 
 <template>
   <div class="fixed left-1/2 -translate-x-1/2 top-4">
-    <base-alert v-for="toast in toasts" :key="toast.id">{{
+    <base-alert v-for="toast in toasts" :color="toast.color" :key="toast.id">{{
       toast.message
     }}</base-alert>
   </div>
