@@ -22,7 +22,11 @@ export const useAuthStore = defineStore(
 
       if (res.success) {
         me.value = res.data;
+      } else {
+        logout();
       }
+
+      return res;
     }
 
     async function login(data) {
