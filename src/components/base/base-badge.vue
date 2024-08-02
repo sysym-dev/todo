@@ -24,6 +24,7 @@ const size = computed(() => {
   return {
     md: 'px-1.5 py-0.5 rounded-md',
     sm: 'px-1 h-4 rounded-md',
+    'circle-sm': 'w-5 h-5 rounded-full flex items-center justify-center',
   }[props.size];
 });
 </script>

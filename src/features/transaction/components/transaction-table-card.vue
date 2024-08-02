@@ -9,6 +9,7 @@ import BaseInput from 'src/components/base/base-input.vue';
 import TransactionNewModal from './transaction-new-modal.vue';
 import TransactionDetailModal from './transaction-detail-modal.vue';
 import TransactionTypeBadge from './transaction-type-badge.vue';
+import TransactionTransferBalanceModal from './transaction-transfer-balance-modal.vue';
 import { ref, h, reactive, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
@@ -37,6 +38,7 @@ const {
 });
 
 const createModalVisible = ref(false);
+const transferBalanceModalVisible = ref(false);
 const detailModal = reactive({
   transactionId: null,
   visible: false,
@@ -130,6 +132,9 @@ function onOpenDetailModal(transaction) {
   detailModal.transactionId = transaction.id;
   detailModal.visible = true;
 }
+function onOpenTransferBalanceModal() {
+  transferBalanceModalVisible.value = true;
+}
 
 loadTransactions();
 </script>
@@ -177,6 +182,12 @@ loadTransactions();
               </div>
             </div>
           </base-dropdown>
+          <base-button
+            size="sm"
+            color="transparent-bordered"
+            @click="onOpenTransferBalanceModal"
+            >Transfer Balance</base-button
+          >
           <base-button size="sm" @click="onOpenCreateModal"
             >New Transaction</base-button
           >
@@ -201,6 +212,10 @@ loadTransactions();
     <transaction-detail-modal
       :transaction-id="detailModal.transactionId"
       v-model="detailModal.visible"
+    />
+    <transaction-transfer-balance-modal
+      v-model="transferBalanceModalVisible"
+      @success="onSuccessCreate"
     />
   </div>
 </template>
