@@ -29,6 +29,7 @@ async function onLoginGoogle() {
 
   if (res.success) {
     authStore.login(res.data);
+    await authStore.loadMe();
     router.push({ name: 'home' });
   }
 }
