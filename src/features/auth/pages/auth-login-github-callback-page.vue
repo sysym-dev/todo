@@ -25,6 +25,7 @@ async function login() {
     router.push({ name: 'auth.login' });
   } else {
     authStore.login(res.data);
+    await authStore.loadMe();
     router.push({ name: 'home' });
   }
 }

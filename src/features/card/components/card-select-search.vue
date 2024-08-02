@@ -22,7 +22,10 @@ const params = reactive({
 
 function loadCards() {
   request({
-    params,
+    params: {
+      limit: params.limit,
+      search: params.search ? params.search.split(' (')[0] : null,
+    },
   });
 }
 
