@@ -1,15 +1,23 @@
 <script setup>
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from './features/auth/auth.store';
 import AppToast from './components/app/app-toast.vue';
 
 const authStore = useAuthStore();
-
 const route = useRoute();
+const router = useRouter();
 
-if (authStore.loggedIn) {
-  authStore.loadMe();
+async function loadMe() {
+  if (authStore.loggedIn) {
+    const res = await authStore.loadMe();
+
+    if (!res.success) {
+      router.push({ name: 'auth.login' });
+    }
+  }
 }
+
+loadMe();
 </script>
 
 <template>
