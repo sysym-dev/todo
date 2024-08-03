@@ -88,7 +88,7 @@ loadCards();
           class="border border-gray-200 text-gray-900 p-4 rounded-lg"
         >
           <div class="flex items-center justify-between">
-            <p class="font-bold text-lg">{{ card.name }}</p>
+            <p class="font-bold text-base">{{ card.name }}</p>
             <base-badge
               v-if="card.id === authStore.me.defaultCardId"
               color="blue"
