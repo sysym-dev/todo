@@ -3,13 +3,18 @@ import BaseCard from 'src/components/base/base-card.vue';
 import BaseTable from 'src/components/base/base-table.vue';
 import CardNewModal from 'src/features/card/components/card-new-modal.vue';
 import CardEditModal from 'src/features/card/components/card-edit-modal.vue';
+import CardDeleteConfirm from 'src/features/card/components/card-delete-confirm.vue';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseBadge from 'src/components/base/base-badge.vue';
 import { ref, reactive, h } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { formatCurrency } from 'src/utils/number';
 import { formatDate } from 'src/utils/date';
-import { Edit as EditIcon, Check as SetAsDefaultIcon } from '@vicons/tabler';
+import {
+  Edit as EditIcon,
+  Check as SetAsDefaultIcon,
+  Trash as DeleteIcon,
+} from '@vicons/tabler';
 import { useAuthStore } from 'src/features/auth/auth.store';
 
 const authStore = useAuthStore();
@@ -37,6 +42,10 @@ const params = reactive({
 });
 const createModalVisible = ref(false);
 const editModal = reactive({
+  visible: false,
+  card: null,
+});
+const deleteConfirm = reactive({
   visible: false,
   card: null,
 });
@@ -89,6 +98,16 @@ const columns = [
           { title: 'Edit', size: 'square', onClick: () => onEdit(item) },
           { default: () => h(EditIcon, { class: 'w-4 h-4' }) },
         ),
+        h(
+          BaseButton,
+          {
+            title: 'Delete',
+            size: 'square',
+            color: 'red',
+            onClick: () => onDelete(item),
+          },
+          { default: () => h(DeleteIcon, { class: 'w-4 h-4' }) },
+        ),
       ]),
   },
 ];
@@ -110,12 +129,20 @@ function onSuccessEdit() {
   params.page = 1;
   loadCards();
 }
+function onSuccessDelete() {
+  params.page = 1;
+  loadCards();
+}
 function onChangePage() {
   loadCards();
 }
 function onEdit(card) {
   editModal.card = { ...card };
   editModal.visible = true;
+}
+function onDelete(card) {
+  deleteConfirm.card = { ...card };
+  deleteConfirm.visible = true;
 }
 async function onSetAsDefault(card) {
   const res = await requestUpdate({
@@ -161,6 +188,11 @@ loadCards();
       :card="editModal.card"
       v-model="editModal.visible"
       @success="onSuccessEdit"
+    />
+    <card-delete-confirm
+      :card="deleteConfirm.card"
+      v-model="deleteConfirm.visible"
+      @success="onSuccessDelete"
     />
   </div>
 </template>
