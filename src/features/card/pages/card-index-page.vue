@@ -73,15 +73,17 @@ const columns = [
     name: 'Actions',
     render: ({ item }) =>
       h('div', { class: 'space-x-1' }, [
-        h(
-          BaseButton,
-          {
-            title: 'Set as Default',
-            size: 'square',
-            onClick: () => onSetAsDefault(item),
-          },
-          { default: () => h(SetAsDefaultIcon, { class: 'w-4 h-4' }) },
-        ),
+        item.id !== authStore.me.defaultCardId
+          ? h(
+              BaseButton,
+              {
+                title: 'Set as Default',
+                size: 'square',
+                onClick: () => onSetAsDefault(item),
+              },
+              { default: () => h(SetAsDefaultIcon, { class: 'w-4 h-4' }) },
+            )
+          : null,
         h(
           BaseButton,
           { title: 'Edit', size: 'square', onClick: () => onEdit(item) },
