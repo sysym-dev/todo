@@ -98,16 +98,18 @@ const columns = [
           { title: 'Edit', size: 'square', onClick: () => onEdit(item) },
           { default: () => h(EditIcon, { class: 'w-4 h-4' }) },
         ),
-        h(
-          BaseButton,
-          {
-            title: 'Delete',
-            size: 'square',
-            color: 'red',
-            onClick: () => onDelete(item),
-          },
-          { default: () => h(DeleteIcon, { class: 'w-4 h-4' }) },
-        ),
+        item.id !== authStore.me.defaultCardId
+          ? h(
+              BaseButton,
+              {
+                title: 'Delete',
+                size: 'square',
+                color: 'red',
+                onClick: () => onDelete(item),
+              },
+              { default: () => h(DeleteIcon, { class: 'w-4 h-4' }) },
+            )
+          : null,
       ]),
   },
 ];
