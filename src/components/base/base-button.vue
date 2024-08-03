@@ -47,6 +47,14 @@ const color = computed(() => {
     'transparent-blue': 'text-blue-600 hover:bg-blue-100 active:bg-blue-50',
   }[props.color];
 });
+const spinnerColor = computed(() => {
+  return (
+    {
+      blue: 'blue-light',
+      red: 'red-light',
+    }[props.color] ?? blue
+  );
+});
 
 function onClick() {
   emit('click');
@@ -68,10 +76,7 @@ function onClick() {
     :title="title"
     @click="onClick"
   >
-    <base-spinner
-      :color="props.color === 'blue' ? 'blue-light' : 'blue'"
-      v-if="loading"
-    />
+    <base-spinner :color="spinnerColor" v-if="loading" />
     <slot v-if="!loading || !loadingBlock" />
     <div class="absolute -top-2 -right-2">
       <slot name="badge-top" />
