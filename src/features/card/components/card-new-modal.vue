@@ -4,8 +4,7 @@ import BaseButton from 'src/components/base/base-button.vue';
 import BaseModal from 'src/components/base/base-modal.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
-import CardSelectSearch from 'src/features/card/components/card-select-search.vue';
-import { X as CloseIcon, Plus as AddIcon } from '@vicons/tabler';
+import { X as CloseIcon } from '@vicons/tabler';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
 import { reactive } from 'vue';
@@ -32,13 +31,6 @@ const {
         required_error: 'name is required',
       })
       .min(1, { message: 'name is required' }),
-    source_card_id: z
-      .number({
-        invalid_type_error: 'card must be a number',
-      })
-      .positive({ message: 'card is required' })
-      .optional()
-      .nullable(),
     initial_balance: z
       .number({
         invalid_type_error: 'initial_balance must be a number',
@@ -53,12 +45,7 @@ const {
 const visible = defineModel();
 const form = reactive({
   name: null,
-  source_card: null,
   initial_balance: null,
-});
-const inputs = reactive({
-  source_card: false,
-  initial_balance: false,
 });
 
 function onClose() {
@@ -69,11 +56,7 @@ function onOpened() {
   resetRequestError();
 
   form.name = null;
-  form.source_card = null;
   form.initial_balance = null;
-
-  inputs.source_card = null;
-  inputs.initial_balance = null;
 }
 async function onSubmit() {
   const validation = await validate(form);
@@ -90,13 +73,6 @@ async function onSubmit() {
       emit('success');
     }
   }
-}
-function onAddInput(key) {
-  inputs[key] = true;
-}
-function onRemoveInput(key) {
-  inputs[key] = false;
-  form[key] = null;
 }
 </script>
 
@@ -129,41 +105,10 @@ function onRemoveInput(key) {
         </base-form-item>
 
         <base-form-item
-          v-if="inputs.source_card"
-          label="Source Card"
-          :color="hasError('source_card_id') ? 'red' : 'default'"
-          :message="getError('source_card_id')"
-        >
-          <template #label-append>
-            <base-button
-              size="square"
-              color="transparent"
-              @click="onRemoveInput('source_card')"
-            >
-              <close-icon class="w-4 h-4" />
-            </base-button>
-          </template>
-          <card-select-search
-            :color="hasError('source_card_id') ? 'red' : 'default'"
-            v-model="form.source_card"
-          />
-        </base-form-item>
-
-        <base-form-item
-          v-if="inputs.initial_balance"
           label="Initial Balance"
           :color="hasError('initial_balance') ? 'red' : 'default'"
           :message="getError('initial_balance')"
         >
-          <template #label-append>
-            <base-button
-              size="square"
-              color="transparent"
-              @click="onRemoveInput('initial_balance')"
-            >
-              <close-icon class="w-4 h-4" />
-            </base-button>
-          </template>
           <base-input
             id="initial_balance"
             type="number"
@@ -172,27 +117,6 @@ function onRemoveInput(key) {
             v-model="form.initial_balance"
           />
         </base-form-item>
-
-        <div class="space-x-2">
-          <base-button
-            v-if="!inputs.source_card"
-            color="transparent-bordered"
-            size="sm"
-            @click="onAddInput('source_card')"
-          >
-            <add-icon class="w-4 h-4" />
-            Add Source Card
-          </base-button>
-          <base-button
-            v-if="!inputs.initial_balance"
-            color="transparent-bordered"
-            size="sm"
-            @click="onAddInput('initial_balance')"
-          >
-            <add-icon class="w-4 h-4" />
-            Add Initial Balance
-          </base-button>
-        </div>
 
         <div class="space-x-2">
           <base-button type="submit" :loading="loading"> Save </base-button>
