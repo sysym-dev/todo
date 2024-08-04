@@ -20,6 +20,11 @@ const params = reactive({
   search: null,
 });
 
+function setSearchValue() {
+  params.search = selected.value
+    ? `${selected.value.name} (${formatCurrency(selected.value.balance)})`
+    : null;
+}
 function loadCards() {
   request({
     params: {
@@ -46,6 +51,8 @@ function onLoadMore() {
     loadCards();
   }
 }
+
+setSearchValue();
 </script>
 
 <template>

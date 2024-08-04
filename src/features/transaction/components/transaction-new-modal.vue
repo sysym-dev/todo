@@ -13,12 +13,15 @@ import { X as CloseIcon, Plus as AddIcon } from '@vicons/tabler';
 import { reactive, ref, inject, computed } from 'vue';
 import { useRequest } from 'src/cores/request/request';
 import { useValidation } from 'src/cores/validation/validation';
+import { useAuthStore } from 'src/features/auth/auth.store';
 import { z } from 'zod';
 import { formatCurrency } from 'src/utils/number';
 
 const emit = defineEmits(['success']);
 
 const emitter = inject('emitter');
+
+const authStore = useAuthStore();
 const {
   loading,
   error,
@@ -102,7 +105,7 @@ function onOpened() {
   resetErrorRequest();
 
   form.type = 'income';
-  form.card = null;
+  form.card = { ...authStore.me.defaultCard };
   form.amount = null;
   form.description = null;
   form.category = null;

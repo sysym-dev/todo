@@ -31,12 +31,21 @@ const {
         required_error: 'name is required',
       })
       .min(1, { message: 'name is required' }),
+    initial_balance: z
+      .number({
+        invalid_type_error: 'initial_balance must be a number',
+        required_error: 'initial_balance is required',
+      })
+      .positive({ message: 'initial_balance must be positive' })
+      .optional()
+      .nullable(),
   }),
 );
 
 const visible = defineModel();
 const form = reactive({
   name: null,
+  initial_balance: null,
 });
 
 function onClose() {
@@ -47,6 +56,7 @@ function onOpened() {
   resetRequestError();
 
   form.name = null;
+  form.initial_balance = null;
 }
 async function onSubmit() {
   const validation = await validate(form);
@@ -91,6 +101,20 @@ async function onSubmit() {
             placeholder="Name"
             :color="hasError('name') ? 'red' : 'default'"
             v-model="form.name"
+          />
+        </base-form-item>
+
+        <base-form-item
+          label="Initial Balance"
+          :color="hasError('initial_balance') ? 'red' : 'default'"
+          :message="getError('initial_balance')"
+        >
+          <base-input
+            id="initial_balance"
+            type="number"
+            placeholder="Initial Balance"
+            :color="hasError('initial_balance') ? 'red' : 'default'"
+            v-model="form.initial_balance"
           />
         </base-form-item>
 

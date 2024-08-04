@@ -52,7 +52,7 @@ const spinnerColor = computed(() => {
     {
       blue: 'blue-light',
       red: 'red-light',
-    }[props.color] ?? blue
+    }[props.color] ?? 'blue'
   );
 });
 
