@@ -169,6 +169,7 @@ function onRemoveInput(key) {
       :error="!!error"
       :error-message="error"
       :error-block="false"
+      :mobile-action-col="false"
     >
       <template #action>
         <base-button size="square" color="transparent" @click="onClose">
@@ -311,7 +312,7 @@ function onRemoveInput(key) {
           </base-form-item>
         </template>
 
-        <div class="space-x-2">
+        <div class="flex flex-wrap gap-2">
           <base-button
             v-if="!inputs.category"
             color="transparent-bordered"
