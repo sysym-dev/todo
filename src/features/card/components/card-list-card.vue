@@ -68,7 +68,7 @@ loadCards();
           <base-button
             v-if="cards.meta.total > 4"
             size="sm"
-            color="transparent"
+            color="transparent-bordered"
             tag="router-link"
             :to="{ name: 'card.index' }"
             >View All Card</base-button
