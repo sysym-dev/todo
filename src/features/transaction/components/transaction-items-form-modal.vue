@@ -143,18 +143,19 @@ function onOpened() {
             <td
               :class="[
                 tdClasses,
-                'py-4',
+                'py-4 align-top',
                 index !== itemsInput.length - 1 ? 'border-b' : '',
               ]"
             >
               <transaction-category-select-search
+                content-wrapper-static
                 v-model="itemsInput[index].category"
               />
             </td>
             <td
               :class="[
                 tdClasses,
-                'py-4',
+                'py-4 align-top',
                 index !== itemsInput.length - 1 ? 'border-b' : '',
               ]"
             >
@@ -167,7 +168,7 @@ function onOpened() {
             <td
               :class="[
                 tdClasses,
-                'py-4',
+                'py-4 align-top',
                 index !== itemsInput.length - 1 ? 'border-b' : '',
               ]"
             >
@@ -179,17 +180,19 @@ function onOpened() {
             <td
               :class="[
                 tdClasses,
-                'py-4 text-center',
+                'py-4 align-top text-center',
                 index !== itemsInput.length - 1 ? 'border-b' : '',
               ]"
             >
-              <base-button
-                size="square"
-                color="transparent-red"
-                @click="onRemoveItem(index)"
-              >
-                <close-icon class="w-4 h-4" />
-              </base-button>
+              <div class="h-10 flex items-center">
+                <base-button
+                  size="square"
+                  color="transparent-red"
+                  @click="onRemoveItem(index)"
+                >
+                  <close-icon class="w-4 h-4" />
+                </base-button>
+              </div>
             </td>
           </tr>
         </template>

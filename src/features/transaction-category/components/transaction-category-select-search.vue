@@ -3,6 +3,10 @@ import BaseSelectSearch from 'src/components/base/base-select-search.vue';
 import { useRequest } from 'src/cores/request/request';
 import { reactive, computed, ref } from 'vue';
 
+defineProps({
+  contentWrapperStatic: Boolean,
+});
+
 const {
   loading: loadingFetch,
   request: fetchTransactionCategories,
@@ -68,6 +72,7 @@ async function onCreate(name) {
     :options="transactionCategories.data"
     :loading="loading"
     with-create
+    :content-wrapper-static="contentWrapperStatic"
     v-model="selected"
     v-model:visible="visible"
     v-model:search="params.search"
