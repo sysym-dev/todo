@@ -6,6 +6,8 @@ import {
   ReportAnalytics as ReportIcon,
   ChevronUp as ShowIcon,
   ChevronDown as HideIcon,
+  Menu2 as ShowSidebarIcon,
+  X as CollapseSidebarIcon,
 } from '@vicons/tabler';
 import { useRoute } from 'vue-router';
 import BaseButton from 'src/components/base/base-button.vue';
@@ -18,6 +20,7 @@ const route = useRoute();
 const authStore = useAuthStore();
 
 const logoutConfirmVisible = ref(false);
+const mobileSidebarVisible = ref(false);
 
 const menus = [
   {
@@ -61,16 +64,35 @@ const menus = [
 function onSignOut() {
   logoutConfirmVisible.value = true;
 }
+function onToggleSidebar() {
+  mobileSidebarVisible.value = !mobileSidebarVisible.value;
+}
+function onClickOutside() {
+  mobileSidebarVisible.value = false;
+}
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-100">
     <aside
-      class="w-[250px] bg-white h-screen fixed top-0 -left-full p-4 flex flex-col justify-between lg:left-0"
+      :class="[
+        'w-[250px] bg-white h-screen fixed top-0 -left-full p-4 flex flex-col justify-between lg:left-0 z-10',
+        mobileSidebarVisible ? 'left-0' : '',
+      ]"
+      v-click-outside="onClickOutside"
     >
       <div class="space-y-4">
-        <div class="px-3">
+        <div class="px-3 flex items-center justify-between">
           <h2 class="font-bold text-lg">Ixpense</h2>
+          <div class="lg:hidden">
+            <base-button
+              size="square"
+              color="transparent"
+              @click="onToggleSidebar"
+            >
+              <collapse-sidebar-icon class="w-4 h-4" />
+            </base-button>
+          </div>
         </div>
         <ul class="space-y-1">
           <li v-for="menu in menus" :key="menu.id">
@@ -114,8 +136,17 @@ function onSignOut() {
         </div>
       </base-dropdown>
     </aside>
-    <div class="p-8 ml-0 lg:ml-[250px]">
-      <div class="max-w-5xl mx-auto w-full space-y-4">
+    <div class="ml-0 lg:ml-[250px]">
+      <nav class="lg:hidden bg-white px-4 h-14 flex items-center">
+        <base-button
+          size="square-md"
+          color="transparent"
+          @click="onToggleSidebar"
+        >
+          <show-sidebar-icon class="w-4 h-4" />
+        </base-button>
+      </nav>
+      <div class="p-4 lg:p-8 max-w-5xl mx-auto w-full space-y-4">
         <slot />
       </div>
     </div>
