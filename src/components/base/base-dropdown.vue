@@ -5,6 +5,12 @@ defineProps({
   padless: Boolean,
   position: String,
   fullwidth: Boolean,
+  classes: {
+    type: Object,
+    default: () => ({
+      wrapper: '',
+    }),
+  },
 });
 
 const visible = ref(false);
@@ -35,6 +41,7 @@ function onClose() {
           padless ? '' : 'py-1',
           position === 'top' ? 'bottom-full mb-2' : 'mt-2',
           fullwidth ? 'w-full' : '',
+          classes.wrapper,
         ]"
       >
         <slot />
