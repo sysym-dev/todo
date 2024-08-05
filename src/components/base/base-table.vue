@@ -32,7 +32,7 @@ function onClickRow(item) {
 </script>
 
 <template>
-  <div class="space-y-4">
+  <div class="space-y-4 overflow-x-auto">
     <table class="w-full border rounded-lg border-separate border-spacing-0">
       <thead>
         <tr>
