@@ -66,7 +66,7 @@ function onSignOut() {
 <template>
   <div class="min-h-screen bg-gray-100">
     <aside
-      class="w-[250px] bg-white h-screen fixed top-0 left-0 p-4 flex flex-col justify-between"
+      class="w-[250px] bg-white h-screen fixed top-0 -left-full p-4 flex flex-col justify-between lg:left-0"
     >
       <div class="space-y-4">
         <div class="px-3">
@@ -114,7 +114,7 @@ function onSignOut() {
         </div>
       </base-dropdown>
     </aside>
-    <div class="p-8 ml-[250px]">
+    <div class="p-8 ml-0 lg:ml-[250px]">
       <div class="max-w-5xl mx-auto w-full space-y-4">
         <slot />
       </div>
