@@ -26,7 +26,7 @@ onUnmounted(() => {
     :error="!!authStore.error"
     :error-message="authStore.error"
   >
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
       <div>
         <p class="font-bold text-xl text-gray-900">
           {{ formatCurrency(authStore.me.balance) }}
