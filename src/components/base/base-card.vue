@@ -16,6 +16,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  mobileActionCol: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const contentVisible = computed(
@@ -27,7 +31,12 @@ const contentVisible = computed(
   <div class="bg-white rounded-lg">
     <div class="p-5 space-y-4">
       <div
-        class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0"
+        :class="[
+          'flex',
+          mobileActionCol
+            ? 'flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0'
+            : 'items-center justify-between',
+        ]"
       >
         <div class="flex items-center gap-x-2">
           <h2 class="font-bold text-xl text-gray-900">{{ title }}</h2>
