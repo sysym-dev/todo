@@ -81,7 +81,7 @@ loadCards();
 
       <p v-if="!cards.meta.total" class="text-gray-600">No Cards Exists</p>
 
-      <div v-else class="grid grid-cols-4 gap-4">
+      <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div
           v-for="card in cards.data"
           :key="card.id"
