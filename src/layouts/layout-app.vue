@@ -8,19 +8,22 @@ import {
   ChevronDown as HideIcon,
   Menu2 as ShowSidebarIcon,
   X as CollapseSidebarIcon,
+  User as UserIcon,
 } from '@vicons/tabler';
-import { useRoute } from 'vue-router';
+import { useRoute, RouterLink } from 'vue-router';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseDropdown from 'src/components/base/base-dropdown.vue';
 import { useAuthStore } from 'src/features/auth/auth.store';
 import AppLogoutConfirm from 'src/components/app/app-logout-confirm.vue';
-import { ref } from 'vue';
+import { ref, h } from 'vue';
 
 const route = useRoute();
 const authStore = useAuthStore();
 
 const logoutConfirmVisible = ref(false);
 const mobileSidebarVisible = ref(false);
+
+const mobileSidebarToggleButton = ref();
 
 const menus = [
   {
@@ -60,6 +63,25 @@ const menus = [
     },
   },
 ];
+const profileDropdownContent = h('div', { class: 'flex flex-col' }, [
+  h(
+    RouterLink,
+    {
+      to: { name: 'profile' },
+      class: 'py-2 px-3 hover:bg-gray-50 text-gray-900',
+    },
+    () => 'Profile',
+  ),
+  h(
+    'a',
+    {
+      href: '#',
+      class: 'py-2 px-3 hover:bg-gray-50 text-gray-900 text-nowrap',
+      onClick: onSignOut,
+    },
+    'Sign Out',
+  ),
+]);
 
 function onSignOut() {
   logoutConfirmVisible.value = true;
@@ -67,8 +89,10 @@ function onSignOut() {
 function onToggleSidebar() {
   mobileSidebarVisible.value = !mobileSidebarVisible.value;
 }
-function onClickOutside() {
-  mobileSidebarVisible.value = false;
+function onClickOutside(e) {
+  if (!mobileSidebarToggleButton.value.el.contains(e.target)) {
+    mobileSidebarVisible.value = false;
+  }
 }
 </script>
 
@@ -121,30 +145,30 @@ function onClickOutside() {
           </a>
         </template>
 
-        <div class="flex flex-col">
-          <router-link
-            :to="{ name: 'profile' }"
-            class="py-2 px-3 hover:bg-gray-50 text-gray-900"
-            >Profile</router-link
-          >
-          <a
-            href="#"
-            class="py-2 px-3 hover:bg-gray-50 text-gray-900"
-            @click="onSignOut"
-            >Sign Out</a
-          >
-        </div>
+        <profile-dropdown-content />
       </base-dropdown>
     </aside>
     <div class="ml-0 lg:ml-[250px]">
-      <nav class="lg:hidden bg-white px-4 h-14 flex items-center">
+      <nav
+        class="lg:hidden bg-white px-4 h-14 flex items-center justify-between"
+      >
         <base-button
+          ref="mobileSidebarToggleButton"
           size="square-lg"
           color="transparent"
           @click="onToggleSidebar"
         >
           <show-sidebar-icon class="w-4 h-4" />
         </base-button>
+        <base-dropdown>
+          <template #toggle="{ toggle }">
+            <base-button size="square-lg" color="transparent" @click="toggle">
+              <user-icon class="w-4 h-4" />
+            </base-button>
+          </template>
+
+          <profile-dropdown-content />
+        </base-dropdown>
       </nav>
       <div class="p-4 lg:p-8 max-w-5xl mx-auto w-full space-y-4">
         <slot />
