@@ -139,7 +139,7 @@ function onClickOutside() {
     <div class="ml-0 lg:ml-[250px]">
       <nav class="lg:hidden bg-white px-4 h-14 flex items-center">
         <base-button
-          size="square-md"
+          size="square-lg"
           color="transparent"
           @click="onToggleSidebar"
         >
