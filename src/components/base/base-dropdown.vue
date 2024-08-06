@@ -37,7 +37,7 @@ function onClose() {
       <div
         v-if="visible"
         :class="[
-          'absolute right-0 bg-white border border-gray-200 rounded-lg',
+          'absolute right-0 bg-white border border-gray-200 rounded-lg shadow',
           padless ? '' : 'py-1',
           position === 'top' ? 'bottom-full mb-2' : 'mt-2',
           fullwidth ? 'w-full' : '',
