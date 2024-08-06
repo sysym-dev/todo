@@ -1,5 +1,5 @@
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import BaseSpinner from './base-spinner.vue';
 
 const props = defineProps({
@@ -26,6 +26,8 @@ const props = defineProps({
   loadingBlock: Boolean,
 });
 const emit = defineEmits(['click']);
+
+const el = ref();
 
 const size = computed(() => {
   return {
@@ -62,10 +64,15 @@ const spinnerColor = computed(() => {
 function onClick() {
   emit('click');
 }
+
+defineExpose({
+  el,
+});
 </script>
 
 <template>
   <component
+    ref="el"
     :to="to"
     :is="tag"
     :type="type"
