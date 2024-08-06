@@ -10,7 +10,7 @@ import {
   X as CollapseSidebarIcon,
   User as UserIcon,
 } from '@vicons/tabler';
-import { useRoute, RouterLink } from 'vue-router';
+import { useRoute, useRouter, RouterLink } from 'vue-router';
 import BaseButton from 'src/components/base/base-button.vue';
 import BaseDropdown from 'src/components/base/base-dropdown.vue';
 import { useAuthStore } from 'src/features/auth/auth.store';
@@ -18,6 +18,7 @@ import AppLogoutConfirm from 'src/components/app/app-logout-confirm.vue';
 import { ref, h } from 'vue';
 
 const route = useRoute();
+const router = useRouter();
 const authStore = useAuthStore();
 
 const logoutConfirmVisible = ref(false);
@@ -94,6 +95,10 @@ function onClickOutside(e) {
     mobileSidebarVisible.value = false;
   }
 }
+
+router.afterEach(() => {
+  mobileSidebarVisible.value = false;
+});
 </script>
 
 <template>
@@ -137,7 +142,11 @@ function onClickOutside(e) {
       </div>
       <base-dropdown fullwidth position="top">
         <template #toggle="{ toggle, visible }">
-          <a href="#" class="flex items-center justify-between" @click="toggle">
+          <a
+            href="#"
+            class="flex items-center justify-between"
+            @click.prevent="toggle"
+          >
             <span class="text-gray-900">{{ authStore.me.fullName }}</span>
             <base-button size="square" color="transparent">
               <component :is="visible ? HideIcon : ShowIcon" class="w-4 h-4" />
