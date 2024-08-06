@@ -105,7 +105,7 @@ router.afterEach(() => {
   <div class="min-h-screen bg-gray-100">
     <aside
       :class="[
-        'w-[250px] bg-white h-screen fixed top-0 -left-full p-4 flex flex-col justify-between lg:left-0 z-10',
+        'w-[250px] bg-white h-screen fixed top-0 -left-full p-4 flex flex-col justify-between lg:left-0 z-10 transition-all shadow border-r border-gray-200',
         mobileSidebarVisible ? 'left-0' : '',
       ]"
       v-click-outside="onClickOutside"
@@ -159,7 +159,7 @@ router.afterEach(() => {
     </aside>
     <div class="ml-0 lg:ml-[250px]">
       <nav
-        class="lg:hidden bg-white px-4 h-14 flex items-center justify-between"
+        class="lg:hidden bg-white px-4 h-14 flex items-center justify-between shadow border-b border-gray-200"
       >
         <base-button
           ref="mobileSidebarToggleButton"
