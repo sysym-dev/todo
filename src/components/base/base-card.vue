@@ -20,6 +20,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  shadow: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const contentVisible = computed(
@@ -28,7 +32,12 @@ const contentVisible = computed(
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow border border-gray-200">
+  <div
+    :class="[
+      'bg-white rounded-lg',
+      shadow ? 'shadow border border-gray-200' : '',
+    ]"
+  >
     <div class="p-5 space-y-4">
       <div
         :class="[
