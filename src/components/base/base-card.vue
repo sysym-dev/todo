@@ -28,7 +28,7 @@ const contentVisible = computed(
 </script>
 
 <template>
-  <div class="bg-white rounded-lg">
+  <div class="bg-white rounded-lg shadow border border-gray-200">
     <div class="p-5 space-y-4">
       <div
         :class="[
