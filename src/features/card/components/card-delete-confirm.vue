@@ -37,7 +37,7 @@ async function onConfirm() {
 
 <template>
   <base-modal v-model="visible">
-    <base-card title="Confirm Delete Card" :shadow="false">
+    <base-card title="Confirm Delete Card">
       <p class="text-gray-500">Are you sure want to delete this card?</p>
       <div class="space-x-2">
         <base-button color="red" :loading="loading" @click="onConfirm"

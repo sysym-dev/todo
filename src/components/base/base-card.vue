@@ -22,7 +22,7 @@ const props = defineProps({
   },
   shadow: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 
