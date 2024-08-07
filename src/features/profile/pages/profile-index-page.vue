@@ -14,6 +14,8 @@ import { computed, reactive, inject } from 'vue';
 import { useValidation } from 'src/cores/validation/validation';
 import { z } from 'zod';
 import { useRequest } from 'src/cores/request/request';
+import { generateGithubLoginUrl } from 'src/features/auth/auth.helpers';
+import { googleTokenLogin } from 'vue3-google-login';
 
 const emitter = inject('emitter');
 const authStore = useAuthStore();
@@ -64,7 +66,7 @@ async function onSave() {
     });
 
     if (res.success) {
-      authStore.loadMe();
+      await authStore.loadMe();
 
       setForm();
 
@@ -73,6 +75,24 @@ async function onSave() {
         color: 'green',
       });
     }
+  }
+}
+function onConnectGithub() {
+  window.location.href = generateGithubLoginUrl();
+}
+async function onConnectGoogle() {
+  const googleToken = await googleTokenLogin();
+
+  const res = await request({
+    url: '/api/me/google',
+    method: 'patch',
+    data: {
+      token: googleToken.access_token,
+    },
+  });
+
+  if (res.success) {
+    await authStore.loadMe();
   }
 }
 
@@ -116,6 +136,7 @@ setForm();
           <base-button
             color="transparent-bordered"
             :disabled="authStore.me.googleId"
+            @click="onConnectGoogle"
           >
             <google-icon class="w-4 h-4" />
             {{ !authStore.me.googleId ? 'Connect' : '' }} Google
@@ -129,6 +150,7 @@ setForm();
           <base-button
             color="transparent-bordered"
             :disabled="authStore.me.githubId"
+            @click="onConnectGithub"
           >
             <github-icon class="w-4 h-4" />
             {{ !authStore.me.githubId ? 'Connect' : '' }} Github

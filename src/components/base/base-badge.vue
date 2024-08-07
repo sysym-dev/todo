@@ -17,6 +17,7 @@ const color = computed(() => {
     red: 'bg-red-100 text-red-600',
     green: 'bg-green-100 text-green-600',
     blue: 'bg-blue-100 text-blue-600',
+    yellow: 'bg-yellow-100 text-yellow-900',
     light: 'bg-gray-100 text-gray-600',
   }[props.color];
 });

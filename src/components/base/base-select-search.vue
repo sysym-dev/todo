@@ -20,6 +20,7 @@ const props = defineProps({
   },
   withCreate: Boolean,
   optionNameResolve: Function,
+  contentWrapperStatic: Boolean,
 });
 const emit = defineEmits(['focused', 'search', 'end-scroll', 'create']);
 
@@ -129,7 +130,10 @@ setSearchValue();
     >
       <div
         v-if="visible"
-        class="z-10 absolute w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1 max-h-[150px] overflow-y-auto"
+        :class="[
+          'z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1 max-h-[150px] overflow-y-auto',
+          contentWrapperStatic ? 'static' : 'absolute',
+        ]"
         @scroll="onScroll"
       >
         <p v-if="!options?.length" class="text-gray-400 px-3 py-2 text-center">

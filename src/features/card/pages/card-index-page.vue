@@ -173,7 +173,11 @@ loadCards();
       :error-message="errorRead"
     >
       <template v-if="(requested || !loadingRead) && !errorRead" #action>
-        <base-button size="sm" @click="onOpenCreateModal">New Card</base-button>
+        <div>
+          <base-button size="sm" @click="onOpenCreateModal"
+            >New Card</base-button
+          >
+        </div>
       </template>
 
       <base-table

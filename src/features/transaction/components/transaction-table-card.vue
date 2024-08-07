@@ -150,7 +150,11 @@ loadTransactions();
     >
       <template v-if="(requested || !loading) && !error" #action>
         <div class="gap-x-2 flex items-center">
-          <base-dropdown v-if="withFilter" padless>
+          <base-dropdown
+            v-if="withFilter"
+            padless
+            :classes="{ wrapper: 'left-0 right-auto sm:left-auto sm:right-0' }"
+          >
             <template #toggle="{ toggle }">
               <base-button
                 size="sm"

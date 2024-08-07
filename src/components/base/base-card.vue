@@ -16,6 +16,14 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  mobileActionCol: {
+    type: Boolean,
+    default: true,
+  },
+  shadow: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const contentVisible = computed(
@@ -24,9 +32,21 @@ const contentVisible = computed(
 </script>
 
 <template>
-  <div class="bg-white rounded-lg">
+  <div
+    :class="[
+      'bg-white rounded-lg',
+      shadow ? 'shadow border border-gray-200' : '',
+    ]"
+  >
     <div class="p-5 space-y-4">
-      <div class="flex items-center justify-between">
+      <div
+        :class="[
+          'flex',
+          mobileActionCol
+            ? 'flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0'
+            : 'items-center justify-between',
+        ]"
+      >
         <div class="flex items-center gap-x-2">
           <h2 class="font-bold text-xl text-gray-900">{{ title }}</h2>
           <base-spinner v-if="titleLoading" />

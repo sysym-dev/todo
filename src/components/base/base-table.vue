@@ -33,58 +33,60 @@ function onClickRow(item) {
 
 <template>
   <div class="space-y-4">
-    <table class="w-full border rounded-lg border-separate border-spacing-0">
-      <thead>
-        <tr>
-          <th
-            v-for="column in columns"
-            :key="column.key"
-            :class="[
-              'text-left border-b text-gray-900 py-2 px-3',
-              column.thClasses,
-            ]"
-          >
-            {{ column.name }}
-          </th>
-        </tr>
-      </thead>
-      <tbody v-if="!meta.total">
-        <tr>
-          <td :colspan="columns.length" class="text-gray-600 py-2 px-3">
-            No Data
-          </td>
-        </tr>
-      </tbody>
-      <tbody v-else>
-        <slot name="body" :tdClasses="[tdClasses]">
-          <tr
-            v-for="(item, index) in data"
-            :key="item.id"
-            :class="[clickable ? 'cursor-pointer hover:bg-gray-50' : '']"
-            @click="onClickRow(item)"
-          >
-            <td
+    <div class="relative overflow-x-auto">
+      <table class="w-full border rounded-lg border-separate border-spacing-0">
+        <thead>
+          <tr>
+            <th
               v-for="column in columns"
               :key="column.key"
               :class="[
-                tdClasses,
-                index !== data.length - 1 ? 'border-b' : '',
-                column.itemClass,
+                'text-left border-b text-gray-900 py-2 px-3',
+                column.thClasses,
               ]"
             >
-              <component
-                v-if="column.render"
-                :is="column.render"
-                :item="item"
-              />
-              <template v-else>
-                {{ column.value ? column.value(item) : item[column.key] }}
-              </template>
+              {{ column.name }}
+            </th>
+          </tr>
+        </thead>
+        <tbody v-if="!meta.total">
+          <tr>
+            <td :colspan="columns.length" class="text-gray-600 py-2 px-3">
+              No Data
             </td>
           </tr>
-        </slot>
-      </tbody>
-    </table>
+        </tbody>
+        <tbody v-else>
+          <slot name="body" :tdClasses="[tdClasses]">
+            <tr
+              v-for="(item, index) in data"
+              :key="item.id"
+              :class="[clickable ? 'cursor-pointer hover:bg-gray-50' : '']"
+              @click="onClickRow(item)"
+            >
+              <td
+                v-for="column in columns"
+                :key="column.key"
+                :class="[
+                  tdClasses,
+                  index !== data.length - 1 ? 'border-b' : '',
+                  column.itemClass,
+                ]"
+              >
+                <component
+                  v-if="column.render"
+                  :is="column.render"
+                  :item="item"
+                />
+                <template v-else>
+                  {{ column.value ? column.value(item) : item[column.key] }}
+                </template>
+              </td>
+            </tr>
+          </slot>
+        </tbody>
+      </table>
+    </div>
 
     <base-pagination
       v-if="withPagination && meta.lastPage !== 1"

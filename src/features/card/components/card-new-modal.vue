@@ -83,6 +83,8 @@ async function onSubmit() {
       :error="!!error"
       :error-message="error"
       :error-block="false"
+      :mobile-action-col="false"
+      :shadow="false"
     >
       <template #action>
         <base-button size="square" color="transparent" @click="onClose">

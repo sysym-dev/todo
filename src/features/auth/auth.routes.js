@@ -13,7 +13,6 @@ export const authRoutes = [
     name: 'auth.login.github.callback',
     meta: {
       layout: 'LayoutAuth',
-      requireGuest: true,
     },
     component: () => import('./pages/auth-login-github-callback-page.vue'),
   },
