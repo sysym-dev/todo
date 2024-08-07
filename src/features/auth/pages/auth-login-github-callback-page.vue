@@ -29,13 +29,42 @@ async function login() {
     router.push({ name: 'home' });
   }
 }
+async function connectToGithub() {
+  const res = await request({
+    url: '/api/me/github',
+    data: {
+      code: route.query.code,
+    },
+    method: 'patch',
+  });
+
+  if (!res.success) {
+    emitter.emit('create-toast', {
+      message: res.error,
+    });
+    router.push({ name: 'profile' });
+  } else {
+    await authStore.loadMe();
+    router.push({ name: 'profile' });
+  }
+}
 
 if (!route.query.code) {
-  router.push({
-    name: 'auth.login',
-  });
+  if (authStore.loggedIn) {
+    router.push({
+      name: 'profile',
+    });
+  } else {
+    router.push({
+      name: 'auth.login',
+    });
+  }
 } else {
-  login();
+  if (authStore.loggedIn) {
+    connectToGithub();
+  } else {
+    login();
+  }
 }
 </script>
 
