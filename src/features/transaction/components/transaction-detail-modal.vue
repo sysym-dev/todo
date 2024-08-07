@@ -98,7 +98,6 @@ function onOpened() {
       :with-content="!loading"
       :error="!!error"
       :error-message="error"
-      :shadow="false"
     >
       <template #action>
         <base-button size="square" color="transparent" @click="onClose">
