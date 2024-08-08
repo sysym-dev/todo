@@ -5,6 +5,7 @@ export const reportRoutes = [
     meta: {
       layout: 'LayoutApp',
       requireAuth: true,
+      requireSetupFinished: true,
     },
     component: () => import('./pages/report-index-page.vue'),
   },
