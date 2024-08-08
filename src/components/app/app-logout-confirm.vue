@@ -31,7 +31,7 @@ async function onConfirm() {
 
 <template>
   <base-modal v-model="visible">
-    <base-card title="Confirm Sign Out" :shadow="false">
+    <base-card title="Confirm Sign Out">
       <p class="text-gray-500">
         Are you sure want to sign out from your account?
       </p>

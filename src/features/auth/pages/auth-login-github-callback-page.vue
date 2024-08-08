@@ -26,7 +26,12 @@ async function login() {
   } else {
     authStore.login(res.data);
     await authStore.loadMe();
-    router.push({ name: 'home' });
+
+    if (authStore.me.setupFinished) {
+      router.push({ name: 'home' });
+    } else {
+      router.push({ name: 'setup' });
+    }
   }
 }
 async function connectToGithub() {

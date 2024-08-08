@@ -5,6 +5,7 @@ export const transactionRoutes = [
     meta: {
       layout: 'LayoutApp',
       requireAuth: true,
+      requireSetupFinished: true,
     },
     component: () => import('./pages/transaction-index-page.vue'),
   },
