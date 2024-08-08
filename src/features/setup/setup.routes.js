@@ -1,7 +1,7 @@
 export const setupRoutes = [
   {
     path: '/setup',
-    name: 'setup.index',
+    name: 'setup',
     meta: {
       layout: 'LayoutAuth',
       requireAuth: true,
