@@ -27,7 +27,7 @@ async function login() {
     authStore.login(res.data);
     await authStore.loadMe();
 
-    if (authStore.me.setup_finished) {
+    if (authStore.me.setupFinished) {
       router.push({ name: 'home' });
     } else {
       router.push({ name: 'setup' });
