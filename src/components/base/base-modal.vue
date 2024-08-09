@@ -8,7 +8,7 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['opened']);
+const emit = defineEmits(['opened', 'closed']);
 
 const visible = defineModel();
 
@@ -37,6 +37,7 @@ watch(visible, (value) => {
   } else {
     document.body.classList.remove('overflow-hidden');
     document.removeEventListener('keydown', onKeyDown);
+    emit('closed');
   }
 });
 </script>
