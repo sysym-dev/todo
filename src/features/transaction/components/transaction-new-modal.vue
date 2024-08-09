@@ -85,6 +85,7 @@ const inputs = reactive({
   date: false,
 });
 const itemsFormModalVisible = ref(false);
+const reload = ref(true);
 
 const visible = defineModel();
 const itemAmount = computed(() =>
@@ -101,20 +102,22 @@ function onClose() {
   visible.value = false;
 }
 function onOpened() {
-  resetErrorValidation();
-  resetErrorRequest();
+  if (reload.value) {
+    resetErrorValidation();
+    resetErrorRequest();
 
-  form.type = 'income';
-  form.card = { ...authStore.me.defaultCard };
-  form.amount = null;
-  form.description = null;
-  form.category = null;
-  form.items = [];
-  form.date = null;
+    form.type = 'income';
+    form.card = { ...authStore.me.defaultCard };
+    form.amount = null;
+    form.description = null;
+    form.category = null;
+    form.items = [];
+    form.date = null;
 
-  inputs.category = false;
-  inputs.description = false;
-  inputs.date = false;
+    inputs.category = false;
+    inputs.description = false;
+    inputs.date = false;
+  }
 }
 async function onSubmit() {
   const validation = await validate({
@@ -148,7 +151,12 @@ async function onSubmit() {
   }
 }
 function onOpenItemsFormModal() {
+  visible.value = false;
   itemsFormModalVisible.value = true;
+}
+function onClosedItemsFormModal() {
+  reload.value = false;
+  visible.value = true;
 }
 function onItemsSaved(value) {
   form.items = value;
@@ -160,10 +168,13 @@ function onRemoveInput(key) {
   inputs[key] = false;
   form[key] = null;
 }
+function onClosed() {
+  reload.value = true;
+}
 </script>
 
 <template>
-  <base-modal v-model="visible" @opened="onOpened">
+  <base-modal v-model="visible" @opened="onOpened" @closed="onClosed">
     <base-card
       title="New Transaction"
       :error="!!error"
@@ -359,11 +370,11 @@ function onRemoveInput(key) {
         </div>
       </form>
     </base-card>
-
-    <transaction-items-form-modal
-      :items="form.items"
-      v-model="itemsFormModalVisible"
-      @saved="onItemsSaved"
-    />
   </base-modal>
+  <transaction-items-form-modal
+    :items="form.items"
+    v-model="itemsFormModalVisible"
+    @saved="onItemsSaved"
+    @closed="onClosedItemsFormModal"
+  />
 </template>
