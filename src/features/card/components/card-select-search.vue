@@ -25,8 +25,8 @@ function setSearchValue() {
     ? `${selected.value.name} (${formatCurrency(selected.value.balance)})`
     : null;
 }
-function loadCards() {
-  request({
+async function loadCards() {
+  await request({
     params: {
       limit: params.limit,
       search: params.search ? params.search.split(' (')[0] : null,
