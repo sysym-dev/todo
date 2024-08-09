@@ -140,7 +140,7 @@ router.afterEach(() => {
           </li>
         </ul>
       </div>
-      <base-dropdown fullwidth position="top">
+      <base-dropdown fullwidth :classes="{ wrapper: 'bottom-full mb-2' }">
         <template #toggle="{ toggle, visible }">
           <a
             href="#"
@@ -169,7 +169,7 @@ router.afterEach(() => {
         >
           <show-sidebar-icon class="w-4 h-4" />
         </base-button>
-        <base-dropdown>
+        <base-dropdown :classes="{ wrapper: 'mt-2' }">
           <template #toggle="{ toggle }">
             <base-button size="square-lg" color="transparent" @click="toggle">
               <user-icon class="w-4 h-4" />

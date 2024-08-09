@@ -3,7 +3,6 @@ import { ref } from 'vue';
 
 defineProps({
   padless: Boolean,
-  position: String,
   fullwidth: Boolean,
   classes: {
     type: Object,
@@ -39,7 +38,6 @@ function onClose() {
         :class="[
           'absolute right-0 bg-white border border-gray-200 rounded-lg z-10',
           padless ? '' : 'py-1',
-          position === 'top' ? 'bottom-full mb-2' : 'mt-2',
           fullwidth ? 'w-full' : '',
           classes.wrapper,
         ]"

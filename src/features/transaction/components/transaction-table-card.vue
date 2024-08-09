@@ -153,7 +153,9 @@ loadTransactions();
           <base-dropdown
             v-if="withFilter"
             padless
-            :classes="{ wrapper: 'left-0 right-auto sm:left-auto sm:right-0' }"
+            :classes="{
+              wrapper: 'mt-2 left-0 right-auto sm:left-auto sm:right-0',
+            }"
           >
             <template #toggle="{ toggle }">
               <base-button
