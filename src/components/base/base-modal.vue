@@ -23,13 +23,20 @@ const width = computed(() => {
 function onClickOutside() {
   visible.value = false;
 }
+function onKeyDown(e) {
+  if (e.key === 'Escape') {
+    visible.value = false;
+  }
+}
 
 watch(visible, (value) => {
   if (value) {
     document.body.classList.add('overflow-hidden');
+    document.addEventListener('keydown', onKeyDown);
     emit('opened');
   } else {
     document.body.classList.remove('overflow-hidden');
+    document.removeEventListener('keydown', onKeyDown);
   }
 });
 </script>
