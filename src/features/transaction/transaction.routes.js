@@ -6,6 +6,7 @@ export const transactionRoutes = [
       layout: 'LayoutApp',
       requireAuth: true,
       requireSetupFinished: true,
+      title: 'Transactions',
     },
     component: () => import('./pages/transaction-index-page.vue'),
   },

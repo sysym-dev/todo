@@ -28,6 +28,8 @@ const { request, loading, error } = useRequest(
   '/api/transaction-reports/monthly',
 );
 
+const today = parseDate();
+
 const data = reactive({
   labels: [
     'January',
@@ -70,8 +72,6 @@ const options = {
 };
 
 async function setMonthlyReport() {
-  const today = parseDate();
-
   const res = await request({
     params: {
       year: today.year(),
@@ -112,7 +112,7 @@ setMonthlyReport();
 
 <template>
   <base-card
-    title="Monthly Transaction"
+    :title="`Monthly Transaction (${today.format('YYYY')})`"
     :title-loading="loading"
     :with-content="!loading"
     :error="!!error"

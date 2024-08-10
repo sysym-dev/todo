@@ -49,8 +49,6 @@ function onOpened() {
   resetValidationError();
   resetRequestError();
 
-  console.log(props.card);
-
   form.name = props.card.name;
 }
 async function onSubmit() {

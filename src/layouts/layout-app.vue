@@ -21,6 +21,8 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
+const appName = import.meta.env.VITE_APP_NAME;
+
 const logoutConfirmVisible = ref(false);
 const mobileSidebarVisible = ref(false);
 
@@ -112,7 +114,7 @@ router.afterEach(() => {
     >
       <div class="space-y-4">
         <div class="px-3 flex items-center justify-between">
-          <h2 class="font-bold text-lg">Ixpense</h2>
+          <h2 class="font-bold text-lg">{{ appName }}</h2>
           <div class="lg:hidden">
             <base-button
               size="square"
@@ -140,7 +142,7 @@ router.afterEach(() => {
           </li>
         </ul>
       </div>
-      <base-dropdown fullwidth position="top">
+      <base-dropdown fullwidth :classes="{ wrapper: 'bottom-full mb-2' }">
         <template #toggle="{ toggle, visible }">
           <a
             href="#"
@@ -169,7 +171,7 @@ router.afterEach(() => {
         >
           <show-sidebar-icon class="w-4 h-4" />
         </base-button>
-        <base-dropdown>
+        <base-dropdown :classes="{ wrapper: 'mt-2' }">
           <template #toggle="{ toggle }">
             <base-button size="square-lg" color="transparent" @click="toggle">
               <user-icon class="w-4 h-4" />

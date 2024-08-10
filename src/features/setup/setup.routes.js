@@ -6,6 +6,7 @@ export const setupRoutes = [
       layout: 'LayoutAuth',
       requireAuth: true,
       requireSetupNotFinished: true,
+      title: 'Welcome',
     },
     component: () => import('./pages/setup-index-page.vue'),
   },

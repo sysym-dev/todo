@@ -8,7 +8,7 @@ import {
   ChevronUp as HideIcon,
   X as ClearIcon,
 } from '@vicons/tabler';
-import { watch } from 'vue';
+import { watch, ref } from 'vue';
 
 const props = defineProps({
   placeholder: String,
@@ -28,12 +28,21 @@ const visible = defineModel('visible');
 const selected = defineModel();
 const search = defineModel('search');
 
+const highlightedOptionIndex = ref(-1);
+const optionDivs = ref(null);
+const wrapperDiv = ref(null);
+
 function setSearchValue() {
   search.value = selected.value
     ? props.optionNameResolve
       ? props.optionNameResolve(selected.value)
       : selected.value.name
     : null;
+}
+function checkEndScroll(el) {
+  if (el.scrollTop >= el.scrollHeight - el.clientHeight) {
+    emit('end-scroll');
+  }
 }
 
 function onFocus() {
@@ -64,12 +73,57 @@ function onSearch() {
   emit('search', search.value);
 }
 function onScroll(e) {
-  if (e.target.scrollTop >= e.target.scrollHeight - e.target.clientHeight) {
-    emit('end-scroll');
-  }
+  checkEndScroll(e.target);
 }
 function onCreate() {
   emit('create', search.value);
+}
+function onKeyDown(e) {
+  if (e.key === 'ArrowDown') {
+    if (highlightedOptionIndex.value !== props.options.length - 1) {
+      highlightedOptionIndex.value++;
+
+      const wrapperRect = wrapperDiv.value.getBoundingClientRect();
+      const optionRect =
+        optionDivs.value[highlightedOptionIndex.value].getBoundingClientRect();
+
+      if (optionRect.bottom > wrapperRect.bottom) {
+        const offset = optionRect.bottom - wrapperRect.bottom;
+
+        if (highlightedOptionIndex.value === props.options.length - 1) {
+          wrapperDiv.value.scrollTop = wrapperRect.bottom;
+        } else {
+          wrapperDiv.value.scrollTop += offset;
+        }
+      }
+    }
+  } else if (e.key === 'ArrowUp') {
+    if (
+      highlightedOptionIndex.value !== -1 &&
+      highlightedOptionIndex.value > 0
+    ) {
+      highlightedOptionIndex.value--;
+
+      const wrapperRect = wrapperDiv.value.getBoundingClientRect();
+      const optionRect =
+        optionDivs.value[highlightedOptionIndex.value].getBoundingClientRect();
+
+      if (optionRect.top < wrapperRect.top) {
+        const offset = wrapperRect.top - optionRect.top;
+
+        wrapperDiv.value.scrollTop -= offset;
+      }
+    }
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+
+    if (highlightedOptionIndex.value !== -1) {
+      onSelect(props.options[highlightedOptionIndex.value]);
+    }
+  }
+}
+function onHoverOption(index) {
+  highlightedOptionIndex.value = index;
 }
 
 watch(selected, () => {
@@ -79,6 +133,12 @@ watch(selected, () => {
 watch(visible, (value) => {
   if (!value) {
     setSearchValue();
+
+    document.removeEventListener('keydown', onKeyDown);
+  } else {
+    highlightedOptionIndex.value = -1;
+
+    document.addEventListener('keydown', onKeyDown);
   }
 });
 
@@ -130,6 +190,7 @@ setSearchValue();
     >
       <div
         v-if="visible"
+        ref="wrapperDiv"
         :class="[
           'z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg flex flex-col py-1 max-h-[150px] overflow-y-auto',
           contentWrapperStatic ? 'static' : 'absolute',
@@ -143,15 +204,20 @@ setSearchValue();
           >
         </p>
         <div
-          v-for="option in options"
-          :key="option.id"
-          href="#"
+          v-for="(option, index) in options"
+          :key="index"
+          ref="optionDivs"
           :class="[
             'px-3 py-2',
             selected && selected.id === option.id
               ? 'bg-blue-600 text-white'
-              : 'text-gray-900 hover:bg-gray-100',
+              : 'text-gray-900',
+            highlightedOptionIndex === index &&
+            (!selected || selected.id !== option.id)
+              ? 'bg-gray-100'
+              : '',
           ]"
+          @mouseover="onHoverOption(index)"
           @click="onSelect(option)"
         >
           {{ optionNameResolve ? optionNameResolve(option) : option.name }}
