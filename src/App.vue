@@ -17,6 +17,13 @@ async function loadMe() {
   }
 }
 
+router.afterEach((to) => {
+  const pageTitle = to.meta.title;
+  const appName = import.meta.env.VITE_APP_NAME;
+
+  document.title = pageTitle ? `${pageTitle} - ${appName}` : appName;
+});
+
 loadMe();
 </script>
 
