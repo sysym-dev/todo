@@ -29,6 +29,7 @@ const { request, loading, error } = useRequest(
 );
 
 const dates = getDatesInAWeek();
+const today = parseDate();
 
 const data = reactive({
   labels: dates.map((date) => date.format('dddd')),
@@ -46,8 +47,6 @@ const data = reactive({
 const options = {};
 
 async function setDailyReport() {
-  const today = parseDate();
-
   const res = await request({
     params: {
       month: today.month() + 1,
@@ -75,7 +74,7 @@ setDailyReport();
 
 <template>
   <base-card
-    title="Daily Expenses"
+    :title="`Daily Expenses (${today.format('MMMM YYYY')})`"
     :title-loading="loading"
     :with-content="!loading"
     :error="!!error"

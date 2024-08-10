@@ -14,7 +14,7 @@ const defaultTransactionDateRange = {
   <summary-card />
   <card-list-card />
   <transaction-table-card
-    title="Transactions This Month"
+    title="Monthly Transactions"
     :with-filter="false"
     :default-date-range="defaultTransactionDateRange"
   />

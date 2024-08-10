@@ -16,3 +16,11 @@ export function getDatesInAWeek() {
 
   return Array.from({ length: 7 }).map((_, i) => startDate.add(i, 'day'));
 }
+
+export function getDatesInAMonth() {
+  const startDate = dayjs().startOf('month');
+
+  return Array.from({ length: startDate.daysInMonth() }).map((_, i) =>
+    startDate.add(i, 'day'),
+  );
+}
