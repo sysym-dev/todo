@@ -99,7 +99,7 @@ function onKeyDown(e) {
     }
   } else if (e.key === 'ArrowUp') {
     if (
-      highlightedOptionIndex.value !== null &&
+      highlightedOptionIndex.value !== -1 &&
       highlightedOptionIndex.value > 0
     ) {
       highlightedOptionIndex.value--;
@@ -113,6 +113,12 @@ function onKeyDown(e) {
 
         wrapperDiv.value.scrollTop -= offset;
       }
+    }
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+
+    if (highlightedOptionIndex.value !== -1) {
+      onSelect(props.options[highlightedOptionIndex.value]);
     }
   }
 }
