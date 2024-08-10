@@ -6,6 +6,7 @@ export const reportRoutes = [
       layout: 'LayoutApp',
       requireAuth: true,
       requireSetupFinished: true,
+      title: 'Reports',
     },
     component: () => import('./pages/report-index-page.vue'),
   },

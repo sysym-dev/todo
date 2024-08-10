@@ -6,6 +6,7 @@ export const profileRoutes = [
       layout: 'LayoutApp',
       requireAuth: true,
       requireSetupFinished: true,
+      title: 'Profile',
     },
     component: () => import('./pages/profile-index-page.vue'),
   },

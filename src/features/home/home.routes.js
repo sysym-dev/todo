@@ -6,6 +6,7 @@ export const homeRoutes = [
       layout: 'LayoutApp',
       requireAuth: true,
       requireSetupFinished: true,
+      title: 'Dashboard',
     },
     component: () => import('./pages/home-page.vue'),
   },
