@@ -21,6 +21,8 @@ const route = useRoute();
 const router = useRouter();
 const authStore = useAuthStore();
 
+const appName = import.meta.env.VITE_APP_NAME;
+
 const logoutConfirmVisible = ref(false);
 const mobileSidebarVisible = ref(false);
 
@@ -112,7 +114,7 @@ router.afterEach(() => {
     >
       <div class="space-y-4">
         <div class="px-3 flex items-center justify-between">
-          <h2 class="font-bold text-lg">Ixpense</h2>
+          <h2 class="font-bold text-lg">{{ appName }}</h2>
           <div class="lg:hidden">
             <base-button
               size="square"
