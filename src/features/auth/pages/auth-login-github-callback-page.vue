@@ -66,7 +66,13 @@ if (!route.query.code) {
   }
 } else {
   if (authStore.loggedIn) {
-    connectToGithub();
+    if (authStore.me.githubId) {
+      router.push({
+        name: 'profile',
+      });
+    } else {
+      connectToGithub();
+    }
   } else {
     login();
   }
