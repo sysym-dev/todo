@@ -4,6 +4,7 @@ import { homeRoutes } from './features/home/home.routes';
 import { profileRoutes } from './features/profile/profile.routes';
 import { reportRoutes } from './features/report/report.routes';
 import { setupRoutes } from './features/setup/setup.routes';
+import { stateRoutes } from './features/state/state.routes';
 import { transactionRoutes } from './features/transaction/transaction.routes';
 
 export const routes = [
@@ -14,4 +15,5 @@ export const routes = [
   ...authRoutes,
   ...profileRoutes,
   ...setupRoutes,
+  ...stateRoutes,
 ];
