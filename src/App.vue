@@ -1,11 +1,11 @@
 <script setup>
-import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
 import { reactive, ref } from 'vue';
+import TodoListItem from './features/todo/components/todo-list-item.vue';
 
-const newTask = reactive({
+const newTodo = reactive({
   name: '',
 });
-const tasks = ref([
+const todos = ref([
   { id: 1, name: 'Buy groceries', done: false },
   { id: 2, name: 'Complete project report', done: true },
   { id: 3, name: 'Schedule doctor appointment', done: false },
@@ -18,53 +18,34 @@ const tasks = ref([
   { id: 10, name: 'Send email to client', done: true },
 ]);
 
-function onSubmitNewTask() {
-  tasks.value.push({
-    id: tasks.value.length + 1,
-    name: newTask.name,
+function onSubmitNewTodo() {
+  todos.value.push({
+    id: todos.value.length + 1,
+    name: newTodo.name,
     done: false,
   });
 
-  newTask.name = '';
+  newTodo.name = '';
 }
 </script>
 
 <template>
   <main class="bg-white max-w-sm w-full mx-auto mt-20 space-y-4">
-    <h1 class="font-bold text-2xl text-gray-900">Today Task</h1>
+    <h1 class="font-bold text-2xl text-gray-900">Today Todo</h1>
     <ul class="space-y-2">
-      <li
-        v-for="(task, index) in tasks"
-        :key="task.id"
-        class="group flex items-center gap-x-3"
-      >
-        <input
-          type="checkbox"
-          :id="`task-${task.id}`"
-          v-model="tasks[index].done"
-        />
-        <label
-          :for="`task-${task.id}`"
-          :class="['text-gray-900', task.done ? 'text-gray-400' : '']"
-          >{{ task.name }}</label
-        >
-        <div class="hidden group-hover:flex items-center gap-x-1">
-          <button>
-            <edit-icon class="w-4 h-4 text-blue-600" />
-          </button>
-          <button>
-            <delete-icon class="w-4 h-4 text-red-600" />
-          </button>
-        </div>
-      </li>
+      <todo-list-item
+        v-for="(todo, index) in todos"
+        :key="todo.id"
+        v-model="todos[index]"
+      />
     </ul>
-    <form @submit.prevent="onSubmitNewTask">
+    <form @submit.prevent="onSubmitNewTodo">
       <input
         type="text"
         class="w-full"
-        placeholder="Input New Task"
+        placeholder="Input New Todo"
         autofocus
-        v-model="newTask.name"
+        v-model="newTodo.name"
       />
     </form>
   </main>
