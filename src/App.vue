@@ -21,14 +21,14 @@ const newTodo = reactive({
 const newTodoInput = ref();
 
 const todos = ref([]);
-const presentage = computed(() => {
+const percentage = computed(() => {
   const total = todos.value.length;
   const done = todos.value.filter((todo) => todo.done).length;
 
   return {
     total,
     done,
-    presentage: Math.round((done / total) * 100),
+    percentage: Math.round((done / total) * 100),
   };
 });
 
@@ -83,15 +83,15 @@ onMounted(() => {
       <div class="h-2 bg-gray-100">
         <div
           class="h-full bg-blue-600"
-          :style="{ width: `${presentage.presentage}%` }"
+          :style="{ width: `${percentage.percentage}%` }"
         ></div>
       </div>
       <div class="flex items-center justify-between">
         <span class="block text-xs text-gray-500"
-          >{{ presentage.done }}/{{ presentage.total }}</span
+          >{{ percentage.done }}/{{ percentage.total }}</span
         >
         <span class="block text-xs text-gray-500"
-          >{{ presentage.presentage }}%</span
+          >{{ percentage.percentage }}%</span
         >
       </div>
     </div>
