@@ -2,6 +2,7 @@
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
 import { nextTick, ref } from 'vue';
 
+const emit = defineEmits(['delete']);
 const todo = defineModel();
 
 const editing = ref(false);
@@ -19,6 +20,9 @@ function onEditFocusOut() {
 }
 function onEditSubmit() {
   editing.value = false;
+}
+function onDelete() {
+  emit('delete');
 }
 </script>
 
@@ -48,7 +52,7 @@ function onEditSubmit() {
       <button @click="onEdit">
         <edit-icon class="w-4 h-4 text-blue-600" />
       </button>
-      <button>
+      <button @click="onDelete">
         <delete-icon class="w-4 h-4 text-red-600" />
       </button>
     </div>

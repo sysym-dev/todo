@@ -27,6 +27,9 @@ function onSubmitNewTodo() {
 
   newTodo.name = '';
 }
+function onDeleteTodo(index) {
+  todos.value.splice(index, 1);
+}
 </script>
 
 <template>
@@ -37,6 +40,7 @@ function onSubmitNewTodo() {
         v-for="(todo, index) in todos"
         :key="todo.id"
         v-model="todos[index]"
+        @delete="onDeleteTodo(index)"
       />
     </ul>
     <form @submit.prevent="onSubmitNewTodo">
