@@ -61,7 +61,9 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="bg-white max-w-sm w-full mx-auto my-20 space-y-4">
+  <main
+    class="bg-white max-w-sm w-full mx-auto my-4 space-y-4 px-4 sm:my-20 md:px-0"
+  >
     <div class="flex items-center justify-between">
       <h1 class="font-bold text-2xl text-gray-900">Today Todo</h1>
       <button
