@@ -1,5 +1,10 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import { createApp } from 'vue';
+import './style.css';
+import App from './App.vue';
+import { useEmitter } from './plugins/emitter';
 
-createApp(App).mount('#app')
+const app = createApp(App);
+
+useEmitter(app);
+
+app.mount('#app');
