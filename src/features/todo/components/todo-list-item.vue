@@ -1,25 +1,53 @@
 <script setup>
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
-import { nextTick, ref } from 'vue';
+import { inject, nextTick, reactive, ref } from 'vue';
+import { useValidation } from 'src/cores/validation';
+import { z } from 'zod';
 
 const emit = defineEmits(['delete']);
+
+const emitter = inject('emitter');
+const { validate, error } = useValidation(
+  z.object({
+    name: z
+      .string({ required_error: 'Todo name cannot be empty' })
+      .min(1, { message: 'Todo name cannot be empty' }),
+  }),
+);
+
 const todo = defineModel();
 
 const editing = ref(false);
+const editValue = reactive({
+  name: '',
+});
 const editInput = ref();
 
+async function save() {
+  const res = await validate(editValue);
+
+  if (res.success) {
+    todo.value.name = res.data.name;
+  } else {
+    emitter.emit('create-toast', { message: error.value.name });
+  }
+
+  editing.value = false;
+}
+
 async function onEdit() {
+  editValue.name = todo.value.name;
   editing.value = true;
 
   await nextTick();
 
   editInput.value.focus();
 }
-function onEditFocusOut() {
-  editing.value = false;
+async function onEditFocusOut() {
+  await save();
 }
-function onEditSubmit() {
-  editing.value = false;
+async function onEditSubmit() {
+  await save();
 }
 function onDelete() {
   emit('delete');
@@ -33,7 +61,7 @@ function onDelete() {
       <input
         ref="editInput"
         class="border-0 bg-transparent p-0 focus:ring-0 w-full"
-        v-model="todo.name"
+        v-model="editValue.name"
         @focusout="onEditFocusOut"
       />
     </form>
