@@ -1,28 +1,26 @@
 <script setup>
 import { onMounted, reactive, ref, computed } from 'vue';
 import { Plus as NewTodoIcon } from '@vicons/tabler';
-import TodoListItem from './features/todo/components/todo-list-item.vue';
+import TodoListItem from 'src/features/todo/components/todo-list-item.vue';
+import BaseInput from 'src/components/base/base-input.vue';
+import BaseFormItem from 'src/components/base/base-form-item.vue';
+import { useValidation } from 'src/cores/validation';
+import { z } from 'zod';
+
+const { validate, error, resetError } = useValidation(
+  z.object({
+    name: z
+      .string({ required_error: 'Todo name cannot be empty' })
+      .min(1, { message: 'Todo name cannot be empty' }),
+  }),
+);
 
 const newTodo = reactive({
   name: '',
 });
-const inputNewTodo = ref();
+const newTodoInput = ref();
 
-const todos = ref([
-  { id: 1, name: 'Buy groceries', done: false },
-  { id: 2, name: 'Complete project report', done: true },
-  { id: 3, name: 'Schedule doctor appointment', done: false },
-  { id: 4, name: 'Finish reading book', done: true },
-  { id: 5, name: 'Plan weekend trip', done: false },
-  { id: 6, name: 'Attend team meeting', done: true },
-  { id: 7, name: 'Fix bug in code', done: false },
-  { id: 8, name: 'Call plumber', done: true },
-  { id: 9, name: 'Organize desk', done: false },
-  { id: 10, name: 'Send email to client', done: true },
-  { id: 11, name: 'Exercise for 30 minutes', done: false },
-  { id: 12, name: 'Prepare presentation', done: true },
-  { id: 13, name: 'Water the plants', done: false },
-]);
+const todos = ref([]);
 const presentage = computed(() => {
   const total = todos.value.length;
   const done = todos.value.filter((todo) => todo.done).length;
@@ -34,20 +32,27 @@ const presentage = computed(() => {
   };
 });
 
-function onSubmitNewTodo() {
-  todos.value.push({
-    id: todos.value.length + 1,
-    name: newTodo.name,
-    done: false,
-  });
+async function onSubmitNewTodo() {
+  const res = await validate(newTodo);
 
-  newTodo.name = '';
+  if (!res.error) {
+    todos.value.push({
+      id: todos.value.length + 1,
+      name: res.data.name,
+      done: false,
+    });
+
+    newTodo.name = '';
+  }
 }
 function onClickNewTodo() {
-  inputNewTodo.value.focus();
+  newTodoInput.value.input.focus();
 }
 function onDeleteTodo(index) {
   todos.value.splice(index, 1);
+}
+function onInputNewTodo() {
+  resetError();
 }
 
 onMounted(() => {
@@ -55,7 +60,7 @@ onMounted(() => {
     document.documentElement.scrollHeight <=
     document.documentElement.clientHeight
   ) {
-    inputNewTodo.value.focus();
+    newTodoInput.value.input.focus();
   }
 });
 </script>
@@ -74,7 +79,7 @@ onMounted(() => {
         <span>New Todo</span>
       </button>
     </div>
-    <div class="space-y-1">
+    <div v-if="todos.length" class="space-y-1">
       <div class="h-2 bg-gray-100">
         <div
           class="h-full bg-blue-600"
@@ -99,13 +104,15 @@ onMounted(() => {
       />
     </ul>
     <form @submit.prevent="onSubmitNewTodo">
-      <input
-        ref="inputNewTodo"
-        type="text"
-        class="w-full"
-        placeholder="Input New Todo"
-        v-model="newTodo.name"
-      />
+      <base-form-item :message="error.name">
+        <base-input
+          ref="newTodoInput"
+          placeholder="Input New Todo"
+          :state="error.name ? 'error' : 'default'"
+          v-model="newTodo.name"
+          @input="onInputNewTodo"
+        />
+      </base-form-item>
     </form>
   </main>
 </template>
