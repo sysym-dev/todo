@@ -4,6 +4,7 @@ import { Plus as NewTodoIcon } from '@vicons/tabler';
 import TodoListItem from 'src/features/todo/components/todo-list-item.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
+import AppToast from 'src/components/app/app-toast.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 
@@ -66,6 +67,7 @@ onMounted(() => {
 </script>
 
 <template>
+  <app-toast />
   <main
     class="bg-white max-w-sm w-full mx-auto my-4 space-y-4 px-4 sm:my-20 md:px-0"
   >
