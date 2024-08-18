@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, computed } from 'vue';
 import { Plus as NewTodoIcon } from '@vicons/tabler';
 import TodoListItem from './features/todo/components/todo-list-item.vue';
 
@@ -22,44 +22,17 @@ const todos = ref([
   { id: 11, name: 'Exercise for 30 minutes', done: false },
   { id: 12, name: 'Prepare presentation', done: true },
   { id: 13, name: 'Water the plants', done: false },
-  { id: 14, name: 'Pick up laundry', done: true },
-  { id: 15, name: 'Write blog post', done: false },
-  { id: 16, name: 'Research new software tools', done: true },
-  { id: 17, name: 'Plan weekly meals', done: false },
-  { id: 18, name: 'Check bank statement', done: true },
-  { id: 19, name: 'Update resume', done: false },
-  { id: 20, name: 'Attend workshop', done: true },
-  { id: 21, name: 'Clean the kitchen', done: false },
-  { id: 22, name: 'Backup important files', done: true },
-  { id: 23, name: 'Refuel the car', done: false },
-  { id: 24, name: 'Pay utility bills', done: true },
-  { id: 25, name: 'Book flight tickets', done: false },
-  { id: 26, name: 'Review code changes', done: true },
-  { id: 27, name: 'Prepare for meeting with client', done: false },
-  { id: 28, name: 'Buy a birthday gift', done: true },
-  { id: 29, name: 'Organize photo album', done: false },
-  { id: 30, name: 'Cook dinner', done: true },
-  { id: 31, name: 'Update project plan', done: false },
-  { id: 32, name: 'Finish online course', done: true },
-  { id: 33, name: 'Clean the car', done: false },
-  { id: 34, name: 'Set up new software', done: true },
-  { id: 35, name: 'Write thank you notes', done: false },
-  { id: 36, name: 'Read industry news', done: true },
-  { id: 37, name: 'Declutter the garage', done: false },
-  { id: 38, name: 'Prepare budget report', done: true },
-  { id: 39, name: 'Repair broken chair', done: false },
-  { id: 40, name: 'Walk the dog', done: true },
-  { id: 41, name: 'Paint the living room', done: false },
-  { id: 42, name: 'Respond to social media messages', done: true },
-  { id: 43, name: 'Write code documentation', done: false },
-  { id: 44, name: 'Create a new playlist', done: true },
-  { id: 45, name: 'Check email inbox', done: false },
-  { id: 46, name: 'Attend family gathering', done: true },
-  { id: 47, name: 'Sort through old clothes', done: false },
-  { id: 48, name: 'Update blog layout', done: true },
-  { id: 49, name: 'Call the bank', done: false },
-  { id: 50, name: "Make doctor's follow-up appointment", done: true },
 ]);
+const presentage = computed(() => {
+  const total = todos.value.length;
+  const done = todos.value.filter((todo) => todo.done).length;
+
+  return {
+    total,
+    done,
+    presentage: Math.round((done / total) * 100),
+  };
+});
 
 function onSubmitNewTodo() {
   todos.value.push({
@@ -98,6 +71,22 @@ onMounted(() => {
         <new-todo-icon class="w-3 h-3" />
         <span>New Todo</span>
       </button>
+    </div>
+    <div class="space-y-1">
+      <div class="h-2 bg-gray-100">
+        <div
+          class="h-full bg-blue-600"
+          :style="{ width: `${presentage.presentage}%` }"
+        ></div>
+      </div>
+      <div class="flex items-center justify-between">
+        <span class="block text-xs text-gray-500"
+          >{{ presentage.done }}/{{ presentage.total }}</span
+        >
+        <span class="block text-xs text-gray-500"
+          >{{ presentage.presentage }}%</span
+        >
+      </div>
     </div>
     <ul class="space-y-2">
       <todo-list-item
