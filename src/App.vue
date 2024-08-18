@@ -1,5 +1,5 @@
 <script setup>
-import { Dots as OptionIcon } from '@vicons/tabler';
+import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
 import { reactive, ref } from 'vue';
 
 const newTask = reactive({
@@ -36,7 +36,7 @@ function onSubmitNewTask() {
       <li
         v-for="(task, index) in tasks"
         :key="task.id"
-        class="group flex items-center gap-x-2"
+        class="group flex items-center gap-x-3"
       >
         <input
           type="checkbox"
@@ -45,12 +45,17 @@ function onSubmitNewTask() {
         />
         <label
           :for="`task-${task.id}`"
-          :class="['text-gray-900', task.done ? 'line-through' : '']"
+          :class="['text-gray-900', task.done ? 'text-gray-400' : '']"
           >{{ task.name }}</label
         >
-        <button class="hidden group-hover:block">
-          <option-icon class="w-4 h-4" />
-        </button>
+        <div class="hidden group-hover:flex items-center gap-x-1">
+          <button>
+            <edit-icon class="w-4 h-4 text-blue-600" />
+          </button>
+          <button>
+            <delete-icon class="w-4 h-4 text-red-600" />
+          </button>
+        </div>
       </li>
     </ul>
     <form @submit.prevent="onSubmitNewTask">
