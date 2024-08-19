@@ -1,13 +1,12 @@
 <script setup>
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
-import { inject, nextTick, reactive, ref } from 'vue';
+import { nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 
 const emit = defineEmits(['delete']);
 
-const emitter = inject('emitter');
-const { validate, error } = useValidation(
+const { validate } = useValidation(
   z.object({
     name: z
       .string({ required_error: 'Todo name cannot be empty' })
@@ -28,8 +27,6 @@ async function save() {
 
   if (res.success) {
     todo.value.name = res.data.name;
-  } else {
-    emitter.emit('create-toast', { message: error.value.name });
   }
 
   editing.value = false;
@@ -68,7 +65,7 @@ function onDelete() {
     <label
       v-else
       :for="`todo-${todo.id}`"
-      :class="['text-gray-900', todo.done ? 'text-gray-400' : '']"
+      :class="[todo.done ? 'text-gray-400' : 'text-gray-900']"
       >{{ todo.name }}</label
     >
     <div

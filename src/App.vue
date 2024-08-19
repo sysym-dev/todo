@@ -68,8 +68,23 @@ onMounted(() => {
 
 <template>
   <app-toast />
+  <nav class="border-b h-14 flex items-center">
+    <div
+      class="max-w-sm w-full mx-auto px-4 md:px-0 flex items-center justify-between"
+    >
+      <ul class="flex items-center gap-x-4">
+        <li>
+          <a href="" class="text-blue-600 font-bold">Today</a>
+        </li>
+        <li>
+          <a href="" class="text-gray-900">Yesterday</a>
+        </li>
+      </ul>
+      <a href="" class="text-gray-900">Sign In</a>
+    </div>
+  </nav>
   <main
-    class="bg-white max-w-sm w-full mx-auto my-4 space-y-4 px-4 sm:my-20 md:px-0"
+    class="bg-white max-w-sm w-full mx-auto my-4 space-y-4 px-4 sm:my-10 md:px-0"
   >
     <div class="flex items-center justify-between">
       <h1 class="font-bold text-2xl text-gray-900">Today Todo</h1>
