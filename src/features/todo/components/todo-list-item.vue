@@ -62,7 +62,7 @@ function onDelete() {
         ref="editInput"
         class="border-0 bg-transparent p-0 focus:ring-0 w-full"
         v-model="editValue.name"
-        @focusout="onEditFocusOut"
+        v-click-outside="onEditFocusOut"
       />
     </form>
     <label
