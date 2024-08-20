@@ -77,7 +77,7 @@ onMounted(() => {
           <a href="" class="text-blue-600 font-bold">Today</a>
         </li>
         <li>
-          <a href="" class="text-gray-900">Yesterday</a>
+          <a href="" class="text-gray-900">Late</a>
         </li>
       </ul>
       <a href="" class="text-gray-900">Sign In</a>
