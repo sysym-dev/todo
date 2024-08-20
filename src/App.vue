@@ -7,7 +7,9 @@ import BaseFormItem from 'src/components/base/base-form-item.vue';
 import AppToast from 'src/components/app/app-toast.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
+import { useTodoStore } from './features/todo/todo.store';
 
+const todoStore = useTodoStore();
 const { validate, error, resetError } = useValidation(
   z.object({
     name: z
@@ -21,10 +23,9 @@ const newTodo = reactive({
 });
 const newTodoInput = ref();
 
-const todos = ref([]);
 const percentage = computed(() => {
-  const total = todos.value.length;
-  const done = todos.value.filter((todo) => todo.done).length;
+  const total = todoStore.todos.length;
+  const done = todoStore.todos.filter((todo) => todo.done).length;
 
   return {
     total,
@@ -37,10 +38,8 @@ async function onSubmitNewTodo() {
   const res = await validate(newTodo);
 
   if (!res.error) {
-    todos.value.push({
-      id: todos.value.length + 1,
-      name: res.data.name,
-      done: false,
+    todoStore.create({
+      name: newTodo.name,
     });
 
     newTodo.name = '';
@@ -49,8 +48,8 @@ async function onSubmitNewTodo() {
 function onClickNewTodo() {
   newTodoInput.value.input.focus();
 }
-function onDeleteTodo(index) {
-  todos.value.splice(index, 1);
+function onDeleteTodo(id) {
+  todoStore.remove(id);
 }
 function onInputNewTodo() {
   resetError();
@@ -96,7 +95,7 @@ onMounted(() => {
         <span>New Todo</span>
       </button>
     </div>
-    <div v-if="todos.length" class="space-y-1">
+    <div v-if="todoStore.todos.length" class="space-y-1">
       <div class="h-2 bg-gray-100">
         <div
           class="h-full bg-blue-600"
@@ -114,10 +113,10 @@ onMounted(() => {
     </div>
     <ul class="space-y-2">
       <todo-list-item
-        v-for="(todo, index) in todos"
+        v-for="(todo, index) in todoStore.todos"
         :key="todo.id"
-        v-model="todos[index]"
-        @delete="onDeleteTodo(index)"
+        v-model="todoStore.todos[index]"
+        @delete="onDeleteTodo(todo.id)"
       />
     </ul>
     <form @submit.prevent="onSubmitNewTodo">
