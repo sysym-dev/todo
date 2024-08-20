@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 export const useTodoStore = defineStore(
   'todo',
@@ -20,8 +20,11 @@ export const useTodoStore = defineStore(
     function create(todo) {
       todos.value.push({
         id: todos.value.length + 1,
+        done: false,
         ...todo,
       });
+
+      todos.value.sort((a, b) => a.done - b.done);
     }
 
     function remove(id) {
@@ -29,6 +32,18 @@ export const useTodoStore = defineStore(
 
       todos.value.splice(index, 1);
     }
+
+    function sortTodos() {
+      todos.value.sort((a, b) => a.done - b.done);
+    }
+
+    watch(
+      todos,
+      () => {
+        sortTodos();
+      },
+      { deep: true },
+    );
 
     return { todos, percentage, create, remove };
   },
