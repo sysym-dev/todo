@@ -23,5 +23,5 @@ function onClickNewTodo() {
       </button>
     </template>
   </base-heading>
-  <todo-list ref="todoListEl" />
+  <todo-list ref="todoListEl" :filter="{ today: true }" />
 </template>
