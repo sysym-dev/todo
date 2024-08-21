@@ -6,6 +6,7 @@ import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { useTodoStore } from 'src/features/todo/todo.store';
+import { parseDate } from 'src/utils/date';
 
 const props = defineProps({
   withNewTodo: {
@@ -16,6 +17,8 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  withEmptyMessage: Boolean,
+  filter: Object,
 });
 
 const todoStore = useTodoStore();
@@ -32,9 +35,24 @@ const newTodo = reactive({
 });
 const newTodoInput = ref();
 
+const todos = computed(() => {
+  if (props.filter.today) {
+    return todoStore.todos.filter((todo) =>
+      parseDate(todo.date).isBetween(
+        parseDate().startOf('day'),
+        parseDate().endOf('day'),
+      ),
+    );
+  }
+
+  return todoStore.todos.filter(
+    (todo) =>
+      parseDate(todo.date).isBefore(parseDate().startOf('day')) && !todo.done,
+  );
+});
 const percentage = computed(() => {
-  const total = todoStore.todos.length;
-  const done = todoStore.todos.filter((todo) => todo.done).length;
+  const total = todos.value.length;
+  const done = todos.value.filter((todo) => todo.done).length;
 
   return {
     total,
@@ -49,6 +67,7 @@ async function onSubmitNewTodo() {
   if (!res.error) {
     todoStore.create({
       name: newTodo.name,
+      date: new Date(),
     });
 
     newTodo.name = '';
@@ -77,7 +96,7 @@ defineExpose({
 </script>
 
 <template>
-  <div v-if="withPercentage && todoStore.todos.length" class="space-y-1">
+  <div v-if="withPercentage && todos.length" class="space-y-1">
     <div class="h-2 bg-gray-100">
       <div
         class="h-full bg-blue-600"
@@ -93,11 +112,16 @@ defineExpose({
       >
     </div>
   </div>
+  <p v-if="withEmptyMessage && !todos.length" class="text-gray-600">All Done</p>
   <ul class="space-y-2">
     <todo-list-item
-      v-for="(todo, index) in todoStore.todos"
+      v-for="todo in todos"
       :key="todo.id"
-      v-model="todoStore.todos[index]"
+      v-model="
+        todoStore.todos[
+          todoStore.todos.findIndex((todoInStore) => todoInStore.id === todo.id)
+        ]
+      "
       @delete="onDeleteTodo(todo.id)"
     />
   </ul>
