@@ -7,6 +7,13 @@ import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { useTodoStore } from 'src/features/todo/todo.store';
 
+const props = defineProps({
+  withNewTodo: {
+    type: Boolean,
+    default: true,
+  },
+});
+
 const todoStore = useTodoStore();
 const { validate, error, resetError } = useValidation(
   z.object({
@@ -52,8 +59,9 @@ function onInputNewTodo() {
 
 onMounted(() => {
   if (
+    props.withNewTodo &&
     document.documentElement.scrollHeight <=
-    document.documentElement.clientHeight
+      document.documentElement.clientHeight
   ) {
     newTodoInput.value.input.focus();
   }
@@ -89,7 +97,7 @@ defineExpose({
       @delete="onDeleteTodo(todo.id)"
     />
   </ul>
-  <form @submit.prevent="onSubmitNewTodo">
+  <form v-if="withNewTodo" @submit.prevent="onSubmitNewTodo">
     <base-form-item :message="error.name">
       <base-input
         ref="newTodoInput"

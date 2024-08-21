@@ -5,5 +5,5 @@ import TodoList from 'src/features/todo/components/todo-list.vue';
 
 <template>
   <base-heading title="Late Todo" size="text-2xl" />
-  <todo-list />
+  <todo-list :with-new-todo="false" />
 </template>
