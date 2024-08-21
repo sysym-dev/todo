@@ -12,6 +12,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  withPercentage: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const todoStore = useTodoStore();
@@ -73,7 +77,7 @@ defineExpose({
 </script>
 
 <template>
-  <div v-if="todoStore.todos.length" class="space-y-1">
+  <div v-if="withPercentage && todoStore.todos.length" class="space-y-1">
     <div class="h-2 bg-gray-100">
       <div
         class="h-full bg-blue-600"
