@@ -48,11 +48,11 @@ async function onSubmitNewTodo() {
     newTodo.name = '';
   }
 }
-function onDeleteTodo(id) {
-  todoStore.remove(id);
-}
 function onInputNewTodo() {
   resetError();
+}
+function onUpdated() {
+  todoStore.load({ filter: props.filter });
 }
 
 onMounted(() => {
@@ -98,7 +98,7 @@ todoStore.load({ filter: props.filter });
       :key="index"
       :with-diff-date="withDiffDate"
       v-model="todoStore.todos[index]"
-      @delete="onDeleteTodo(todo.id)"
+      @updated="onUpdated"
     />
   </ul>
   <form v-if="withNewTodo" @submit.prevent="onSubmitNewTodo">

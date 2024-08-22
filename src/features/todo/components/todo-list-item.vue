@@ -9,7 +9,7 @@ import { useTodoStore } from 'src/features/todo/todo.store';
 defineProps({
   withDiffDate: Boolean,
 });
-const emit = defineEmits(['delete']);
+const emit = defineEmits(['updated']);
 
 const todoStore = useTodoStore();
 const { validate } = useValidation(
@@ -35,6 +35,8 @@ async function save() {
     todo.value.name = res.data.name;
 
     todoStore.update(todo.value.id, todo.value);
+
+    emit('updated');
   }
 
   editing.value = false;
@@ -55,10 +57,12 @@ async function onEditSubmit() {
   await save();
 }
 function onDelete() {
-  emit('delete');
+  todoStore.remove(todo.value.id);
 }
 function onChangeDone() {
   todoStore.update(todo.value.id, todo.value);
+
+  emit('updated');
 }
 </script>
 
