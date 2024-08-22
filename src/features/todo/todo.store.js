@@ -16,8 +16,55 @@ export const useTodoStore = defineStore('todo', () => {
     };
   });
 
-  function sync() {
-    localStorage.setItem('todos', JSON.stringify(todos.value));
+  function getDataFromStorage() {
+    const stored = localStorage.getItem('todos');
+
+    try {
+      if (stored) {
+        const data = JSON.parse(stored);
+
+        if (!Array.isArray(data)) {
+          return [];
+        } else {
+          return data.filter((todo) => {
+            if (typeof todo !== 'object') {
+              return false;
+            }
+
+            const required = ['id', 'name', 'done', 'date'];
+            const keys = Object.keys(todo);
+
+            return required.every((key) => keys.includes(key));
+          });
+        }
+      }
+    } catch (err) {
+      return [];
+    }
+  }
+
+  function sync(actions) {
+    const data = getDataFromStorage();
+
+    actions.forEach((action) => {
+      if (action.type === 'create') {
+        data.push(action.data);
+      } else if (action.type === 'update') {
+        const index = data.findIndex((item) => item.id === action.id);
+
+        if (index !== -1) {
+          data[index] = action.data;
+        }
+      } else if (action.type === 'delete') {
+        const index = data.findIndex((item) => item.id === action.id);
+
+        if (index !== -1) {
+          data.splice(index, 1);
+        }
+      }
+    });
+
+    localStorage.setItem('todos', JSON.stringify(data));
   }
 
   function create(todo) {
@@ -27,7 +74,7 @@ export const useTodoStore = defineStore('todo', () => {
       ...todo,
     });
 
-    sync();
+    sync([{ type: 'create', data: todo }]);
   }
 
   function remove(id) {
