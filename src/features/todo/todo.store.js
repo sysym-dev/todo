@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
+import { parseDate } from 'src/utils/date';
 
 export const useTodoStore = defineStore('todo', () => {
   const todos = ref([]);
@@ -37,7 +38,7 @@ export const useTodoStore = defineStore('todo', () => {
     sync();
   }
 
-  function load() {
+  function load(params) {
     const stored = localStorage.getItem('todos');
 
     try {
@@ -57,6 +58,15 @@ export const useTodoStore = defineStore('todo', () => {
 
             return required.every((key) => keys.includes(key));
           });
+
+          if (params?.filter?.late) {
+            todos.value = todos.value.filter((todo) => {
+              return (
+                !todo.done &&
+                parseDate(todo.date).isBefore(parseDate().startOf('day'))
+              );
+            });
+          }
         }
       }
     } catch (err) {}

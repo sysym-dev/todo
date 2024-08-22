@@ -69,7 +69,7 @@ defineExpose({
   newTodoInput,
 });
 
-todoStore.load();
+todoStore.load({ filter: props.filter });
 </script>
 
 <template>
