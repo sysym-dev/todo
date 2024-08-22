@@ -3,7 +3,11 @@ import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
 import { nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
+import { parseDate } from 'src/utils/date';
 
+defineProps({
+  withDiffDate: Boolean,
+});
 const emit = defineEmits(['delete']);
 
 const { validate } = useValidation(
@@ -62,24 +66,30 @@ function onDelete() {
         v-click-outside="onEditFocusOut"
       />
     </form>
-    <label
-      v-else
-      :for="`todo-${todo.id}`"
-      :class="[todo.done ? 'text-gray-400' : 'text-gray-900']"
-      >{{ todo.name }}</label
-    >
-    <div
-      :class="[
-        'hidden items-center gap-x-1',
-        !editing ? 'group-hover:flex' : '',
-      ]"
-    >
-      <button @click="onEdit">
-        <edit-icon class="w-4 h-4 text-blue-600" />
-      </button>
-      <button @click="onDelete">
-        <delete-icon class="w-4 h-4 text-red-600" />
-      </button>
+    <div v-else class="flex flex-grow justify-between items-center gap-x-3">
+      <div class="flex items-center gap-x-3 flex-grow">
+        <label
+          :for="`todo-${todo.id}`"
+          :class="[todo.done ? 'text-gray-400' : 'text-gray-900']"
+          >{{ todo.name }}</label
+        >
+        <div
+          :class="[
+            'hidden items-center gap-x-1',
+            !editing ? 'group-hover:flex' : '',
+          ]"
+        >
+          <button @click="onEdit">
+            <edit-icon class="w-4 h-4 text-blue-600" />
+          </button>
+          <button @click="onDelete">
+            <delete-icon class="w-4 h-4 text-red-600" />
+          </button>
+        </div>
+      </div>
+      <p class="text-xs text-red-600" v-if="withDiffDate">
+        {{ parseDate(todo.date).fromNow() }}
+      </p>
     </div>
   </li>
 </template>

@@ -18,6 +18,7 @@ const props = defineProps({
     default: true,
   },
   withEmptyMessage: Boolean,
+  withDiffDate: Boolean,
   filter: Object,
 });
 
@@ -67,7 +68,7 @@ async function onSubmitNewTodo() {
   if (!res.error) {
     todoStore.create({
       name: newTodo.name,
-      date: new Date(),
+      date: parseDate().subtract(1, 'day').toDate(),
     });
 
     newTodo.name = '';
@@ -115,8 +116,9 @@ defineExpose({
   <p v-if="withEmptyMessage && !todos.length" class="text-gray-600">All Done</p>
   <ul class="space-y-2">
     <todo-list-item
-      v-for="todo in todos"
-      :key="todo.id"
+      v-for="(todo, index) in todos"
+      :key="index"
+      :with-diff-date="withDiffDate"
       v-model="
         todoStore.todos[
           todoStore.todos.findIndex((todoInStore) => todoInStore.id === todo.id)
