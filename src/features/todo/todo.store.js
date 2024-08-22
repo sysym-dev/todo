@@ -61,5 +61,6 @@ export const useTodoStore = defineStore('todo', () => {
       }
     } catch (err) {}
   }
+
   return { todos, percentage, load, create, remove, sync };
 });
