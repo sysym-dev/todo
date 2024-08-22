@@ -59,6 +59,15 @@ export const useTodoStore = defineStore('todo', () => {
             return required.every((key) => keys.includes(key));
           });
 
+          if (params?.filter?.today) {
+            todos.value = todos.value.filter((todo) => {
+              return parseDate(todo.date).isBetween(
+                parseDate().startOf('day'),
+                parseDate().endOf('day'),
+              );
+            });
+          }
+
           if (params?.filter?.late) {
             todos.value = todos.value.filter((todo) => {
               return (
