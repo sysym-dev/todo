@@ -46,7 +46,13 @@ export const useTodoStore = defineStore('todo', () => {
   }
 
   function getLatestId() {
-    return getDataFromStorage().length + 1;
+    const data = getDataFromStorage();
+
+    if (!data.length) {
+      return 1;
+    }
+
+    return data.sort((a, b) => b.id - a.id)[0].id + 1;
   }
 
   function sync(actions) {
