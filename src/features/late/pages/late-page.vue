@@ -9,6 +9,7 @@ import TodoList from 'src/features/todo/components/todo-list.vue';
     :with-new-todo="false"
     :with-percentage="false"
     with-empty-message
+    with-diff-date
     :filter="{ late: true }"
   />
 </template>
