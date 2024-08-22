@@ -34,7 +34,7 @@ async function save() {
   if (res.success) {
     todo.value.name = res.data.name;
 
-    todoStore.sync();
+    todoStore.update(todo.value.id, todo.value);
   }
 
   editing.value = false;
@@ -58,7 +58,7 @@ function onDelete() {
   emit('delete');
 }
 function onChangeDone() {
-  todoStore.sync();
+  todoStore.update(todo.value.id, todo.value);
 }
 </script>
 

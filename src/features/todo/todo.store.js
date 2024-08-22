@@ -19,28 +19,34 @@ export const useTodoStore = defineStore('todo', () => {
   function getDataFromStorage() {
     const stored = localStorage.getItem('todos');
 
+    if (!stored) {
+      return [];
+    }
+
     try {
-      if (stored) {
-        const data = JSON.parse(stored);
+      const data = JSON.parse(stored);
 
-        if (!Array.isArray(data)) {
-          return [];
-        } else {
-          return data.filter((todo) => {
-            if (typeof todo !== 'object') {
-              return false;
-            }
+      if (!Array.isArray(data)) {
+        return [];
+      } else {
+        return data.filter((todo) => {
+          if (typeof todo !== 'object') {
+            return false;
+          }
 
-            const required = ['id', 'name', 'done', 'date'];
-            const keys = Object.keys(todo);
+          const required = ['id', 'name', 'done', 'date'];
+          const keys = Object.keys(todo);
 
-            return required.every((key) => keys.includes(key));
-          });
-        }
+          return required.every((key) => keys.includes(key));
+        });
       }
     } catch (err) {
       return [];
     }
+  }
+
+  function getLatestId() {
+    return getDataFromStorage().length + 1;
   }
 
   function sync(actions) {
@@ -68,13 +74,15 @@ export const useTodoStore = defineStore('todo', () => {
   }
 
   function create(todo) {
-    todos.value.push({
-      id: todos.value.length + 1,
+    const data = {
+      id: getLatestId(),
       done: false,
       ...todo,
-    });
+    };
 
-    sync([{ type: 'create', data: todo }]);
+    todos.value.push(data);
+
+    sync([{ type: 'create', data }]);
   }
 
   function remove(id) {
@@ -82,51 +90,34 @@ export const useTodoStore = defineStore('todo', () => {
 
     todos.value.splice(index, 1);
 
-    sync();
+    sync([{ type: 'delete', id }]);
+  }
+
+  function update(id, data) {
+    sync([{ type: 'update', id, data }]);
   }
 
   function load(params) {
-    const stored = localStorage.getItem('todos');
+    todos.value = getDataFromStorage();
 
-    try {
-      if (stored) {
-        const data = JSON.parse(stored);
+    if (params?.filter?.today) {
+      todos.value = todos.value.filter((todo) => {
+        return parseDate(todo.date).isBetween(
+          parseDate().startOf('day'),
+          parseDate().endOf('day'),
+        );
+      });
+    }
 
-        if (!Array.isArray(data)) {
-          todos.value = [];
-        } else {
-          todos.value = data.filter((todo) => {
-            if (typeof todo !== 'object') {
-              return false;
-            }
-
-            const required = ['id', 'name', 'done', 'date'];
-            const keys = Object.keys(todo);
-
-            return required.every((key) => keys.includes(key));
-          });
-
-          if (params?.filter?.today) {
-            todos.value = todos.value.filter((todo) => {
-              return parseDate(todo.date).isBetween(
-                parseDate().startOf('day'),
-                parseDate().endOf('day'),
-              );
-            });
-          }
-
-          if (params?.filter?.late) {
-            todos.value = todos.value.filter((todo) => {
-              return (
-                !todo.done &&
-                parseDate(todo.date).isBefore(parseDate().startOf('day'))
-              );
-            });
-          }
-        }
-      }
-    } catch (err) {}
+    if (params?.filter?.late) {
+      todos.value = todos.value.filter((todo) => {
+        return (
+          !todo.done &&
+          parseDate(todo.date).isBefore(parseDate().startOf('day'))
+        );
+      });
+    }
   }
 
-  return { todos, percentage, load, create, remove, sync };
+  return { todos, percentage, load, create, remove, update };
 });
