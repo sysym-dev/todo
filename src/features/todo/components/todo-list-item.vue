@@ -4,12 +4,14 @@ import { nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
+import { useTodoStore } from 'src/features/todo/todo.store';
 
 defineProps({
   withDiffDate: Boolean,
 });
 const emit = defineEmits(['delete']);
 
+const todoStore = useTodoStore();
 const { validate } = useValidation(
   z.object({
     name: z
@@ -31,6 +33,8 @@ async function save() {
 
   if (res.success) {
     todo.value.name = res.data.name;
+
+    todoStore.sync();
   }
 
   editing.value = false;
@@ -53,11 +57,19 @@ async function onEditSubmit() {
 function onDelete() {
   emit('delete');
 }
+function onChangeDone() {
+  todoStore.sync();
+}
 </script>
 
 <template>
   <li class="group flex items-center gap-x-3">
-    <input type="checkbox" :id="`todo-${todo.id}`" v-model="todo.done" />
+    <input
+      type="checkbox"
+      :id="`todo-${todo.id}`"
+      v-model="todo.done"
+      @change="onChangeDone"
+    />
     <form v-if="editing" class="w-full" @submit.prevent="onEditSubmit">
       <input
         ref="editInput"

@@ -1,51 +1,65 @@
 import { defineStore } from 'pinia';
-import { computed, ref, watch } from 'vue';
+import { computed, ref } from 'vue';
 
-export const useTodoStore = defineStore(
-  'todo',
-  () => {
-    const todos = ref([]);
+export const useTodoStore = defineStore('todo', () => {
+  const todos = ref([]);
 
-    const percentage = computed(() => {
-      const total = todos.value.length;
-      const done = todos.value.filter((todo) => todo.done).length;
+  const percentage = computed(() => {
+    const total = todos.value.length;
+    const done = todos.value.filter((todo) => todo.done).length;
 
-      return {
-        total,
-        done,
-        percentage: Math.round((done / total) * 100),
-      };
+    return {
+      total,
+      done,
+      percentage: Math.round((done / total) * 100),
+    };
+  });
+
+  function sync() {
+    localStorage.setItem('todos', JSON.stringify(todos.value));
+  }
+
+  function create(todo) {
+    todos.value.push({
+      id: todos.value.length + 1,
+      done: false,
+      ...todo,
     });
 
-    function create(todo) {
-      todos.value.push({
-        id: todos.value.length + 1,
-        done: false,
-        ...todo,
-      });
+    sync();
+  }
 
-      todos.value.sort((a, b) => a.done - b.done);
-    }
+  function remove(id) {
+    const index = todos.value.findIndex((todo) => todo.id === id);
 
-    function remove(id) {
-      const index = todos.value.findIndex((todo) => todo.id === id);
+    todos.value.splice(index, 1);
 
-      todos.value.splice(index, 1);
-    }
+    sync();
+  }
 
-    function sortTodos() {
-      todos.value.sort((a, b) => a.done - b.done);
-    }
+  function load() {
+    const stored = localStorage.getItem('todos');
 
-    watch(
-      todos,
-      () => {
-        sortTodos();
-      },
-      { deep: true },
-    );
+    try {
+      if (stored) {
+        const data = JSON.parse(stored);
 
-    return { todos, percentage, create, remove };
-  },
-  { persist: true },
-);
+        if (!Array.isArray(data)) {
+          todos.value = [];
+        } else {
+          todos.value = data.filter((todo) => {
+            if (typeof todo !== 'object') {
+              return false;
+            }
+
+            const required = ['id', 'name', 'done', 'date'];
+            const keys = Object.keys(todo);
+
+            return required.every((key) => keys.includes(key));
+          });
+        }
+      }
+    } catch (err) {}
+  }
+  return { todos, percentage, load, create, remove, sync };
+});
