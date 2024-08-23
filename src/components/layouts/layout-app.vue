@@ -13,6 +13,10 @@ const menus = [
     route: 'late',
     name: 'Late',
   },
+  {
+    route: 'upcoming',
+    name: 'Upcoming',
+  },
 ];
 </script>
 
