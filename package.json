@@ -10,11 +10,13 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.8",
     "click-outside-vue3": "^4.0.1",
     "dayjs": "^1.11.13",
     "mitt": "^3.0.1",
     "pinia": "^2.2.2",
     "pinia-plugin-persistedstate": "^3.2.1",
+    "v-calendar": "^3.1.2",
     "vue": "^3.4.37",
     "vue-router": "^4.4.3",
     "zod": "^3.23.8"
