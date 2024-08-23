@@ -3,9 +3,15 @@ import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
 import { nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
+import { parseDate } from 'src/utils/date';
+import { useTodoStore } from 'src/features/todo/todo.store';
 
-const emit = defineEmits(['delete']);
+defineProps({
+  withDiffDate: Boolean,
+});
+const emit = defineEmits(['updated']);
 
+const todoStore = useTodoStore();
 const { validate } = useValidation(
   z.object({
     name: z
@@ -27,6 +33,10 @@ async function save() {
 
   if (res.success) {
     todo.value.name = res.data.name;
+
+    todoStore.update(todo.value.id, todo.value);
+
+    emit('updated');
   }
 
   editing.value = false;
@@ -47,13 +57,23 @@ async function onEditSubmit() {
   await save();
 }
 function onDelete() {
-  emit('delete');
+  todoStore.remove(todo.value.id);
+}
+function onChangeDone() {
+  todoStore.update(todo.value.id, todo.value);
+
+  emit('updated');
 }
 </script>
 
 <template>
   <li class="group flex items-center gap-x-3">
-    <input type="checkbox" :id="`todo-${todo.id}`" v-model="todo.done" />
+    <input
+      type="checkbox"
+      :id="`todo-${todo.id}`"
+      v-model="todo.done"
+      @change="onChangeDone"
+    />
     <form v-if="editing" class="w-full" @submit.prevent="onEditSubmit">
       <input
         ref="editInput"
@@ -62,24 +82,30 @@ function onDelete() {
         v-click-outside="onEditFocusOut"
       />
     </form>
-    <label
-      v-else
-      :for="`todo-${todo.id}`"
-      :class="[todo.done ? 'text-gray-400' : 'text-gray-900']"
-      >{{ todo.name }}</label
-    >
-    <div
-      :class="[
-        'hidden items-center gap-x-1',
-        !editing ? 'group-hover:flex' : '',
-      ]"
-    >
-      <button @click="onEdit">
-        <edit-icon class="w-4 h-4 text-blue-600" />
-      </button>
-      <button @click="onDelete">
-        <delete-icon class="w-4 h-4 text-red-600" />
-      </button>
+    <div v-else class="flex flex-grow justify-between items-center gap-x-3">
+      <div class="flex items-center gap-x-3 flex-grow">
+        <label
+          :for="`todo-${todo.id}`"
+          :class="[todo.done ? 'text-gray-400' : 'text-gray-900']"
+          >{{ todo.name }}</label
+        >
+        <div
+          :class="[
+            'hidden items-center gap-x-1',
+            !editing ? 'group-hover:flex' : '',
+          ]"
+        >
+          <button @click="onEdit">
+            <edit-icon class="w-4 h-4 text-blue-600" />
+          </button>
+          <button @click="onDelete">
+            <delete-icon class="w-4 h-4 text-red-600" />
+          </button>
+        </div>
+      </div>
+      <p class="text-xs text-red-600" v-if="withDiffDate">
+        {{ parseDate(todo.date).fromNow() }}
+      </p>
     </div>
   </li>
 </template>
