@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import { Plus as NewTodoIcon } from '@vicons/tabler';
 import BaseHeading from 'src/components/base/base-heading.vue';
 import TodoList from 'src/features/todo/components/todo-list.vue';
+import { parseDate } from 'src/utils/date';
 
 const todoListEl = ref();
 
@@ -23,5 +24,9 @@ function onClickNewTodo() {
       </button>
     </template>
   </base-heading>
-  <todo-list ref="todoListEl" :filter="{ today: true }" />
+  <todo-list
+    ref="todoListEl"
+    :filter="{ today: true }"
+    :create-form-params="{ payload: { date: parseDate().toISOString() } }"
+  />
 </template>
