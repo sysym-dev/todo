@@ -7,6 +7,10 @@ const props = defineProps({
     type: String,
     default: 'normal',
   },
+  classes: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 const emit = defineEmits(['input']);
 
@@ -33,10 +37,11 @@ defineExpose({
 
 <template>
   <div class="relative">
+    <slot name="prepend" />
     <input
       ref="input"
       type="text"
-      :class="['w-full', color]"
+      :class="['w-full', color, classes.input]"
       :placeholder="placeholder"
       v-model="value"
       @input="onInput"

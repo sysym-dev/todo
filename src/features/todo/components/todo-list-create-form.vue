@@ -1,4 +1,6 @@
 <script setup>
+import 'v-calendar/style.css';
+import { DatePicker } from 'v-calendar';
 import { onMounted, reactive, ref } from 'vue';
 import { Calendar as CalendarIcon } from '@vicons/tabler';
 import BaseInput from 'src/components/base/base-input.vue';
@@ -67,12 +69,18 @@ defineExpose({
         @input="onInputNewTodo"
       >
         <template v-if="withDate" #append>
-          <button
-            type="button"
-            class="absolute top-0 right-0 h-full flex items-center px-2.5 text-gray-900"
+          <date-picker
+            v-slot="{ togglePopover }"
+            :popover="{ placement: 'bottom-end' }"
           >
-            <calendar-icon class="w-4 h-4" />
-          </button>
+            <button
+              type="button"
+              class="absolute top-0 right-0 h-full flex items-center px-3 text-gray-900"
+              @click="togglePopover"
+            >
+              <calendar-icon class="w-4 h-4" />
+            </button>
+          </date-picker>
         </template>
       </base-input>
     </base-form-item>
