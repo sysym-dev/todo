@@ -10,8 +10,9 @@ import { z } from 'zod';
 import { useTodoStore } from 'src/features/todo/todo.store';
 import { parseDate } from 'src/utils/date';
 
-defineProps({
+const props = defineProps({
   withDate: Boolean,
+  payload: Object,
 });
 
 const todoStore = useTodoStore();
@@ -20,24 +21,36 @@ const { validate, error, resetError } = useValidation(
     name: z
       .string({ required_error: 'Todo name cannot be empty' })
       .min(1, { message: 'Todo name cannot be empty' }),
+    date: z
+      .string({
+        required_error: 'Todo date is required',
+        invalid_type_error: 'Todo date must be a date',
+      })
+      .datetime(),
   }),
 );
 
 const newTodo = reactive({
   name: '',
+  date: null,
 });
 const newTodoInput = ref();
 
 async function onSubmitNewTodo() {
-  const res = await validate(newTodo);
+  const res = await validate({
+    name: newTodo.name,
+    date: newTodo.date ? newTodo.date.toISOString() : null,
+    ...props.payload,
+  });
 
   if (!res.error) {
     todoStore.create({
-      name: newTodo.name,
-      date: parseDate().toDate(),
+      name: res.data.name,
+      date: parseDate(res.data.date).toDate(),
     });
 
     newTodo.name = '';
+    newTodo.date = null;
   }
 }
 function onInputNewTodo() {
@@ -60,11 +73,11 @@ defineExpose({
 
 <template>
   <form @submit.prevent="onSubmitNewTodo">
-    <base-form-item :message="error.name">
+    <base-form-item :message="error.name || error.date">
       <base-input
         ref="newTodoInput"
         placeholder="Input New Todo"
-        :state="error.name ? 'error' : 'default'"
+        :state="error.name || error.date ? 'error' : 'default'"
         v-model="newTodo.name"
         @input="onInputNewTodo"
       >
@@ -72,6 +85,7 @@ defineExpose({
           <date-picker
             v-slot="{ togglePopover }"
             :popover="{ placement: 'bottom-end' }"
+            v-model="newTodo.date"
           >
             <button
               type="button"
