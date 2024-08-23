@@ -32,12 +32,15 @@ defineExpose({
 </script>
 
 <template>
-  <input
-    ref="input"
-    type="text"
-    :class="['w-full', color]"
-    :placeholder="placeholder"
-    v-model="value"
-    @input="onInput"
-  />
+  <div class="relative">
+    <input
+      ref="input"
+      type="text"
+      :class="['w-full', color]"
+      :placeholder="placeholder"
+      v-model="value"
+      @input="onInput"
+    />
+    <slot name="append" />
+  </div>
 </template>

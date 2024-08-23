@@ -1,11 +1,16 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue';
+import { Calendar as CalendarIcon } from '@vicons/tabler';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { useTodoStore } from 'src/features/todo/todo.store';
 import { parseDate } from 'src/utils/date';
+
+defineProps({
+  withDate: Boolean,
+});
 
 const todoStore = useTodoStore();
 const { validate, error, resetError } = useValidation(
@@ -60,7 +65,16 @@ defineExpose({
         :state="error.name ? 'error' : 'default'"
         v-model="newTodo.name"
         @input="onInputNewTodo"
-      />
+      >
+        <template v-if="withDate" #append>
+          <button
+            type="button"
+            class="absolute top-0 right-0 h-full flex items-center px-2.5 text-gray-900"
+          >
+            <calendar-icon class="w-4 h-4" />
+          </button>
+        </template>
+      </base-input>
     </base-form-item>
   </form>
 </template>

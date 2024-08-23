@@ -16,6 +16,7 @@ const props = defineProps({
   withEmptyMessage: Boolean,
   withDiffDate: Boolean,
   filter: Object,
+  createFormParams: Object,
 });
 
 const todoStore = useTodoStore();
@@ -61,5 +62,9 @@ todoStore.load({ filter: props.filter });
       @updated="onUpdated"
     />
   </ul>
-  <todo-list-create-form v-if="withNewTodo" ref="createForm" />
+  <todo-list-create-form
+    v-if="withNewTodo"
+    ref="createForm"
+    v-bind="createFormParams"
+  />
 </template>
