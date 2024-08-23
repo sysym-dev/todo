@@ -26,6 +26,7 @@ function onClickNewTodo() {
   <todo-list
     ref="todoListEl"
     :with-percentage="false"
+    with-diff-date
     :filter="{ upcoming: true }"
     :createFormParams="{
       withDate: true,

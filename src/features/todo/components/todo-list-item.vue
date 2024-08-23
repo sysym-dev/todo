@@ -1,6 +1,6 @@
 <script setup>
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
-import { nextTick, reactive, ref } from 'vue';
+import { computed, nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
@@ -27,6 +27,10 @@ const editValue = reactive({
   name: '',
 });
 const editInput = ref();
+
+const late = computed(() =>
+  parseDate(todo.value.date).isBefore(parseDate().startOf('day')),
+);
 
 async function save() {
   const res = await validate(editValue);
@@ -103,7 +107,10 @@ function onChangeDone() {
           </button>
         </div>
       </div>
-      <p class="text-xs text-red-600" v-if="withDiffDate">
+      <p
+        :class="['text-xs', late ? 'text-red-600' : 'text-gray-500']"
+        v-if="withDiffDate"
+      >
         {{ parseDate(todo.date).fromNow() }}
       </p>
     </div>
