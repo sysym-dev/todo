@@ -85,15 +85,27 @@ defineExpose({
           <date-picker
             v-slot="{ togglePopover }"
             :popover="{ placement: 'bottom-end' }"
+            :min-date="parseDate().add(1, 'day').toDate()"
             v-model="newTodo.date"
           >
-            <button
-              type="button"
-              class="absolute top-0 right-0 h-full flex items-center px-3 text-gray-900"
-              @click="togglePopover"
-            >
-              <calendar-icon class="w-4 h-4" />
-            </button>
+            <div class="absolute top-0 right-0 h-full flex items-center px-2">
+              <button
+                v-if="newTodo.date"
+                type="button"
+                class="text-gray-500 px-1"
+                @click="togglePopover"
+              >
+                {{ parseDate(newTodo.date).format('DD MMM') }}
+              </button>
+              <button
+                v-else
+                type="button"
+                class="w-6 h-6 text-gray-900 flex items-center justify-center"
+                @click="togglePopover"
+              >
+                <calendar-icon class="w-4 h-4" />
+              </button>
+            </div>
           </date-picker>
         </template>
       </base-input>
