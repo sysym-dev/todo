@@ -56,6 +56,12 @@ async function onSubmitNewTodo() {
 function onInputNewTodo() {
   resetError();
 }
+function onHideDate() {
+  newTodoInput.value.input.focus();
+}
+function onChange() {
+  resetError();
+}
 
 onMounted(() => {
   if (
@@ -87,6 +93,8 @@ defineExpose({
             :popover="{ placement: 'bottom-end' }"
             :min-date="parseDate().add(1, 'day').toDate()"
             v-model="newTodo.date"
+            @popover-did-hide="onHideDate"
+            @update:modelValue="onChange"
           >
             <div class="absolute top-0 right-0 h-full flex items-center px-2">
               <button
