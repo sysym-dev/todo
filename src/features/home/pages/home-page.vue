@@ -7,7 +7,7 @@ import TodoList from 'src/features/todo/components/todo-list.vue';
 const todoListEl = ref();
 
 function onClickNewTodo() {
-  todoListEl.value.newTodoInput.input.focus();
+  todoListEl.value.createForm.inputName.input.focus();
 }
 </script>
 
