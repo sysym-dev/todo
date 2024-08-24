@@ -108,9 +108,9 @@ export const useTodoStore = defineStore('todo', () => {
 
     if (params?.filter?.today) {
       todos.value = todos.value.filter((todo) => {
-        return parseDate(todo.date).isBetween(
-          parseDate().startOf('day'),
-          parseDate().endOf('day'),
+        return (
+          parseDate(todo.date).isSameOrAfter(parseDate().startOf('day')) &&
+          parseDate(todo.date).isSameOrBefore(parseDate().endOf('day'))
         );
       });
     }
