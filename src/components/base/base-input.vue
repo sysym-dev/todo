@@ -13,7 +13,7 @@ const props = defineProps({
   },
   textarea: Boolean,
 });
-const emit = defineEmits(['input']);
+const emit = defineEmits(['input', 'keydown']);
 
 const value = defineModel();
 
@@ -34,6 +34,9 @@ function onInput() {
   }
 
   emit('input');
+}
+function onKeyDown(e) {
+  emit('keydown', e);
 }
 
 defineExpose({
@@ -56,7 +59,7 @@ defineExpose({
       :placeholder="placeholder"
       v-model="value"
       @input="onInput"
-      @keyup="onKeyup"
+      @keydown="onKeyDown"
     ></textarea>
     <input
       v-else
