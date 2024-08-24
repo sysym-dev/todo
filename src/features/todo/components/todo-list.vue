@@ -15,6 +15,7 @@ const props = defineProps({
   },
   withEmptyMessage: Boolean,
   withDiffDate: Boolean,
+  withEditDate: Boolean,
   filter: Object,
   createFormParams: Object,
 });
@@ -58,6 +59,7 @@ todoStore.load({ filter: props.filter });
       v-for="(todo, index) in todoStore.todos"
       :key="index"
       :with-diff-date="withDiffDate"
+      :with-edit-date="withEditDate"
       v-model="todoStore.todos[index]"
       @updated="onUpdated"
     />

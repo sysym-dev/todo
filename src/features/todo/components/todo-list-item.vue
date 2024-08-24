@@ -1,4 +1,6 @@
 <script setup>
+import 'v-calendar/style.css';
+import { DatePicker } from 'v-calendar';
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
 import { computed, nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
@@ -8,6 +10,7 @@ import { useTodoStore } from 'src/features/todo/todo.store';
 
 defineProps({
   withDiffDate: Boolean,
+  withEditDate: Boolean,
 });
 const emit = defineEmits(['updated']);
 
@@ -63,7 +66,7 @@ async function onEditSubmit() {
 function onDelete() {
   todoStore.remove(todo.value.id);
 }
-function onChangeDone() {
+function onUpdate() {
   todoStore.update(todo.value.id, todo.value);
 
   emit('updated');
@@ -76,7 +79,7 @@ function onChangeDone() {
       type="checkbox"
       :id="`todo-${todo.id}`"
       v-model="todo.done"
-      @change="onChangeDone"
+      @change="onUpdate"
     />
     <form v-if="editing" class="w-full" @submit.prevent="onEditSubmit">
       <input
@@ -107,10 +110,24 @@ function onChangeDone() {
           </button>
         </div>
       </div>
-      <p
-        :class="['text-xs', late ? 'text-red-600' : 'text-gray-500']"
-        v-if="withDiffDate"
+      <date-picker
+        v-if="withDiffDate && withEditDate"
+        v-slot="{ togglePopover }"
+        :min-date="parseDate().add(1, 'day').toDate()"
+        v-model="todo.date"
+        @update:modelValue="onUpdate"
       >
+        <p
+          :class="[
+            'text-xs cursor-pointer',
+            late ? 'text-red-600' : 'text-gray-500',
+          ]"
+          @click="togglePopover"
+        >
+          {{ parseDate(todo.date).fromNow() }}
+        </p>
+      </date-picker>
+      <p v-else :class="['text-xs', late ? 'text-red-600' : 'text-gray-500']">
         {{ parseDate(todo.date).fromNow() }}
       </p>
     </div>
