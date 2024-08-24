@@ -93,7 +93,10 @@ function onUpdate() {
       <div class="flex items-center gap-x-3 flex-grow">
         <label
           :for="`todo-${todo.id}`"
-          :class="[todo.done ? 'text-gray-400' : 'text-gray-900']"
+          :class="[
+            'line-clamp-1	',
+            todo.done ? 'text-gray-400' : 'text-gray-900',
+          ]"
           >{{ todo.name }}</label
         >
         <div
@@ -127,7 +130,13 @@ function onUpdate() {
           {{ parseDate(todo.date).fromNow() }}
         </p>
       </date-picker>
-      <p v-else :class="['text-xs', late ? 'text-red-600' : 'text-gray-500']">
+      <p
+        v-else
+        :class="[
+          'text-xs text-nowrap',
+          late ? 'text-red-600' : 'text-gray-500',
+        ]"
+      >
         {{ parseDate(todo.date).fromNow() }}
       </p>
     </div>
