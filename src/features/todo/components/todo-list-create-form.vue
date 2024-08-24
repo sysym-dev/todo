@@ -84,6 +84,7 @@ defineExpose({
         ref="newTodoInput"
         placeholder="Input New Todo"
         :state="error.name || error.date ? 'error' : 'default'"
+        :classes="{ input: withDate ? 'pr-8' : '' }"
         v-model="newTodo.name"
         @input="onInputNewTodo"
       >

@@ -113,32 +113,34 @@ function onUpdate() {
           </button>
         </div>
       </div>
-      <date-picker
-        v-if="withDiffDate && withEditDate"
-        v-slot="{ togglePopover }"
-        :min-date="parseDate().add(1, 'day').toDate()"
-        v-model="todo.date"
-        @update:modelValue="onUpdate"
-      >
+      <template v-if="withDiffDate">
+        <date-picker
+          v-if="withEditDate"
+          v-slot="{ togglePopover }"
+          :min-date="parseDate().add(1, 'day').toDate()"
+          v-model="todo.date"
+          @update:modelValue="onUpdate"
+        >
+          <p
+            :class="[
+              'text-xs text-nowrap cursor-pointer',
+              late ? 'text-red-600' : 'text-gray-500',
+            ]"
+            @click="togglePopover"
+          >
+            {{ parseDate(todo.date).fromNow() }}
+          </p>
+        </date-picker>
         <p
+          v-else
           :class="[
-            'text-xs cursor-pointer',
+            'text-xs text-nowrap',
             late ? 'text-red-600' : 'text-gray-500',
           ]"
-          @click="togglePopover"
         >
           {{ parseDate(todo.date).fromNow() }}
         </p>
-      </date-picker>
-      <p
-        v-else
-        :class="[
-          'text-xs text-nowrap',
-          late ? 'text-red-600' : 'text-gray-500',
-        ]"
-      >
-        {{ parseDate(todo.date).fromNow() }}
-      </p>
+      </template>
     </div>
   </li>
 </template>
