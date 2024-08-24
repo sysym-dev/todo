@@ -91,7 +91,7 @@ defineExpose({
         ref="newTodoInput"
         placeholder="Input New Todo"
         :state="error.name || error.date ? 'error' : 'default'"
-        :classes="{ input: withDate ? 'pr-8' : '' }"
+        :classes="{ input: withDate ? (newTodo.date ? 'pr-16' : 'pr-8') : '' }"
         v-model="newTodo.name"
         textarea
         @keypress="onKeydown"

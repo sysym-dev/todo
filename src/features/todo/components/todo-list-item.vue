@@ -91,14 +91,14 @@ function onUpdate() {
     </form>
     <div v-else class="flex flex-grow justify-between items-center gap-x-3">
       <div class="flex items-center gap-x-3 flex-grow">
-        <label
-          :for="`todo-${todo.id}`"
+        <p
           :class="[
-            'line-clamp-1	',
+            'line-clamp-1	break-all',
             todo.done ? 'text-gray-400' : 'text-gray-900',
           ]"
-          >{{ todo.name }}</label
         >
+          {{ todo.name }}
+        </p>
         <div
           :class="[
             'hidden items-center gap-x-1',
