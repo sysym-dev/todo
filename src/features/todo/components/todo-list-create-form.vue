@@ -86,6 +86,7 @@ defineExpose({
         :state="error.name || error.date ? 'error' : 'default'"
         :classes="{ input: withDate ? 'pr-8' : '' }"
         v-model="newTodo.name"
+        textarea
         @input="onInputNewTodo"
       >
         <template v-if="withDate" #append>
@@ -97,7 +98,9 @@ defineExpose({
             @popover-did-hide="onHideDate"
             @update:modelValue="onChange"
           >
-            <div class="absolute top-0 right-0 h-full flex items-center px-2">
+            <div
+              class="absolute top-0 right-0 h-[42px] flex items-center pl-3 pr-2"
+            >
               <button
                 v-if="newTodo.date"
                 type="button"
