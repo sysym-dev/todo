@@ -62,6 +62,13 @@ function onHideDate() {
 function onChange() {
   resetError();
 }
+function onKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    onSubmitNewTodo();
+    newTodoInput.value.input.style.height = '42px';
+  }
+}
 
 onMounted(() => {
   if (
@@ -87,6 +94,7 @@ defineExpose({
         :classes="{ input: withDate ? 'pr-8' : '' }"
         v-model="newTodo.name"
         textarea
+        @keypress="onKeydown"
         @input="onInputNewTodo"
       >
         <template v-if="withDate" #append>
