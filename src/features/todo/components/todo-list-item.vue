@@ -85,6 +85,8 @@ function onKeydownName(e) {
     e.preventDefault();
 
     save();
+  } else if (e.key === 'Escape') {
+    editing.value = false;
   }
 }
 </script>
