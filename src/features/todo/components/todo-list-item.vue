@@ -35,6 +35,11 @@ const late = computed(() =>
   parseDate(todo.value.date).isBefore(parseDate().startOf('day')),
 );
 
+function growInputHeight() {
+  editInput.value.style.height = 'auto';
+  editInput.value.style.height = editInput.value.scrollHeight + 'px';
+}
+
 async function save() {
   const res = await validate(editValue);
 
@@ -55,6 +60,7 @@ async function onEdit() {
 
   await nextTick();
 
+  growInputHeight();
   editInput.value.focus();
 }
 async function onEditFocusOut() {
@@ -71,23 +77,29 @@ function onUpdate() {
 
   emit('updated');
 }
+function onInputName() {
+  growInputHeight();
+}
 </script>
 
 <template>
   <li class="group flex items-center gap-x-3">
     <input
+      v-if="!editing"
       type="checkbox"
       :id="`todo-${todo.id}`"
       v-model="todo.done"
       @change="onUpdate"
     />
-    <form v-if="editing" class="w-full" @submit.prevent="onEditSubmit">
-      <input
+    <form v-if="editing" class="w-full flex" @submit.prevent="onEditSubmit">
+      <textarea
         ref="editInput"
-        class="border-0 bg-transparent p-0 focus:ring-0 w-full"
+        rows="1"
+        class="resize-none border-0 bg-transparent p-0 focus:ring-0 w-full"
         v-model="editValue.name"
         v-click-outside="onEditFocusOut"
-      />
+        @input="onInputName"
+      ></textarea>
     </form>
     <div v-else class="flex flex-grow justify-between items-center gap-x-3">
       <div class="flex items-center gap-x-3 flex-grow">
