@@ -12,7 +12,7 @@ defineProps({
   withDiffDate: Boolean,
   withEditDate: Boolean,
 });
-const emit = defineEmits(['updated']);
+const emit = defineEmits(['updated', 'detail']);
 
 const todoStore = useTodoStore();
 const { validate } = useValidation(
@@ -89,6 +89,9 @@ function onKeydownName(e) {
     editing.value = false;
   }
 }
+function onDetail() {
+  emit('detail');
+}
 </script>
 
 <template>
@@ -115,9 +118,10 @@ function onKeydownName(e) {
       <div class="flex items-center gap-x-3 flex-grow">
         <p
           :class="[
-            'line-clamp-1	break-all',
+            'line-clamp-1	break-all cursor-default',
             todo.done ? 'text-gray-400' : 'text-gray-900',
           ]"
+          @click="onDetail"
         >
           {{ todo.name }}
         </p>
