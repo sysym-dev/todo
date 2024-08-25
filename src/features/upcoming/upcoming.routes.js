@@ -4,6 +4,7 @@ export const upcomingRoutes = [
     name: 'upcoming',
     meta: {
       layout: 'LayoutApp',
+      title: 'Upcoming',
     },
     component: () => import('./pages/upcoming-page.vue'),
   },
