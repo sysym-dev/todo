@@ -80,6 +80,13 @@ function onUpdate() {
 function onInputName() {
   growInputHeight();
 }
+function onKeydownName(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+
+    save();
+  }
+}
 </script>
 
 <template>
@@ -98,6 +105,7 @@ function onInputName() {
         class="resize-none border-0 bg-transparent p-0 focus:ring-0 w-full"
         v-model="editValue.name"
         v-click-outside="onEditFocusOut"
+        @keydown="onKeydownName"
         @input="onInputName"
       ></textarea>
     </form>
