@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const todoStore = useTodoStore();
-const { validate, error, resetError } = useValidation(
+const { validate, resetError } = useValidation(
   z.object({
     name: z
       .string({ required_error: 'Todo name cannot be empty' })
@@ -86,12 +86,10 @@ defineExpose({
 
 <template>
   <form @submit.prevent="onSubmitNewTodo">
-    <base-form-item :message="error.name || error.date">
+    <base-form-item>
       <base-input
         ref="newTodoInput"
         placeholder="Input New Todo"
-        :state="error.name || error.date ? 'error' : 'default'"
-        :classes="{ input: withDate ? (newTodo.date ? 'pr-16' : 'pr-8') : '' }"
         v-model="newTodo.name"
         textarea
         @keypress="onKeydown"
