@@ -1,7 +1,10 @@
 <script setup>
 import AppToast from 'src/components/app/app-toast.vue';
 import { useRoute } from 'vue-router';
-import { BrandGithub as GithubIcon } from '@vicons/tabler';
+import {
+  BrandGithub as GithubIcon,
+  Download as ExportIcon,
+} from '@vicons/tabler';
 
 const route = useRoute();
 
@@ -40,13 +43,24 @@ const menus = [
           >
         </li>
       </ul>
-      <a
-        href="https://github.com/sysym-dev/tododo"
-        class="text-gray-900"
-        target="_blank"
-      >
-        <github-icon class="w-4 h-4" />
-      </a>
+      <div class="flex items-center gap-x-2">
+        <a
+          href="https://github.com/sysym-dev/tododo"
+          class="text-gray-900"
+          target="_blank"
+          title="Export"
+        >
+          <export-icon class="w-4 h-4" />
+        </a>
+        <a
+          href="https://github.com/sysym-dev/tododo"
+          class="text-gray-900"
+          target="_blank"
+          title="Github Reposiory"
+        >
+          <github-icon class="w-4 h-4" />
+        </a>
+      </div>
     </div>
   </nav>
   <main
