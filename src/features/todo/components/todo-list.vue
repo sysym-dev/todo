@@ -1,12 +1,9 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue';
-import TodoListItem from 'src/features/todo/components/todo-list-item.vue';
-import BaseInput from 'src/components/base/base-input.vue';
-import BaseFormItem from 'src/components/base/base-form-item.vue';
-import { useValidation } from 'src/cores/validation';
-import { z } from 'zod';
+import { ref, reactive } from 'vue';
+import TodoListItem from './todo-list-item.vue';
+import TodoListCreateForm from './todo-list-create-form.vue';
+import TodoDetailModal from './todo-detail-modal.vue';
 import { useTodoStore } from 'src/features/todo/todo.store';
-import { parseDate } from 'src/utils/date';
 
 const props = defineProps({
   withNewTodo: {
@@ -19,97 +16,78 @@ const props = defineProps({
   },
   withEmptyMessage: Boolean,
   withDiffDate: Boolean,
+  withEditDate: Boolean,
   filter: Object,
+  createFormParams: Object,
 });
 
 const todoStore = useTodoStore();
-const { validate, error, resetError } = useValidation(
-  z.object({
-    name: z
-      .string({ required_error: 'Todo name cannot be empty' })
-      .min(1, { message: 'Todo name cannot be empty' }),
-  }),
-);
 
-const newTodo = reactive({
-  name: '',
+const createForm = ref();
+const detailModal = reactive({
+  visible: false,
+  todo: null,
 });
-const newTodoInput = ref();
 
-async function onSubmitNewTodo() {
-  const res = await validate(newTodo);
-
-  if (!res.error) {
-    todoStore.create({
-      name: newTodo.name,
-      date: parseDate().toDate(),
-    });
-
-    newTodo.name = '';
-  }
-}
-function onInputNewTodo() {
-  resetError();
-}
 function onUpdated() {
   todoStore.load({ filter: props.filter });
 }
-
-onMounted(() => {
-  if (
-    props.withNewTodo &&
-    document.documentElement.scrollHeight <=
-      document.documentElement.clientHeight
-  ) {
-    newTodoInput.value.input.focus();
-  }
-});
+function onDetail(todo) {
+  detailModal.visible = true;
+  detailModal.todo = todo;
+}
 
 defineExpose({
-  newTodoInput,
+  createForm,
 });
 
 todoStore.load({ filter: props.filter });
 </script>
 
 <template>
-  <div v-if="withPercentage && todoStore.todos.length" class="space-y-1">
-    <div class="h-2 bg-gray-100">
-      <div
-        class="h-full bg-blue-600"
-        :style="{ width: `${todoStore.percentage.percentage}%` }"
-      ></div>
-    </div>
-    <div class="flex items-center justify-between">
-      <span class="block text-xs text-gray-500"
-        >{{ todoStore.percentage.done }}/{{ todoStore.percentage.total }}</span
+  <div>
+    <div class="space-y-4">
+      <div v-if="withPercentage && todoStore.todos.length" class="space-y-1">
+        <div class="h-2 bg-gray-100">
+          <div
+            class="h-full bg-blue-600"
+            :style="{ width: `${todoStore.percentage.percentage}%` }"
+          ></div>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="block text-xs text-gray-500"
+            >{{ todoStore.percentage.done }}/{{
+              todoStore.percentage.total
+            }}</span
+          >
+          <span class="block text-xs text-gray-500"
+            >{{ todoStore.percentage.percentage }}%</span
+          >
+        </div>
+      </div>
+      <p
+        v-if="withEmptyMessage && !todoStore.todos.length"
+        class="text-gray-600"
       >
-      <span class="block text-xs text-gray-500"
-        >{{ todoStore.percentage.percentage }}%</span
-      >
-    </div>
-  </div>
-  <p v-if="withEmptyMessage && !todoStore.todos.length" class="text-gray-600">
-    All Done
-  </p>
-  <ul class="space-y-2">
-    <todo-list-item
-      v-for="(todo, index) in todoStore.todos"
-      :key="index"
-      :with-diff-date="withDiffDate"
-      v-model="todoStore.todos[index]"
-      @updated="onUpdated"
-    />
-  </ul>
-  <form v-if="withNewTodo" @submit.prevent="onSubmitNewTodo">
-    <base-form-item :message="error.name">
-      <base-input
-        ref="newTodoInput"
-        placeholder="Input New Todo"
-        :state="error.name ? 'error' : 'default'"
-        v-model="newTodo.name"
-        @input="onInputNewTodo"
+        All Done
+      </p>
+      <ul class="space-y-2">
+        <todo-list-item
+          v-for="(todo, index) in todoStore.todos"
+          :key="index"
+          :with-diff-date="withDiffDate"
+          :with-edit-date="withEditDate"
+          v-model="todoStore.todos[index]"
+          @updated="onUpdated"
+          @detail="onDetail(todo)"
+        />
+      </ul>
+      <todo-list-create-form
+        v-if="withNewTodo"
+        ref="createForm"
+        v-bind="createFormParams"
       />
-    </base-form-item>
-  </form>
+    </div>
+    <todo-detail-modal :todo="detailModal.todo" v-model="detailModal.visible" />
+  </div>
 </template>

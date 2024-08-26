@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { Plus as NewTodoIcon } from '@vicons/tabler';
 import BaseHeading from 'src/components/base/base-heading.vue';
 import TodoList from 'src/features/todo/components/todo-list.vue';
-import { parseDate } from 'src/utils/date';
 
 const todoListEl = ref();
 
@@ -13,7 +12,7 @@ function onClickNewTodo() {
 </script>
 
 <template>
-  <base-heading title="Today Todo" size="text-2xl">
+  <base-heading title="Upcoming Todo" size="text-2xl">
     <template #action>
       <button
         class="flex items-center gap-x-1 text-blue-600 text-sm"
@@ -26,7 +25,12 @@ function onClickNewTodo() {
   </base-heading>
   <todo-list
     ref="todoListEl"
-    :filter="{ today: true }"
-    :create-form-params="{ payload: { date: parseDate().toISOString() } }"
+    :with-percentage="false"
+    with-diff-date
+    with-edit-date
+    :filter="{ upcoming: true }"
+    :createFormParams="{
+      withDate: true,
+    }"
   />
 </template>

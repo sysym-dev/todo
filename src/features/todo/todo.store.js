@@ -108,9 +108,9 @@ export const useTodoStore = defineStore('todo', () => {
 
     if (params?.filter?.today) {
       todos.value = todos.value.filter((todo) => {
-        return parseDate(todo.date).isBetween(
-          parseDate().startOf('day'),
-          parseDate().endOf('day'),
+        return (
+          parseDate(todo.date).isSameOrAfter(parseDate().startOf('day')) &&
+          parseDate(todo.date).isSameOrBefore(parseDate().endOf('day'))
         );
       });
     }
@@ -120,6 +120,14 @@ export const useTodoStore = defineStore('todo', () => {
         return (
           !todo.done &&
           parseDate(todo.date).isBefore(parseDate().startOf('day'))
+        );
+      });
+    }
+
+    if (params?.filter?.upcoming) {
+      todos.value = todos.value.filter((todo) => {
+        return (
+          !todo.done && parseDate(todo.date).isAfter(parseDate().endOf('day'))
         );
       });
     }
