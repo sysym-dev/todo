@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const todoStore = useTodoStore();
-const { validate, resetError } = useValidation(
+const { validate, error, resetError } = useValidation(
   z.object({
     name: z
       .string({ required_error: 'Todo name cannot be empty' })
@@ -35,6 +35,7 @@ const newTodo = reactive({
   date: null,
 });
 const newTodoInput = ref();
+const datePickerEl = ref();
 
 async function onSubmitNewTodo() {
   const res = await validate({
@@ -43,7 +44,11 @@ async function onSubmitNewTodo() {
     ...props.payload,
   });
 
-  if (!res.error) {
+  if (res.error) {
+    if (!error.value.name && error.value.date) {
+      datePickerEl.value.togglePopover();
+    }
+  } else {
     todoStore.create({
       name: res.data.name,
       date: parseDate(res.data.date).toDate(),
@@ -97,6 +102,7 @@ defineExpose({
       >
         <template v-if="withDate" #append>
           <date-picker
+            ref="datePickerEl"
             v-slot="{ togglePopover }"
             :popover="{ placement: 'bottom-end' }"
             :min-date="parseDate().add(1, 'day').toDate()"
