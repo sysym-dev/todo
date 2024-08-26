@@ -9,7 +9,7 @@ function onClose() {
 <template>
   <div
     v-if="visible"
-    class="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center px-4 md:px-0"
+    class="fixed inset-0 bg-black bg-opacity-50 flex flex-col justify-center px-4 md:px-0 z-10"
   >
     <transition
       enter-active-class="duration-300 ease-out"
