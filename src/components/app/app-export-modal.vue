@@ -2,18 +2,35 @@
 import BaseModal from 'src/components/base/base-modal.vue';
 import { Download as DownloadIcon } from '@vicons/tabler';
 
+function download(content, filename) {
+  const a = document.createElement('a');
+
+  a.href = URL.createObjectURL(content);
+  a.download = filename;
+
+  a.click();
+}
+
 function onDownloadJson() {
   const todos = JSON.parse(localStorage.getItem('todos'));
   const blob = new Blob([JSON.stringify(todos, null, 2)], {
     type: 'application/json',
   });
 
-  const a = document.createElement('a');
+  download(blob, 'tododo.json');
+}
 
-  a.href = URL.createObjectURL(blob);
-  a.download = 'tododo.json';
+function onDownloadCsv() {
+  const todos = JSON.parse(localStorage.getItem('todos'));
+  const header = 'id,done,name,date';
+  const rows = todos.map((todo) => Object.values(todo).join(','));
+  const content = [header, ...rows].join('\n');
 
-  a.click();
+  const blob = new Blob([content], {
+    type: 'text/csv',
+  });
+
+  download(blob, 'tododo.csv');
 }
 </script>
 
@@ -36,6 +53,7 @@ function onDownloadJson() {
           <a
             href=""
             class="text-blue-600 text-sm inline-flex items-center gap-x-2"
+            @click.prevent="onDownloadCsv"
           >
             <download-icon class="w-4 h-4" />
             <span>Download .csv</span>
