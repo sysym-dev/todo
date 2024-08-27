@@ -17,7 +17,7 @@ function onDownloadJson() {
     type: 'application/json',
   });
 
-  download(blob, 'tododo.json');
+  download(blob, 'todo.json');
 }
 
 function onDownloadCsv() {
@@ -30,7 +30,7 @@ function onDownloadCsv() {
     type: 'text/csv',
   });
 
-  download(blob, 'tododo.csv');
+  download(blob, 'todo.csv');
 }
 </script>
 

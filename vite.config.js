@@ -4,7 +4,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  base: '/tododo',
+  base: '/todo',
   plugins: [vue()],
   resolve: {
     alias: {
