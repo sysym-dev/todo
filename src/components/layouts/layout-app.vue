@@ -53,7 +53,7 @@ const menus = [
           <export-icon class="w-4 h-4" />
         </button>
         <a
-          href="https://github.com/sysym-dev/tododo"
+          href="https://github.com/sysym-dev/todo"
           class="text-gray-900"
           target="_blank"
           title="Github Reposiory"
