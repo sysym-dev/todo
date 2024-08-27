@@ -35,6 +35,7 @@ const newTodo = reactive({
   date: null,
 });
 const newTodoInput = ref();
+const datePickerEl = ref();
 
 async function onSubmitNewTodo() {
   const res = await validate({
@@ -43,7 +44,11 @@ async function onSubmitNewTodo() {
     ...props.payload,
   });
 
-  if (!res.error) {
+  if (res.error) {
+    if (!error.value.name && error.value.date) {
+      datePickerEl.value.togglePopover();
+    }
+  } else {
     todoStore.create({
       name: res.data.name,
       date: parseDate(res.data.date).toDate(),
@@ -86,12 +91,10 @@ defineExpose({
 
 <template>
   <form @submit.prevent="onSubmitNewTodo">
-    <base-form-item :message="error.name || error.date">
+    <base-form-item>
       <base-input
         ref="newTodoInput"
         placeholder="Input New Todo"
-        :state="error.name || error.date ? 'error' : 'default'"
-        :classes="{ input: withDate ? (newTodo.date ? 'pr-16' : 'pr-8') : '' }"
         v-model="newTodo.name"
         textarea
         @keypress="onKeydown"
@@ -99,6 +102,7 @@ defineExpose({
       >
         <template v-if="withDate" #append>
           <date-picker
+            ref="datePickerEl"
             v-slot="{ togglePopover }"
             :popover="{ placement: 'bottom-end' }"
             :min-date="parseDate().add(1, 'day').toDate()"
