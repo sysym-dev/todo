@@ -1,9 +1,25 @@
 <script setup>
+import { watch } from 'vue';
+
 const visible = defineModel();
 
 function onClose() {
   visible.value = false;
 }
+
+function onCloseEscape(e) {
+  if (e.key === 'Escape') {
+    visible.value = false;
+  }
+}
+
+watch(visible, (value) => {
+  if (value) {
+    document.addEventListener('keydown', onCloseEscape);
+  } else {
+    document.removeEventListener('keydown', onCloseEscape);
+  }
+});
 </script>
 
 <template>
