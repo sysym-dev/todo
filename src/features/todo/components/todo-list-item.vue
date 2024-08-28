@@ -154,7 +154,7 @@ function onDetail() {
             ]"
             @click="togglePopover"
           >
-            {{ parseDate(todo.date).fromNow() }}
+            {{ todo.date ? parseDate(todo.date).fromNow() : 'No Date' }}
           </p>
         </date-picker>
         <p

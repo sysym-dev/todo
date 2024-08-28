@@ -127,7 +127,9 @@ export const useTodoStore = defineStore('todo', () => {
     if (params?.filter?.upcoming) {
       todos.value = todos.value.filter((todo) => {
         return (
-          !todo.done && parseDate(todo.date).isAfter(parseDate().endOf('day'))
+          !todo.done &&
+          (todo.date === null ||
+            parseDate(todo.date).isAfter(parseDate().endOf('day')))
         );
       });
     }
