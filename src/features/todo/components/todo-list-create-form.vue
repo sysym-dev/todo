@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const todoStore = useTodoStore();
-const { validate, error, resetError } = useValidation(
+const { validate, resetError } = useValidation(
   z.object({
     name: z
       .string({ required_error: 'Todo name cannot be empty' })
