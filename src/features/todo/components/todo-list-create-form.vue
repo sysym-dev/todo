@@ -16,7 +16,7 @@ const props = defineProps({
 });
 
 const todoStore = useTodoStore();
-const { validate, error, resetError } = useValidation(
+const { validate, resetError } = useValidation(
   z.object({
     name: z
       .string({ required_error: 'Todo name cannot be empty' })
@@ -26,7 +26,9 @@ const { validate, error, resetError } = useValidation(
         required_error: 'Todo date is required',
         invalid_type_error: 'Todo date must be a date',
       })
-      .datetime(),
+      .datetime()
+      .nullable()
+      .optional(),
   }),
 );
 
@@ -44,14 +46,10 @@ async function onSubmitNewTodo() {
     ...props.payload,
   });
 
-  if (res.error) {
-    if (!error.value.name && error.value.date) {
-      datePickerEl.value.togglePopover();
-    }
-  } else {
+  if (!res.error) {
     todoStore.create({
       name: res.data.name,
-      date: parseDate(res.data.date).toDate(),
+      date: res.data.date ? parseDate(res.data.date).toDate() : null,
     });
 
     newTodo.name = '';
