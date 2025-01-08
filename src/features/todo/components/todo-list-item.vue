@@ -143,7 +143,7 @@ function onDetail() {
         <date-picker
           v-if="withEditDate"
           v-slot="{ togglePopover }"
-          :min-date="parseDate().add(1, 'day').toDate()"
+          :min-date="parseDate().toDate()"
           v-model="todo.date"
           @update:modelValue="onUpdate"
         >
