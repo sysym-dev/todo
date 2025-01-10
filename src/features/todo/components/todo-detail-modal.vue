@@ -16,7 +16,7 @@ defineProps({
       <div class="space-y-1">
         <dt class="font-bold text-gray-900">Date</dt>
         <p class="text-gray-600">
-          {{ parseDate(todo.date).format('YYYY/MM/DD') }}
+          {{ todo.date ? parseDate(todo.date).format('YYYY/MM/DD') : '-' }}
         </p>
       </div>
     </dl>
