@@ -7,6 +7,7 @@ import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
 import { useTodoStore } from 'src/features/todo/todo.store';
+import dayjs from 'dayjs';
 
 defineProps({
   withDiffDate: Boolean,
@@ -34,6 +35,15 @@ const editInput = ref();
 const late = computed(() =>
   parseDate(todo.value.date).isBefore(parseDate().startOf('day')),
 );
+const diffLabel = computed(() => {
+  const date = parseDate(todo.value.date);
+
+  if (date.isSame(dayjs(), 'day')) {
+    return 'Today';
+  }
+
+  return date.fromNow();
+});
 
 function growInputHeight() {
   editInput.value.style.height = 'auto';
@@ -154,7 +164,7 @@ function onDetail() {
             ]"
             @click="togglePopover"
           >
-            {{ todo.date ? parseDate(todo.date).fromNow() : 'No Date' }}
+            {{ todo.date ? diffLabel : 'No Date' }}
           </p>
         </date-picker>
         <p
@@ -164,7 +174,7 @@ function onDetail() {
             late ? 'text-red-600' : 'text-gray-500',
           ]"
         >
-          {{ parseDate(todo.date).fromNow() }}
+          {{ diffLabel }}
         </p>
       </template>
     </div>

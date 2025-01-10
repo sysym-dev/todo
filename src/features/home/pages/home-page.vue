@@ -26,6 +26,8 @@ function onClickNewTodo() {
   </base-heading>
   <todo-list
     ref="todoListEl"
+    with-diff-date
+    with-edit-date
     :filter="{ today: true }"
     :create-form-params="{ payload: { date: parseDate().toISOString() } }"
   />
