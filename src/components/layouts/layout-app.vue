@@ -25,6 +25,10 @@ const menus = [
     route: 'upcoming',
     name: 'Upcoming',
   },
+  {
+    route: 'done',
+    name: 'Done',
+  },
 ];
 </script>
 
