@@ -36,7 +36,7 @@ function onDownloadCsv() {
 
 <template>
   <base-modal>
-    <div class="space-y-2">
+    <div class="space-y-2 text-gray-900">
       <p class="font-bold text-lg">Export</p>
       <ul class="space-y-1">
         <li>
