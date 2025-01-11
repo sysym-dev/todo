@@ -133,6 +133,12 @@ export const useTodoStore = defineStore('todo', () => {
         );
       });
     }
+
+    if (params?.filter?.done) {
+      todos.value = todos.value.filter((todo) => {
+        return todo.done;
+      });
+    }
   }
 
   return { todos, percentage, load, create, remove, update };

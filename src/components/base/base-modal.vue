@@ -37,7 +37,7 @@ watch(visible, (value) => {
       appear
     >
       <div
-        class="relative bg-white p-6 max-w-sm w-full mx-auto rounded-lg"
+        class="relative bg-white p-6 max-w-screen-sm w-full mx-auto rounded-lg"
         v-click-outside="onClose"
       >
         <slot />
