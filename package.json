@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@supabase/supabase-js": "^2.47.12",
     "click-outside-vue3": "^4.0.1",
     "dayjs": "^1.11.13",
     "mitt": "^3.0.1",
