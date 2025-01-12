@@ -58,7 +58,7 @@ async function loadTodos() {
     );
   }
 
-  const res = await db;
+  const res = await db.order('id', { ascending: true });
 
   todos.data = res.data;
 }
@@ -67,7 +67,7 @@ function onCreated() {
   loadTodos();
 }
 function onUpdated() {
-  todoStore.load({ filter: props.filter });
+  loadTodos();
 }
 function onDetail(todo) {
   detailModal.visible = true;

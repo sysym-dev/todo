@@ -2,7 +2,7 @@
 import 'v-calendar/style.css';
 import { DatePicker } from 'v-calendar';
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
-import { computed, nextTick, reactive, ref } from 'vue';
+import { computed, inject, nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
@@ -15,6 +15,7 @@ defineProps({
 });
 const emit = defineEmits(['updated', 'detail']);
 
+const supabase = inject('supabase');
 const todoStore = useTodoStore();
 const { validate } = useValidation(
   z.object({
@@ -56,7 +57,13 @@ async function save() {
   if (res.success) {
     todo.value.name = res.data.name;
 
-    todoStore.update(todo.value.id, todo.value);
+    await supabase
+      .from('todos')
+      .update({
+        name: todo.value.name,
+        date: todo.value.date,
+      })
+      .eq('id', todo.value.id);
 
     emit('updated');
   }
