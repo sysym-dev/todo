@@ -32,6 +32,7 @@ const editValue = reactive({
   name: '',
 });
 const editInput = ref();
+const todoDate = ref(null);
 
 const late = computed(() =>
   parseDate(todo.value.date).isBefore(parseDate().startOf('day')),
@@ -61,7 +62,6 @@ async function save() {
       .from('todos')
       .update({
         name: todo.value.name,
-        date: todo.value.date,
       })
       .eq('id', todo.value.id);
 
@@ -89,10 +89,33 @@ async function onEditSubmit() {
 function onDelete() {
   todoStore.remove(todo.value.id);
 }
-function onUpdate() {
-  todoStore.update(todo.value.id, todo.value);
+async function onUpdateDone() {
+  await supabase
+    .from('todos')
+    .update({
+      done: todo.value.done,
+    })
+    .eq('id', todo.value.id);
 
   emit('updated');
+}
+async function onUpdateDate() {
+  const date = todoDate.value
+    ? todoDate.value
+    : parseDate(todo.value.date).toDate();
+
+  await supabase
+    .from('todos')
+    .update({
+      date: parseDate(date).format('YYYY-MM-DD'),
+    })
+    .eq('id', todo.value.id);
+
+  emit('updated');
+
+  await nextTick();
+
+  todoDate.value = date;
 }
 function onInputName() {
   growInputHeight();
@@ -109,6 +132,8 @@ function onKeydownName(e) {
 function onDetail() {
   emit('detail');
 }
+
+todoDate.value = todo.value.date;
 </script>
 
 <template>
@@ -118,7 +143,7 @@ function onDetail() {
       type="checkbox"
       :id="`todo-${todo.id}`"
       v-model="todo.done"
-      @change="onUpdate"
+      @change="onUpdateDone"
     />
     <form v-if="editing" class="w-full flex" @submit.prevent="onEditSubmit">
       <textarea
@@ -161,8 +186,8 @@ function onDetail() {
           v-if="withEditDate"
           v-slot="{ togglePopover }"
           :min-date="parseDate().toDate()"
-          v-model="todo.date"
-          @update:modelValue="onUpdate"
+          v-model="todoDate"
+          @update:modelValue="onUpdateDate"
         >
           <p
             :class="[
