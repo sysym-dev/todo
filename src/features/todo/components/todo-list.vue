@@ -48,11 +48,11 @@ async function loadTodos() {
   const db = supabase.from('todos').select();
 
   if (props.filter.today) {
-    db.eq('date', parseDate().toISOString());
+    db.eq('date', parseDate().format('YYYY-MM-DD'));
   } else if (props.filter.late) {
-    db.lt('date', parseDate().toISOString()).is('done', false);
+    db.lt('date', parseDate().format('YYYY-MM-DD')).is('done', false);
   } else if (props.filter.upcoming) {
-    db.or(`date.gt.${parseDate().toISOString()},date.is.null`).is(
+    db.or(`date.gt.${parseDate().format('YYYY-MM-DD')},date.is.null`).is(
       'done',
       false,
     );
@@ -63,6 +63,9 @@ async function loadTodos() {
   todos.data = res.data;
 }
 
+function onCreated() {
+  loadTodos();
+}
 function onUpdated() {
   todoStore.load({ filter: props.filter });
 }
@@ -115,6 +118,7 @@ loadTodos();
         v-if="withNewTodo"
         ref="createForm"
         v-bind="createFormParams"
+        @created="onCreated"
       />
     </div>
     <todo-detail-modal :todo="detailModal.todo" v-model="detailModal.visible" />
