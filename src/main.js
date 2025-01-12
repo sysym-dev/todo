@@ -7,6 +7,7 @@ import { useStore } from './plugins/store';
 import { useRouter } from './plugins/router';
 import { routes } from './routes';
 import { useLayout } from './plugins/layout';
+import { useSupabase } from './plugins/supabase';
 
 const app = createApp(App);
 
@@ -15,5 +16,6 @@ useClickOutisde(app);
 useLayout(app);
 useRouter(app, routes);
 useStore(app);
+useSupabase(app);
 
 app.mount('#app');

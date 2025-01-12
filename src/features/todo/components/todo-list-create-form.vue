@@ -1,21 +1,21 @@
 <script setup>
 import 'v-calendar/style.css';
 import { DatePicker } from 'v-calendar';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, inject } from 'vue';
 import { Calendar as CalendarIcon } from '@vicons/tabler';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
-import { useTodoStore } from 'src/features/todo/todo.store';
 import { parseDate } from 'src/utils/date';
 
 const props = defineProps({
   withDate: Boolean,
   payload: Object,
 });
+const emit = defineEmits(['created']);
 
-const todoStore = useTodoStore();
+const supabase = inject('supabase');
 const { validate, resetError } = useValidation(
   z.object({
     name: z
@@ -47,10 +47,14 @@ async function onSubmitNewTodo() {
   });
 
   if (!res.error) {
-    todoStore.create({
+    await supabase.from('todos').insert({
       name: res.data.name,
-      date: res.data.date ? parseDate(res.data.date).toDate() : null,
+      date: res.data.date
+        ? parseDate(res.data.date).format('YYYY-MM-DD')
+        : null,
     });
+
+    emit('created');
 
     newTodo.name = '';
     newTodo.date = null;
