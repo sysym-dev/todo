@@ -1,25 +1,29 @@
 <script setup>
-import { useTodoStore } from 'src/features/todo/todo.store';
 import BaseHeading from 'src/components/base/base-heading.vue';
 import { parseDate } from 'src/utils/date';
+import { inject, reactive } from 'vue';
 
-const todoStore = useTodoStore();
+const supabase = inject('supabase');
 
-todoStore.load({
-  filter: {
-    done: true,
-  },
+const todos = reactive({
+  data: [],
 });
+
+async function loadTodos() {
+  const res = await supabase.from('todos').select().is('done', true);
+
+  todos.data = res.data;
+}
+
+loadTodos();
 </script>
 
 <template>
   <base-heading title="Done Todo" size="text-2xl" />
-  <p v-if="!todoStore.todos.length" class="text-gray-600">
-    No done tasks found
-  </p>
+  <p v-if="!todos.data.length" class="text-gray-600">No done tasks found</p>
   <ul v-else class="space-y-2">
     <li
-      v-for="todo in todoStore.todos"
+      v-for="todo in todos.data"
       :key="todo.id"
       class="flex-col flex gap-1 sm:flex-row sm:gap-2"
     >
