@@ -6,17 +6,15 @@ import { computed, inject, nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
-import { useTodoStore } from 'src/features/todo/todo.store';
 import dayjs from 'dayjs';
 
 defineProps({
   withDiffDate: Boolean,
   withEditDate: Boolean,
 });
-const emit = defineEmits(['updated', 'detail']);
+const emit = defineEmits(['updated', 'detail', 'deleted']);
 
 const supabase = inject('supabase');
-const todoStore = useTodoStore();
 const { validate } = useValidation(
   z.object({
     name: z
@@ -86,8 +84,10 @@ async function onEditFocusOut() {
 async function onEditSubmit() {
   await save();
 }
-function onDelete() {
-  todoStore.remove(todo.value.id);
+async function onDelete() {
+  await supabase.from('todos').delete().eq('id', todo.value.id);
+
+  emit('deleted');
 }
 async function onUpdateDone() {
   await supabase

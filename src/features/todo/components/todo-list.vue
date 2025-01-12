@@ -3,7 +3,6 @@ import { ref, reactive, inject, computed } from 'vue';
 import TodoListItem from './todo-list-item.vue';
 import TodoListCreateForm from './todo-list-create-form.vue';
 import TodoDetailModal from './todo-detail-modal.vue';
-import { useTodoStore } from 'src/features/todo/todo.store';
 import { parseDate } from 'src/utils/date';
 
 const props = defineProps({
@@ -23,7 +22,6 @@ const props = defineProps({
 });
 
 const supabase = inject('supabase');
-const todoStore = useTodoStore();
 
 const createForm = ref();
 const todos = reactive({
@@ -69,6 +67,9 @@ function onCreated() {
 function onUpdated() {
   loadTodos();
 }
+function onDeleted() {
+  loadTodos();
+}
 function onDetail(todo) {
   detailModal.visible = true;
   detailModal.todo = todo;
@@ -111,6 +112,7 @@ loadTodos();
           :with-edit-date="withEditDate"
           v-model="todos.data[index]"
           @updated="onUpdated"
+          @deleted="onDeleted"
           @detail="onDetail(todo)"
         />
       </ul>
