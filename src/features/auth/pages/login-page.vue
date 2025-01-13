@@ -2,10 +2,12 @@
 import BaseHeading from 'src/components/base/base-heading.vue';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseButton from 'src/components/base/base-button.vue';
-import { reactive, ref } from 'vue';
+import { inject, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 
+const supabase = inject('supabase');
+const emitter = inject('emitter');
 const { error, validate } = useValidation(
   z.object({
     email: z
@@ -26,10 +28,16 @@ const form = reactive({
 async function onSubmit() {
   loading.value = true;
 
-  const { success, data } = await validate(form);
+  const validation = await validate(form);
 
-  if (success) {
-    console.log(data);
+  if (validation.success) {
+    const res = await supabase.auth.signInWithPassword(validation.data);
+
+    if (res.error) {
+      emitter.emit('create-toast', {
+        message: res.error.message,
+      });
+    }
   }
 
   loading.value = false;
@@ -40,17 +48,21 @@ async function onSubmit() {
   <form class="space-y-4" @submit.prevent="onSubmit">
     <base-heading title="Login" size="text-3xl" />
     <base-input
+      type="email"
       placeholder="Email"
       :state="error.email ? 'error' : 'normal'"
       :message="error.email"
       v-model="form.email"
     />
     <base-input
+      type="password"
       placeholder="Password"
       :state="error.password ? 'error' : 'normal'"
       :message="error.password"
       v-model="form.password"
     />
-    <base-button fullwidth>Login</base-button>
+    <base-button fullwidth :loading="loading" :disabled="loading"
+      >Login</base-button
+    >
   </form>
 </template>
