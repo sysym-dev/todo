@@ -12,6 +12,7 @@ const props = defineProps({
     default: () => ({}),
   },
   textarea: Boolean,
+  message: String,
 });
 const emit = defineEmits(['input', 'keydown']);
 
@@ -70,6 +71,7 @@ defineExpose({
       v-model="value"
       @input="onInput"
     />
+    <p v-if="message" class="text-red-600">{{ message }}</p>
     <slot name="append" />
   </div>
 </template>
