@@ -5,9 +5,11 @@ import BaseButton from 'src/components/base/base-button.vue';
 import { inject, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
+import { useRouter } from 'vue-router';
 
 const supabase = inject('supabase');
 const emitter = inject('emitter');
+const router = useRouter();
 const { error, validate } = useValidation(
   z.object({
     email: z
@@ -37,6 +39,8 @@ async function onSubmit() {
       emitter.emit('create-toast', {
         message: res.error.message,
       });
+    } else {
+      router.push({ name: 'home' });
     }
   }
 
