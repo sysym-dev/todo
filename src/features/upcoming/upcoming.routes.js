@@ -5,6 +5,7 @@ export const upcomingRoutes = [
     meta: {
       layout: 'LayoutApp',
       title: 'Upcoming',
+      requireAuth: true,
     },
     component: () => import('./pages/upcoming-page.vue'),
   },

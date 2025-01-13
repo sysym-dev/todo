@@ -5,6 +5,7 @@ export const doneRoutes = [
     meta: {
       layout: 'LayoutApp',
       title: 'Done',
+      requireAuth: true,
     },
     component: () => import('./pages/done-page.vue'),
   },
