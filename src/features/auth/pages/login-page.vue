@@ -68,5 +68,11 @@ async function onSubmit() {
     <base-button fullwidth :loading="loading" :disabled="loading"
       >Login</base-button
     >
+    <p class="text-gray-900">
+      Don't have an account?
+      <router-link :to="{ name: 'auth.register' }" class="text-blue-600"
+        >Register Here</router-link
+      >
+    </p>
   </form>
 </template>
