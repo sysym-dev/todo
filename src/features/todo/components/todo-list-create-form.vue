@@ -8,6 +8,7 @@ import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const props = defineProps({
   withDate: Boolean,
@@ -16,6 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['created']);
 
 const supabase = inject('supabase');
+const authStore = useAuthStore();
 const { validate, resetError } = useValidation(
   z.object({
     name: z
@@ -48,6 +50,7 @@ async function onSubmitNewTodo() {
 
   if (!res.error) {
     await supabase.from('todos').insert({
+      user_id: authStore.user.data.user.id,
       name: res.data.name,
       date: res.data.date
         ? parseDate(res.data.date).format('YYYY-MM-DD')
