@@ -33,7 +33,7 @@ async function onSubmit() {
   const validation = await validate(form);
 
   if (validation.success) {
-    const res = await supabase.auth.signInWithPassword(validation.data);
+    const res = await supabase.auth.signUp(validation.data);
 
     if (res.error) {
       emitter.emit('create-toast', {
@@ -50,7 +50,7 @@ async function onSubmit() {
 
 <template>
   <form class="space-y-4" @submit.prevent="onSubmit">
-    <base-heading title="Login" size="text-3xl" />
+    <base-heading title="Register" size="text-3xl" />
     <base-input
       type="email"
       placeholder="Email"
@@ -66,12 +66,12 @@ async function onSubmit() {
       v-model="form.password"
     />
     <base-button fullwidth :loading="loading" :disabled="loading"
-      >Login</base-button
+      >Register</base-button
     >
     <p class="text-gray-900">
-      Don't have an account?
-      <router-link :to="{ name: 'auth.register' }" class="text-blue-600"
-        >Register Here</router-link
+      Already have an account?
+      <router-link :to="{ name: 'auth.login' }" class="text-blue-600"
+        >Login Here</router-link
       >
     </p>
   </form>
