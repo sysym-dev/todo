@@ -6,7 +6,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const user = ref(null);
 
-  async function login() {
+  async function setUser() {
     user.value = await supabase.auth.getUser();
   }
   async function checkSession() {
@@ -15,15 +15,15 @@ export const useAuthStore = defineStore('auth', () => {
     const loggedIn = !!session.data.session;
 
     if (loggedIn && !user.value) {
-      await login();
+      await setUser();
     }
 
-    return !!session.data.session;
+    return !!session.data.session && !user.value.error;
   }
 
   return {
     checkSession,
-    login,
+    login: setUser,
     user,
   };
 });
