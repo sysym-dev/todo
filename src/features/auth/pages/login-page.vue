@@ -6,10 +6,12 @@ import { inject, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const supabase = inject('supabase');
 const emitter = inject('emitter');
 const router = useRouter();
+const auhtStore = useAuthStore();
 const { error, validate } = useValidation(
   z.object({
     email: z
@@ -40,6 +42,8 @@ async function onSubmit() {
         message: res.error.message,
       });
     } else {
+      await auhtStore.login();
+
       router.push({ name: 'home' });
     }
   }
