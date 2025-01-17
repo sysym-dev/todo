@@ -17,6 +17,7 @@ const props = defineProps({
 const emit = defineEmits(['created']);
 
 const supabase = inject('supabase');
+const emitter = inject('emitter');
 const authStore = useAuthStore();
 const { validate, resetError } = useValidation(
   z.object({
@@ -42,25 +43,31 @@ const newTodoInput = ref();
 const datePickerEl = ref();
 
 async function onSubmitNewTodo() {
-  const res = await validate({
+  const validation = await validate({
     name: newTodo.name,
     date: newTodo.date ? newTodo.date.toISOString() : null,
     ...props.payload,
   });
 
-  if (!res.error) {
-    await supabase.from('todos').insert({
+  if (!validation.error) {
+    const res = await supabase.from('todos').insert({
       user_id: authStore.user.data.user.id,
-      name: res.data.name,
-      date: res.data.date
-        ? parseDate(res.data.date).format('YYYY-MM-DD')
+      name: validation.data.name,
+      date: validation.data.date
+        ? parseDate(validation.data.date).format('YYYY-MM-DD')
         : null,
     });
 
-    emit('created');
+    if (res.status !== 201) {
+      emitter.emit('create-toast', {
+        message: 'Failed to create todo',
+      });
+    } else {
+      emit('created');
 
-    newTodo.name = '';
-    newTodo.date = null;
+      newTodo.name = '';
+      newTodo.date = null;
+    }
   }
 }
 function onInputNewTodo() {
