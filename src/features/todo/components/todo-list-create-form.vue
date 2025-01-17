@@ -1,21 +1,24 @@
 <script setup>
 import 'v-calendar/style.css';
 import { DatePicker } from 'v-calendar';
-import { onMounted, reactive, ref } from 'vue';
+import { onMounted, reactive, ref, inject } from 'vue';
 import { Calendar as CalendarIcon } from '@vicons/tabler';
 import BaseInput from 'src/components/base/base-input.vue';
 import BaseFormItem from 'src/components/base/base-form-item.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
-import { useTodoStore } from 'src/features/todo/todo.store';
 import { parseDate } from 'src/utils/date';
+import { useAuthStore } from 'src/features/auth/auth.store';
 
 const props = defineProps({
   withDate: Boolean,
   payload: Object,
 });
+const emit = defineEmits(['created']);
 
-const todoStore = useTodoStore();
+const supabase = inject('supabase');
+const emitter = inject('emitter');
+const authStore = useAuthStore();
 const { validate, resetError } = useValidation(
   z.object({
     name: z
@@ -40,20 +43,31 @@ const newTodoInput = ref();
 const datePickerEl = ref();
 
 async function onSubmitNewTodo() {
-  const res = await validate({
+  const validation = await validate({
     name: newTodo.name,
     date: newTodo.date ? newTodo.date.toISOString() : null,
     ...props.payload,
   });
 
-  if (!res.error) {
-    todoStore.create({
-      name: res.data.name,
-      date: res.data.date ? parseDate(res.data.date).toDate() : null,
+  if (!validation.error) {
+    const res = await supabase.from('todos').insert({
+      user_id: authStore.user.data.user.id,
+      name: validation.data.name,
+      date: validation.data.date
+        ? parseDate(validation.data.date).format('YYYY-MM-DD')
+        : null,
     });
 
-    newTodo.name = '';
-    newTodo.date = null;
+    if (res.status !== 201) {
+      emitter.emit('create-toast', {
+        message: 'Failed to create todo',
+      });
+    } else {
+      emit('created');
+
+      newTodo.name = '';
+      newTodo.date = null;
+    }
   }
 }
 function onInputNewTodo() {

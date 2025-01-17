@@ -5,6 +5,7 @@ export const lateRoutes = [
     meta: {
       layout: 'LayoutApp',
       title: 'Late',
+      requireAuth: true,
     },
     component: () => import('./pages/late-page.vue'),
   },

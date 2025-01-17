@@ -1,19 +1,17 @@
 <script setup>
 import AppToast from 'src/components/app/app-toast.vue';
-import AppExportModal from 'src/components/app/app-export-modal.vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
-  BrandGithub as GithubIcon,
-  Download as ExportIcon,
+  Logout as LogoutIcon,
   Menu2 as NavToggleIcon,
   X as NavCloseIcon,
 } from '@vicons/tabler';
-import { ref } from 'vue';
+import { inject, ref } from 'vue';
 
 const route = useRoute();
 const router = useRouter();
+const supabase = inject('supabase');
 
-const exportModalVisible = ref(false);
 const navMobileVisible = ref(false);
 const toggleNavarMobileEl = ref();
 
@@ -41,6 +39,11 @@ function onCloseNavMobile(e) {
     navMobileVisible.value = false;
   }
 }
+async function onLogout() {
+  await supabase.auth.signOut();
+
+  router.push({ name: 'auth.login' });
+}
 
 router.beforeEach(() => {
   navMobileVisible.value = false;
@@ -48,8 +51,7 @@ router.beforeEach(() => {
 </script>
 
 <template>
-  <app-toast />
-  <app-export-modal v-model="exportModalVisible" />
+  <app-toast position="bottom-center" />
   <nav class="border-b h-14 flex items-center relative text-gray-900">
     <div
       class="max-w-screen-sm w-full mx-auto px-4 md:px-0 flex items-center justify-between"
@@ -84,17 +86,9 @@ router.beforeEach(() => {
         </li>
       </ul>
       <div class="flex items-center gap-x-2">
-        <button title="Export" @click="exportModalVisible = true">
-          <export-icon class="w-4 h-4" />
+        <button title="Logout" @click="onLogout">
+          <logout-icon class="w-4 h-4" />
         </button>
-        <a
-          href="https://github.com/sysym-dev/todo"
-          class="text-gray-900"
-          target="_blank"
-          title="Github Reposiory"
-        >
-          <github-icon class="w-4 h-4" />
-        </a>
       </div>
     </div>
   </nav>

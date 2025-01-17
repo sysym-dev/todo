@@ -2,20 +2,20 @@
 import 'v-calendar/style.css';
 import { DatePicker } from 'v-calendar';
 import { Edit as EditIcon, Trash as DeleteIcon } from '@vicons/tabler';
-import { computed, nextTick, reactive, ref } from 'vue';
+import { computed, inject, nextTick, reactive, ref } from 'vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
-import { useTodoStore } from 'src/features/todo/todo.store';
 import dayjs from 'dayjs';
 
 defineProps({
   withDiffDate: Boolean,
   withEditDate: Boolean,
 });
-const emit = defineEmits(['updated', 'detail']);
+const emit = defineEmits(['updated', 'detail', 'deleted']);
 
-const todoStore = useTodoStore();
+const supabase = inject('supabase');
+const emitter = inject('emitter');
 const { validate } = useValidation(
   z.object({
     name: z
@@ -31,6 +31,7 @@ const editValue = reactive({
   name: '',
 });
 const editInput = ref();
+const todoDate = ref(null);
 
 const late = computed(() =>
   parseDate(todo.value.date).isBefore(parseDate().startOf('day')),
@@ -51,12 +52,23 @@ function growInputHeight() {
 }
 
 async function save() {
-  const res = await validate(editValue);
+  const validation = await validate(editValue);
 
-  if (res.success) {
-    todo.value.name = res.data.name;
+  if (validation.success) {
+    todo.value.name = validation.data.name;
 
-    todoStore.update(todo.value.id, todo.value);
+    const res = await supabase
+      .from('todos')
+      .update({
+        name: todo.value.name,
+      })
+      .eq('id', todo.value.id);
+
+    if (res.status !== 204) {
+      emitter.emit('create-toast', {
+        message: 'Failed to update todo',
+      });
+    }
 
     emit('updated');
   }
@@ -79,13 +91,56 @@ async function onEditFocusOut() {
 async function onEditSubmit() {
   await save();
 }
-function onDelete() {
-  todoStore.remove(todo.value.id);
+async function onDelete() {
+  const res = await supabase.from('todos').delete().eq('id', todo.value.id);
+
+  if (res.status !== 204) {
+    emitter.emit('create-toast', {
+      message: 'Failed to delete todo',
+    });
+  }
+
+  emit('deleted');
 }
-function onUpdate() {
-  todoStore.update(todo.value.id, todo.value);
+async function onUpdateDone() {
+  const res = await supabase
+    .from('todos')
+    .update({
+      done: todo.value.done,
+    })
+    .eq('id', todo.value.id);
+
+  if (res.status !== 204) {
+    emitter.emit('create-toast', {
+      message: 'Failed to update todo',
+    });
+  }
 
   emit('updated');
+}
+async function onUpdateDate() {
+  const date = todoDate.value
+    ? todoDate.value
+    : parseDate(todo.value.date).toDate();
+
+  const res = await supabase
+    .from('todos')
+    .update({
+      date: parseDate(date).format('YYYY-MM-DD'),
+    })
+    .eq('id', todo.value.id);
+
+  if (res.status !== 204) {
+    emitter.emit('create-toast', {
+      message: 'Failed to update todo',
+    });
+  }
+
+  emit('updated');
+
+  await nextTick();
+
+  todoDate.value = date;
 }
 function onInputName() {
   growInputHeight();
@@ -102,6 +157,8 @@ function onKeydownName(e) {
 function onDetail() {
   emit('detail');
 }
+
+todoDate.value = todo.value.date;
 </script>
 
 <template>
@@ -111,7 +168,7 @@ function onDetail() {
       type="checkbox"
       :id="`todo-${todo.id}`"
       v-model="todo.done"
-      @change="onUpdate"
+      @change="onUpdateDone"
     />
     <form v-if="editing" class="w-full flex" @submit.prevent="onEditSubmit">
       <textarea
@@ -154,8 +211,8 @@ function onDetail() {
           v-if="withEditDate"
           v-slot="{ togglePopover }"
           :min-date="parseDate().toDate()"
-          v-model="todo.date"
-          @update:modelValue="onUpdate"
+          v-model="todoDate"
+          @update:modelValue="onUpdateDate"
         >
           <p
             :class="[
