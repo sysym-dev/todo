@@ -15,6 +15,7 @@ defineProps({
 const emit = defineEmits(['updated', 'detail', 'deleted']);
 
 const supabase = inject('supabase');
+const emitter = inject('emitter');
 const { validate } = useValidation(
   z.object({
     name: z
@@ -51,19 +52,25 @@ function growInputHeight() {
 }
 
 async function save() {
-  const res = await validate(editValue);
+  const validation = await validate(editValue);
 
-  if (res.success) {
-    todo.value.name = res.data.name;
+  if (validation.success) {
+    todo.value.name = validation.data.name;
 
-    await supabase
+    const res = await supabase
       .from('todos')
       .update({
         name: todo.value.name,
       })
       .eq('id', todo.value.id);
 
-    emit('updated');
+    if (res.status !== 204) {
+      emitter.emit('create-toast', {
+        message: 'Failed to update todo',
+      });
+    } else {
+      emit('updated');
+    }
   }
 
   editing.value = false;
