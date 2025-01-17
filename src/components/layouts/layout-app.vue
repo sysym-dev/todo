@@ -51,7 +51,7 @@ router.beforeEach(() => {
 </script>
 
 <template>
-  <app-toast />
+  <app-toast position="bottom-center" />
   <nav class="border-b h-14 flex items-center relative text-gray-900">
     <div
       class="max-w-screen-sm w-full mx-auto px-4 md:px-0 flex items-center justify-between"

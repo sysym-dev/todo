@@ -3,6 +3,7 @@ import { ref, reactive, inject, computed } from 'vue';
 import TodoListItem from './todo-list-item.vue';
 import TodoListCreateForm from './todo-list-create-form.vue';
 import TodoDetailModal from './todo-detail-modal.vue';
+import BaseAlert from 'src/components/base/base-alert.vue';
 import { parseDate } from 'src/utils/date';
 
 const props = defineProps({
@@ -25,6 +26,7 @@ const supabase = inject('supabase');
 
 const createForm = ref();
 const todos = reactive({
+  error: null,
   data: [],
 });
 const detailModal = reactive({
@@ -58,7 +60,11 @@ async function loadTodos() {
 
   const res = await db.order('id', { ascending: true });
 
-  todos.data = res.data;
+  if (res.error) {
+    todos.error = 'Failed to load todos';
+  } else {
+    todos.data = res.data;
+  }
 }
 
 function onCreated() {
@@ -85,43 +91,46 @@ loadTodos();
 <template>
   <div>
     <div class="space-y-4">
-      <div v-if="withPercentage && todos.data.length" class="space-y-1">
-        <div class="h-2 bg-gray-100">
-          <div
-            class="h-full bg-blue-600"
-            :style="{ width: `${percentage.number}%` }"
-          ></div>
+      <base-alert v-if="todos.error" :message="todos.error" />
+      <template v-else>
+        <div v-if="withPercentage && todos.data.length" class="space-y-1">
+          <div class="h-2 bg-gray-100">
+            <div
+              class="h-full bg-blue-600"
+              :style="{ width: `${percentage.number}%` }"
+            ></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="block text-xs text-gray-500"
+              >{{ percentage.done }}/{{ percentage.total }}</span
+            >
+            <span class="block text-xs text-gray-500"
+              >{{ percentage.number }}%</span
+            >
+          </div>
         </div>
-        <div class="flex items-center justify-between">
-          <span class="block text-xs text-gray-500"
-            >{{ percentage.done }}/{{ percentage.total }}</span
-          >
-          <span class="block text-xs text-gray-500"
-            >{{ percentage.number }}%</span
-          >
-        </div>
-      </div>
-      <p v-if="withEmptyMessage && !todos.data.length" class="text-gray-600">
-        All Done
-      </p>
-      <ul class="space-y-2">
-        <todo-list-item
-          v-for="(todo, index) in todos.data"
-          :key="index"
-          :with-diff-date="withDiffDate"
-          :with-edit-date="withEditDate"
-          v-model="todos.data[index]"
-          @updated="onUpdated"
-          @deleted="onDeleted"
-          @detail="onDetail(todo)"
+        <p v-if="withEmptyMessage && !todos.data.length" class="text-gray-600">
+          All Done
+        </p>
+        <ul class="space-y-2">
+          <todo-list-item
+            v-for="(todo, index) in todos.data"
+            :key="index"
+            :with-diff-date="withDiffDate"
+            :with-edit-date="withEditDate"
+            v-model="todos.data[index]"
+            @updated="onUpdated"
+            @deleted="onDeleted"
+            @detail="onDetail(todo)"
+          />
+        </ul>
+        <todo-list-create-form
+          v-if="withNewTodo"
+          ref="createForm"
+          v-bind="createFormParams"
+          @created="onCreated"
         />
-      </ul>
-      <todo-list-create-form
-        v-if="withNewTodo"
-        ref="createForm"
-        v-bind="createFormParams"
-        @created="onCreated"
-      />
+      </template>
     </div>
     <todo-detail-modal :todo="detailModal.todo" v-model="detailModal.visible" />
   </div>
