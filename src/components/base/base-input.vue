@@ -50,7 +50,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="relative min-h-[42px]">
+  <div class="relative h-[42px]">
     <slot name="prepend" />
     <textarea
       v-if="textarea"
@@ -70,7 +70,7 @@ defineExpose({
       v-else
       ref="input"
       :type="type"
-      :class="['w-full', color, classes.input]"
+      :class="['w-full h-full', color, classes.input]"
       :placeholder="placeholder"
       v-model="value"
       @input="onInput"
