@@ -2,9 +2,9 @@
 import 'v-calendar/style.css';
 import { DatePicker } from 'v-calendar';
 import { onMounted, reactive, ref, inject } from 'vue';
-import { Calendar as CalendarIcon } from '@vicons/tabler';
+import { Calendar as CalendarIcon, Tag as TagIcon } from '@vicons/tabler';
 import BaseInput from 'src/components/base/base-input.vue';
-import BaseFormItem from 'src/components/base/base-form-item.vue';
+import BaseButtonIcon from 'src/components/base/base-button-icon.vue';
 import { useValidation } from 'src/cores/validation';
 import { z } from 'zod';
 import { parseDate } from 'src/utils/date';
@@ -40,7 +40,6 @@ const newTodo = reactive({
   date: null,
 });
 const newTodoInput = ref();
-const datePickerEl = ref();
 
 async function onSubmitNewTodo() {
   const validation = await validate({
@@ -77,6 +76,7 @@ function onHideDate() {
   newTodoInput.value.input.focus();
 }
 function onChange() {
+  newTodoInput.value.input.focus();
   resetError();
 }
 function onKeydown(e) {
@@ -103,48 +103,49 @@ defineExpose({
 
 <template>
   <form @submit.prevent="onSubmitNewTodo">
-    <base-form-item>
+    <div class="border border-gray-500">
       <base-input
         ref="newTodoInput"
         placeholder="Input New Todo"
+        :classes="{
+          input: 'border-0 focus:ring-0',
+        }"
         v-model="newTodo.name"
         textarea
         @keypress="onKeydown"
         @input="onInputNewTodo"
-      >
-        <template v-if="withDate" #append>
-          <date-picker
-            ref="datePickerEl"
-            v-slot="{ togglePopover }"
-            :popover="{ placement: 'bottom-end' }"
-            :min-date="parseDate().add(1, 'day').toDate()"
-            v-model="newTodo.date"
-            @popover-did-hide="onHideDate"
-            @update:modelValue="onChange"
-          >
-            <div
-              class="absolute top-0 right-0 h-[42px] flex items-center pl-3 pr-2"
-            >
-              <button
-                v-if="newTodo.date"
-                type="button"
-                class="text-gray-500 px-1"
-                @click="togglePopover"
-              >
-                {{ parseDate(newTodo.date).format('DD MMM') }}
-              </button>
-              <button
-                v-else
-                type="button"
-                class="w-6 h-6 text-gray-900 flex items-center justify-center"
-                @click="togglePopover"
-              >
-                <calendar-icon class="w-4 h-4" />
-              </button>
-            </div>
-          </date-picker>
-        </template>
-      </base-input>
-    </base-form-item>
+      />
+      <div class="px-3 pb-2 flex gap-2">
+        <base-button-icon padless :icon="TagIcon" />
+        <date-picker
+          v-if="newTodo.date"
+          v-slot="{ togglePopover }"
+          :popover="{ placement: 'bottom-start' }"
+          :min-date="parseDate().add(1, 'day').toDate()"
+          v-model="newTodo.date"
+          @popover-did-hide="onHideDate"
+          @update:modelValue="onChange"
+        >
+          <button class="text-sm" @click="togglePopover">
+            {{ parseDate(newTodo.date).format('DD MMM') }}
+          </button>
+        </date-picker>
+        <date-picker
+          v-else
+          v-slot="{ togglePopover }"
+          :popover="{ placement: 'bottom-start' }"
+          :min-date="parseDate().add(1, 'day').toDate()"
+          v-model="newTodo.date"
+          @popover-did-hide="onHideDate"
+          @update:modelValue="onChange"
+        >
+          <base-button-icon
+            padless
+            :icon="CalendarIcon"
+            @click="togglePopover"
+          />
+        </date-picker>
+      </div>
+    </div>
   </form>
 </template>
