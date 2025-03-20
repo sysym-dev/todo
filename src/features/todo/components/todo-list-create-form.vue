@@ -40,6 +40,7 @@ const newTodo = reactive({
   date: null,
 });
 const newTodoInput = ref();
+const visibleAction = ref(false);
 
 async function onSubmitNewTodo() {
   const validation = await validate({
@@ -86,6 +87,10 @@ function onKeydown(e) {
     newTodoInput.value.input.style.height = '42px';
   }
 }
+function onOutFocus() {
+  visibleAction.value = false;
+  newTodo.date = null;
+}
 
 onMounted(() => {
   if (
@@ -103,7 +108,7 @@ defineExpose({
 
 <template>
   <form @submit.prevent="onSubmitNewTodo">
-    <div class="border border-gray-500">
+    <div class="border border-gray-500" v-click-outside="onOutFocus">
       <base-input
         ref="newTodoInput"
         placeholder="Input New Todo"
@@ -114,8 +119,9 @@ defineExpose({
         textarea
         @keypress="onKeydown"
         @input="onInputNewTodo"
+        @focus="visibleAction = true"
       />
-      <div class="px-3 pb-2 flex gap-2">
+      <div v-if="visibleAction" class="px-3 pb-2 flex gap-2">
         <base-button-icon padless :icon="TagIcon" />
         <date-picker
           v-if="newTodo.date"
