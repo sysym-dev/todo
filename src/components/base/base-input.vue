@@ -18,7 +18,7 @@ const props = defineProps({
     default: 'text',
   },
 });
-const emit = defineEmits(['input', 'keydown']);
+const emit = defineEmits(['input', 'keydown', 'focus']);
 
 const value = defineModel();
 
@@ -65,6 +65,7 @@ defineExpose({
       v-model="value"
       @input="onInput"
       @keydown="onKeyDown"
+      @focus="$emit('focus')"
     ></textarea>
     <input
       v-else
@@ -74,6 +75,7 @@ defineExpose({
       :placeholder="placeholder"
       v-model="value"
       @input="onInput"
+      @focus="$emit('focus')"
     />
     <p v-if="message" class="text-red-600 mt-1">{{ message }}</p>
     <slot name="append" />
