@@ -40,7 +40,7 @@ const newTodo = reactive({
   date: null,
 });
 const newTodoInput = ref();
-const visibleAction = ref(false);
+const focussed = ref(false);
 
 async function onSubmitNewTodo() {
   const validation = await validate({
@@ -88,7 +88,7 @@ function onKeydown(e) {
   }
 }
 function onOutFocus() {
-  visibleAction.value = false;
+  focussed.value = false;
   newTodo.date = null;
 }
 
@@ -112,16 +112,18 @@ defineExpose({
       <base-input
         ref="newTodoInput"
         placeholder="Input New Todo"
+        :fixed-height="false"
         :classes="{
           input: 'border-0 focus:ring-0',
+          wrapper: focussed ? 'min-h-[42px]' : 'h-[42px]',
         }"
         v-model="newTodo.name"
         textarea
         @keypress="onKeydown"
         @input="onInputNewTodo"
-        @focus="visibleAction = true"
+        @focus="focussed = true"
       />
-      <div v-if="visibleAction" class="px-3 pb-2 flex gap-2">
+      <div v-if="focussed" class="px-3 pb-2 flex gap-2">
         <base-button-icon padless :icon="TagIcon" />
         <date-picker
           v-if="newTodo.date"
