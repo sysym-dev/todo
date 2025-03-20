@@ -17,12 +17,17 @@ const props = defineProps({
     type: String,
     default: 'text',
   },
+  fixedHeight: {
+    type: Boolean,
+    default: true,
+  },
 });
 const emit = defineEmits(['input', 'keydown', 'focus']);
 
 const value = defineModel();
 
 const input = ref();
+const wrapper = ref();
 
 const color = computed(() => {
   return {
@@ -46,11 +51,15 @@ function onKeyDown(e) {
 
 defineExpose({
   input,
+  wrapper,
 });
 </script>
 
 <template>
-  <div class="relative h-[42px]">
+  <div
+    ref="wrapper"
+    :class="['relative', classes.wrapper, fixedHeight ? 'h-[42px]' : '']"
+  >
     <slot name="prepend" />
     <textarea
       v-if="textarea"
